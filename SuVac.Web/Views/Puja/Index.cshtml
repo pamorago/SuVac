@@ -1,0 +1,56 @@
+@model IEnumerable<SuVac.Application.DTOs.PujaDTO>
+
+@{
+    ViewData["Title"] = "Pujas";
+    var total = Model?.Count() ?? 0;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Historial de Pujas</h1>
+        <p class="text-muted mb-0">Total de pujas: <strong>@total</strong>.</p>
+    </div>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>No hay pujas registradas en este momento.</div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Subasta</th>
+                    <th>Usuario</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PujaId</td>
+                        <td>@item.SubastaId</td>
+                        <td>@item.UsuarioId</td>
+                        <td>$@item.Monto.ToString("F2")</td>
+                        <td>@item.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            <a asp-controller="Puja" asp-action="Details" asp-route-id="@item.PujaId" 
+                               class="btn btn-sm btn-info">Ver</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

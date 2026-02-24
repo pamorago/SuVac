@@ -1,0 +1,349 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\services\\implementations\\servicelibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\services\\implementations\\servicelibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\profiles\\libroprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\profiles\\libroprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\dtos\\librodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\dtos\\librodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\controllers\\librocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\controllers\\librocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\implementations\\repositorylibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\implementations\\repositorylibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\services\\implementations\\servicecategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\services\\implementations\\servicecategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\services\\interfaces\\iservicecategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\services\\interfaces\\iservicecategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\views\\libro\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\views\\libro\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\views\\libro\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\views\\libro\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\views\\libro\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\views\\libro\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\implementations\\repositorycategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\implementations\\repositorycategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\interfaces\\irepositorycategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\interfaces\\irepositorycategoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\implementations\\repositoryautor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\implementations\\repositoryautor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\interfaces\\irepositoryautor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\interfaces\\irepositoryautor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.application\\dtos\\categoriadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|Libreria.Application\\Libreria.Application.csproj|solutionrelative:libreria.application\\dtos\\categoriadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\interfaces\\irepositorylibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\interfaces\\irepositorylibro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.infraestructure\\repository\\interfaces\\irepositoryorden.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|Libreria.Infraestructure\\Libreria.Infraestructure.csproj|solutionrelative:libreria.infraestructure\\repository\\interfaces\\irepositoryorden.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\libreria\\libreria.web\\util\\sweetalerthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|Libreria.Web\\Libreria.Web.csproj|solutionrelative:libreria.web\\util\\sweetalerthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LibroProfile.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Profiles\\LibroProfile.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\Profiles\\LibroProfile.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Profiles\\LibroProfile.cs",
+              "RelativeToolTip": "Libreria.Application\\Profiles\\LibroProfile.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T03:09:10.759Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RepositoryLibro.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryLibro.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryLibro.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryLibro.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryLibro.cs",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAAAGYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T02:55:31.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IServiceCategoria.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Interfaces\\IServiceCategoria.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\Services\\Interfaces\\IServiceCategoria.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Interfaces\\IServiceCategoria.cs",
+              "RelativeToolTip": "Libreria.Application\\Services\\Interfaces\\IServiceCategoria.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T02:53:31.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ServiceCategoria.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Implementations\\ServiceCategoria.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\Services\\Implementations\\ServiceCategoria.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Implementations\\ServiceCategoria.cs",
+              "RelativeToolTip": "Libreria.Application\\Services\\Implementations\\ServiceCategoria.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T02:53:23.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ServiceLibro.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Implementations\\ServiceLibro.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\Services\\Implementations\\ServiceLibro.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\Services\\Implementations\\ServiceLibro.cs",
+              "RelativeToolTip": "Libreria.Application\\Services\\Implementations\\ServiceLibro.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T02:46:42.946Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "RepositoryAutor.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryAutor.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryAutor.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryAutor.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryAutor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T00:52:11.425Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LibroDTO.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\DTOs\\LibroDTO.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\DTOs\\LibroDTO.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\DTOs\\LibroDTO.cs",
+              "RelativeToolTip": "Libreria.Application\\DTOs\\LibroDTO.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAkwBMAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:09:15.827Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LibroController.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Controllers\\LibroController.cs",
+              "RelativeDocumentMoniker": "Libreria.Web\\Controllers\\LibroController.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Controllers\\LibroController.cs",
+              "RelativeToolTip": "Libreria.Web\\Controllers\\LibroController.cs",
+              "ViewState": "AgIAAKwAAAAAAAAAAADwv3kAAABmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T00:40:41.236Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RepositoryCategoria.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryCategoria.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryCategoria.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Implementations\\RepositoryCategoria.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Implementations\\RepositoryCategoria.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAiwBwAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:08:20.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Create.cshtml",
+              "RelativeDocumentMoniker": "Libreria.Web\\Views\\Libro\\Create.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Create.cshtml",
+              "RelativeToolTip": "Libreria.Web\\Views\\Libro\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T00:43:54.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Libreria.Web\\Views\\Libro\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Edit.cshtml",
+              "RelativeToolTip": "Libreria.Web\\Views\\Libro\\Edit.cshtml",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAABkAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T02:03:45.268Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CategoriaDTO.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\DTOs\\CategoriaDTO.cs",
+              "RelativeDocumentMoniker": "Libreria.Application\\DTOs\\CategoriaDTO.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Application\\DTOs\\CategoriaDTO.cs",
+              "RelativeToolTip": "Libreria.Application\\DTOs\\CategoriaDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:13:01.881Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "IRepositoryCategoria.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryCategoria.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryCategoria.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryCategoria.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryCategoria.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T00:55:03.822Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Details.cshtml",
+              "RelativeDocumentMoniker": "Libreria.Web\\Views\\Libro\\Details.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Libro\\Details.cshtml",
+              "RelativeToolTip": "Libreria.Web\\Views\\Libro\\Details.cshtml",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAACcAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T02:15:46.091Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IRepositoryAutor.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryAutor.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryAutor.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryAutor.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryAutor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:07:25.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "IRepositoryLibro.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryLibro.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryLibro.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryLibro.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryLibro.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:07:01.601Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "IRepositoryOrden.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryOrden.cs",
+              "RelativeDocumentMoniker": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryOrden.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryOrden.cs",
+              "RelativeToolTip": "Libreria.Infraestructure\\Repository\\Interfaces\\IRepositoryOrden.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T01:07:05.15Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Libreria.Web\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Libreria.Web\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAADsAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T00:36:19.182Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "SweetAlertHelper.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Util\\SweetAlertHelper.cs",
+              "RelativeDocumentMoniker": "Libreria.Web\\Util\\SweetAlertHelper.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\Libreria\\Libreria.Web\\Util\\SweetAlertHelper.cs",
+              "RelativeToolTip": "Libreria.Web\\Util\\SweetAlertHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T00:17:33.527Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

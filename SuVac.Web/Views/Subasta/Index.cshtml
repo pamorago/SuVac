@@ -1,0 +1,68 @@
+@model IEnumerable<SuVac.Application.DTOs.SubastaDTO>
+
+@{
+    ViewData["Title"] = "Subastas";
+    var total = Model?.Count() ?? 0;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Subastas Disponibles</h1>
+        <p class="text-muted mb-0">Total de subastas: <strong>@total</strong>.</p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-controller="Subasta" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Subasta
+        </a>
+    </div>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>No hay subastas disponibles en este momento.</div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Ganado</th>
+                    <th>Precio Base</th>
+                    <th>Increment. Mín.</th>
+                    <th>Estado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.SubastaId</td>
+                        <td>@item.GanadoId</td>
+                        <td>$@item.PrecioBase.ToString("F2")</td>
+                        <td>$@item.IncrementoMinimo.ToString("F2")</td>
+                        <td>@item.EstadoSubastaId</td>
+                        <td>@item.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <a asp-controller="Subasta" asp-action="Details" asp-route-id="@item.SubastaId" 
+                               class="btn btn-sm btn-info">Ver</a>
+                            <a asp-controller="Subasta" asp-action="Edit" asp-route-id="@item.SubastaId" 
+                               class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-controller="Subasta" asp-action="Delete" asp-route-id="@item.SubastaId" 
+                               class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

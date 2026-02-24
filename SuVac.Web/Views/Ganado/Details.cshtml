@@ -1,0 +1,97 @@
+@model SuVac.Application.DTOs.GanadoDTO
+
+@{
+    ViewData["Title"] = "Detalles del Ganado - " + Model.Nombre;
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">@Model.Nombre</h1>
+                    <p class="text-muted mb-0">Detalles completos del ganado</p>
+                </div>
+                <span class="badge bg-success bg-lg p-2">Disponible</span>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Información General</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">ID del Ganado:</strong></p>
+                            <p class="h6 text-primary">@Model.GanadoId</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Peso:</strong></p>
+                            <p class="h6 text-success">@Model.PesoKg kg</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Tipo de Ganado:</strong></p>
+                            <p class="h6">@Model.TipoGanadoId</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Raza:</strong></p>
+                            <p class="h6">@Model.RazaId</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Sexo:</strong></p>
+                            <p class="h6">@Model.SexoId</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Fecha de Nacimiento:</strong></p>
+                            <p class="h6">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Descripción</h5>
+                </div>
+                <div class="card-body">
+                    <p class="lead">@Model.Descripcion</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Información de Registro</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Certificado de Salud:</strong></p>
+                            <p class="h6">@(Model.CertificadoSalud ?? "No disponible")</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p><strong class="text-muted">Estado:</strong></p>
+                            <p class="h6"><span class="badge bg-success">Activo</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="text-muted">Fecha de Registro:</strong></p>
+                            <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="text-muted">ID Vendedor:</strong></p>
+                            <p class="h6">@Model.UsuarioVendedorId</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-start">
+                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId"          class="btn btn-warning">
+                    <i class="bi bi-pencil me-2"></i>Editar
+                </a>
+                <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

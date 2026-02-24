@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-cow me-2"></i>SuVac
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir mens">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Ganado" asp-action="Index">
+                        <i class="bi bi-cow me-1"></i>Ganado
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Subasta" asp-action="Index">
+                        <i class="bi bi-gavel me-1"></i>Subastas
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Puja" asp-action="Index">
+                        <i class="bi bi-hand-index me-1"></i>Mis Pujas
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Pago" asp-action="Index">
+                        <i class="bi bi-credit-card me-1"></i>Pagos
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <img class="rounded-circle me-2"
+                             src="~/images/profile.png"
+                             alt="Perfil"
+                             width="32" height="32" />
+                        <span class="d-none d-sm-inline">
+                            Invitado
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item">Salir</a></li>
+                        <li><a class=" dropdown-item">Ingresar</a></li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+

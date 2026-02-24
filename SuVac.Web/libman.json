@@ -1,0 +1,19 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.3.8",
+      "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "sweetalert2@11.10.4",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "dist/sweetalert2.all.min.js",
+        "dist/sweetalert2.min.css"
+      ]
+    }
+  ]
+}

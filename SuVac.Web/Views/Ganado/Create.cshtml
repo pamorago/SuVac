@@ -1,0 +1,85 @@
+@model SuVac.Application.DTOs.GanadoDTO
+
+@{
+    ViewData["Title"] = "Crear Ganado";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Registrar Nuevo Ganado</h1>
+
+    <form asp-controller="Ganado" asp-action="Create" method="post" class="card p-4">
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error de validación</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <ul class="mb-0">
+                    @foreach (var modelState in ViewData.ModelState.Values)
+                    {
+                        @foreach (var error in modelState.Errors)
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    }
+                </ul>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="Nombre" asp-for="Nombre" required>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="PesoKg" class="form-label">Peso (kg)</label>
+                <input type="number" class="form-control" id="PesoKg" asp-for="PesoKg" step="0.01" required>
+                <span asp-validation-for="PesoKg" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="Descripcion" asp-for="Descripcion" rows="4" required></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="TipoGanadoId" class="form-label">Tipo de Ganado</label>
+                <input type="number" class="form-control" id="TipoGanadoId" asp-for="TipoGanadoId" required>
+                <span asp-validation-for="TipoGanadoId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="RazaId" class="form-label">Raza</label>
+                <input type="number" class="form-control" id="RazaId" asp-for="RazaId" required>
+                <span asp-validation-for="RazaId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="SexoId" class="form-label">Sexo</label>
+                <input type="number" class="form-control" id="SexoId" asp-for="SexoId" required>
+                <span asp-validation-for="SexoId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input type="date" class="form-control" id="FechaNacimiento" asp-for="FechaNacimiento" required>
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="CertificadoSalud" class="form-label">Certificado de Salud</label>
+                <input type="text" class="form-control" id="CertificadoSalud" asp-for="CertificadoSalud">
+                <span asp-validation-for="CertificadoSalud" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+

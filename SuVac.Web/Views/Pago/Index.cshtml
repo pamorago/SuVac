@@ -1,0 +1,69 @@
+@model IEnumerable<SuVac.Application.DTOs.PagoDTO>
+
+@{
+    ViewData["Title"] = "Gestión de Pagos";
+    var total = Model?.Count() ?? 0;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Gestión de Pagos</h1>
+        <p class="text-muted mb-0">Total de pagos: <strong>@total</strong>.</p>
+    </div>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>No hay pagos registrados en este momento.</div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Subasta</th>
+                    <th>Usuario</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Fecha Pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PagoId</td>
+                        <td>@item.SubastaId</td>
+                        <td>@item.UsuarioId</td>
+                        <td>$@item.Monto.ToString("F2")</td>
+                        <td>
+                            @if (item.EstadoPagoId == 1)
+                            {
+                                <span class="badge bg-warning">Pendiente</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Confirmado</span>
+                            }
+                        </td>
+                        <td>@(item.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        <td>
+                            <a asp-controller="Pago" asp-action="Details" asp-route-id="@item.PagoId" 
+                               class="btn btn-sm btn-info">Ver</a>
+                            <a asp-controller="Pago" asp-action="Edit" asp-route-id="@item.PagoId" 
+                               class="btn btn-sm btn-warning">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+

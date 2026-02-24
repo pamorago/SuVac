@@ -1,0 +1,71 @@
+using SuVac.Infraestructure.Data;
+using SuVac.Infraestructure.Models;
+using SuVac.Infraestructure.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace SuVac.Infraestructure.Repository.Implementations;
+
+public class RepositoryGanado : IRepositoryGanado
+{
+    private readonly SuVacContext _context;
+
+    public RepositoryGanado(SuVacContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IEnumerable<Ganado>> GetAll()
+    {
+        return await _context.Ganados.ToListAsync();
+    }
+
+    public async Task<Ganado> GetById(int id)
+    {
+        return await _context.Ganados.FindAsync(id);
+    }
+
+    public async Task<bool> Create(Ganado entity)
+    {
+        try
+        {
+            _context.Ganados.Add(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> Update(Ganado entity)
+    {
+        try
+        {
+            _context.Ganados.Update(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        try
+        {
+            var ganado = await _context.Ganados.FindAsync(id);
+            if (ganado == null) return false;
+            
+            _context.Ganados.Remove(ganado);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
