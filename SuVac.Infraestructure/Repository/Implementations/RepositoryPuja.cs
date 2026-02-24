@@ -58,7 +58,7 @@ public class RepositoryPuja : IRepositoryPuja
         {
             var puja = await _context.Pujas.FindAsync(id);
             if (puja == null) return false;
-            
+
             _context.Pujas.Remove(puja);
             await _context.SaveChangesAsync();
             return true;
@@ -67,5 +67,16 @@ public class RepositoryPuja : IRepositoryPuja
         {
             return false;
         }
+    }
+
+    // ── Avance 2 ────────────────────────────────────────────────────────
+
+    public async Task<IEnumerable<Puja>> GetBySubasta(int subastaId)
+    {
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
+            .Where(p => p.SubastaId == subastaId)
+            .OrderBy(p => p.FechaHora)
+            .ToListAsync();
     }
 }

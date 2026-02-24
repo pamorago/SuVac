@@ -45,4 +45,20 @@ public class ServicePuja : IServicePuja
     {
         return await _repository.Delete(id);
     }
+
+    // ── Avance 2 ────────────────────────────────────────────────────────
+
+    public async Task<IEnumerable<PujaDTO>> GetBySubasta(int subastaId)
+    {
+        var pujas = await _repository.GetBySubasta(subastaId);
+        return pujas.Select(p => new PujaDTO
+        {
+            PujaId = p.PujaId,
+            SubastaId = p.SubastaId,
+            UsuarioId = p.UsuarioId,
+            NombreUsuario = p.IdUsuarioNavigation.NombreCompleto,
+            Monto = p.Monto,
+            FechaHora = p.FechaHora
+        }).ToList();
+    }
 }
