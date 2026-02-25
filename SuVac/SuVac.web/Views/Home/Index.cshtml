@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold">🐄 SuVac</h1>
+    <p class="lead text-muted">Sistema de Subastas de Ganado</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-5">
+        <div class="card text-center border-success shadow-sm h-100">
+            <div class="card-body py-5">
+                <div class="fs-1 mb-3">🟢</div>
+                <h4 class="card-title fw-bold">Subastas Activas</h4>
+                <p class="card-text text-muted">Consulta las subastas en curso y el historial de pujas.</p>
+                <a asp-controller="Subasta" asp-action="Activas" class="btn btn-success px-4">
+                    Ver Subastas Activas
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card text-center border-secondary shadow-sm h-100">
+            <div class="card-body py-5">
+                <div class="fs-1 mb-3">🔴</div>
+                <h4 class="card-title fw-bold">Subastas Finalizadas</h4>
+                <p class="card-text text-muted">Revisa el historial de subastas cerradas o canceladas.</p>
+                <a asp-controller="Subasta" asp-action="Finalizadas" class="btn btn-secondary px-4">
+                    Ver Subastas Finalizadas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

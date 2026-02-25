@@ -1,0 +1,167 @@
+@model SuVac.Application.DTOs.SubastaDetalleDTO
+@{
+    ViewData["Title"] = $"Detalle — {Model.NombreGanado}";
+    var badgeEstado = Model.EstadoSubasta switch
+    {
+        "Activa"     => "bg-success",
+        "Finalizada" => "bg-secondary",
+        "Cancelada"  => "bg-danger",
+        "Programada" => "bg-warning text-dark",
+        _            => "bg-info"
+    };
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Activas">Subastas Activas</a></li>
+        <li class="breadcrumb-item"><a asp-action="Finalizadas">Finalizadas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Detalle #@Model.SubastaId</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+
+    <!-- ══ Columna Izquierda: Ganado ═════════════════════════════════════════ -->
+    <div class="col-md-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white fw-bold">
+                🐄 Información del Ganado
+            </div>
+            <div class="card-body">
+
+                <!-- Imágenes del ganado -->
+                @if (Model.ImagenesGanado.Any())
+                {
+                    <div id="carrusel-ganado" class="carousel slide mb-3" data-bs-ride="carousel">
+                        <div class="carousel-inner rounded">
+                            @for (int i = 0; i < Model.ImagenesGanado.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@Model.ImagenesGanado[i]"
+                                         class="d-block w-100"
+                                         alt="Imagen @(i+1) de @Model.NombreGanado"
+                                         style="height:260px; object-fit:cover;"
+                                         onerror="this.src='/img/sin-imagen.png'" />
+                                </div>
+                            }
+                        </div>
+                        @if (Model.ImagenesGanado.Count > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-ganado" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carrusel-ganado" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3"
+                         style="height:200px;">
+                        <span class="text-muted">Sin imágenes disponibles</span>
+                    </div>
+                }
+
+                <!-- Datos del ganado -->
+                <table class="table table-borderless table-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <th class="text-muted" style="width:45%">Nombre</th>
+                            <td class="fw-semibold">@Model.NombreGanado</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Tipo</th>
+                            <td>@Model.TipoGanado</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Estado</th>
+                            <td>@Model.EstadoGanado</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Categorías</th>
+                            <td>
+                                @if (Model.Categorias.Any())
+                                {
+                                    @foreach (var cat in Model.Categorias)
+                                    {
+                                        <span class="badge bg-info text-dark me-1">@cat</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin categorías</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ Columna Derecha: Subasta ══════════════════════════════════════════ -->
+    <div class="col-md-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold">📋 Datos de la Subasta #@Model.SubastaId</span>
+                <span class="badge @badgeEstado fs-6">@Model.EstadoSubasta</span>
+            </div>
+            <div class="card-body">
+
+                <div class="row g-3">
+                    <!-- Fechas -->
+                    <div class="col-sm-6">
+                        <label class="form-label text-muted small mb-0">Fecha de Inicio</label>
+                        <div class="fw-semibold">@Model.FechaInicio.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label text-muted small mb-0">Fecha de Cierre</label>
+                        <div class="fw-semibold">@Model.FechaFin.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+
+                    <!-- Precios -->
+                    <div class="col-sm-6">
+                        <label class="form-label text-muted small mb-0">Precio Base</label>
+                        <div class="fw-semibold text-success fs-5">₡@Model.PrecioBase.ToString("N2")</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label text-muted small mb-0">Incremento Mínimo</label>
+                        <div class="fw-semibold">₡@Model.IncrementoMinimo.ToString("N2")</div>
+                    </div>
+
+                    <!-- Campo calculado: total de pujas -->
+                    <div class="col-12">
+                        <hr class="my-1" />
+                        <label class="form-label text-muted small mb-0">Total de Pujas Registradas</label>
+                        <div>
+                            <span class="badge bg-primary fs-5 py-2 px-3">@Model.TotalPujas puja(s)</span>
+                            <small class="text-muted ms-2">(calculado desde la base de datos)</small>
+                        </div>
+                    </div>
+
+                    <!-- Creador -->
+                    <div class="col-12">
+                        <label class="form-label text-muted small mb-0">Creado por</label>
+                        <div>@Model.NombreCreador</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <!-- Enlace obligatorio al historial de pujas -->
+                <a asp-action="HistorialPujas" asp-route-id="@Model.SubastaId"
+                   class="btn btn-primary w-100">
+                    📜 Ver Historial de Pujas (@Model.TotalPujas)
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-3">
+    <a asp-action="Activas" class="btn btn-outline-secondary btn-sm me-2">← Subastas Activas</a>
+    <a asp-action="Finalizadas" class="btn btn-outline-secondary btn-sm">← Subastas Finalizadas</a>
+</div>

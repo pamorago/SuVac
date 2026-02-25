@@ -1,0 +1,94 @@
+@model ICollection<SuVac.Application.DTOs.PujaDTO>
+@{
+    var subastaId   = (int)ViewBag.SubastaId;
+    var nombreGanado= (string)ViewBag.NombreGanado;
+    var estadoSub   = (string)ViewBag.EstadoSubasta;
+    var totalPujas  = (int)ViewBag.TotalPujas;
+    ViewData["Title"] = $"Historial de Pujas — {nombreGanado}";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Activas">Subastas Activas</a></li>
+        <li class="breadcrumb-item"><a asp-action="Finalizadas">Finalizadas</a></li>
+        <li class="breadcrumb-item"><a asp-action="Detalle" asp-route-id="@subastaId">Detalle #@subastaId</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Historial de Pujas</li>
+    </ol>
+</nav>
+
+<!-- Encabezado -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0 fw-bold">📜 Historial de Pujas</h4>
+            <p class="text-muted mb-0">
+                Subasta #@subastaId &mdash; <strong>@nombreGanado</strong>
+            </p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary fs-6 px-3 py-2">@totalPujas puja(s) en total</span>
+            <br />
+            <small class="text-muted">Orden: cronológico ascendente</small>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Esta subasta no tiene pujas registradas.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center" style="width:60px">#</th>
+                    <th>Pujador</th>
+                    <th class="text-end">Monto Ofertado</th>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-center">Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int posicion = 1;}
+                @foreach (var puja in Model)
+                {
+                    <!-- Validación: solo se muestran pujas asociadas a esta subasta -->
+                    @if (puja.SubastaId == subastaId)
+                    {
+                        var esUltima = posicion == Model.Count;
+                        <tr class="@(esUltima ? "table-success" : "")">
+                            <td class="text-center fw-bold @(esUltima ? "" : "text-muted")">
+                                @posicion
+                                @if (esUltima)
+                                {
+                                    <span class="badge bg-success ms-1">Última</span>
+                                }
+                            </td>
+                            <td>@puja.NombreUsuario</td>
+                            <td class="text-end fw-semibold">₡@puja.Monto.ToString("N2")</td>
+                            <td class="text-center">@puja.FechaHora.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">@puja.FechaHora.ToString("HH:mm:ss")</td>
+                        </tr>
+                        posicion++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">
+        ℹ️ Las pujas se presentan en orden cronológico ascendente (de la más antigua a la más reciente).
+        La fila resaltada corresponde a la puja más reciente.
+    </p>
+}
+
+<div class="mt-3">
+    <a asp-action="Detalle" asp-route-id="@subastaId" class="btn btn-outline-primary btn-sm me-2">
+        ← Volver al Detalle
+    </a>
+    <a asp-action="Activas" class="btn btn-outline-secondary btn-sm me-2">Subastas Activas</a>
+    <a asp-action="Finalizadas" class="btn btn-outline-secondary btn-sm">Subastas Finalizadas</a>
+</div>
