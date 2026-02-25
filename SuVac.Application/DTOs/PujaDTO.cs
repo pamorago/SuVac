@@ -16,5 +16,4 @@ public class PujaDTO
 
     [Display(Name = "Fecha y hora"), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
     public DateTime FechaHora { get; set; }
-    public string? NombreUsuario { get; set; }
 }
