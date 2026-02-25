@@ -9,4 +9,8 @@ public interface IServiceSubasta
     Task<bool> Create(SubastaDTO dto);
     Task<bool> Update(SubastaDTO dto);
     Task<bool> Delete(int id);
+
+    Task<IEnumerable<SubastaListadoDTO>> GetActivas();
+    Task<IEnumerable<SubastaListadoDTO>> GetFinalizadas();
+    Task<SubastaDetalleDTO?> GetDetalle(int id);
 }

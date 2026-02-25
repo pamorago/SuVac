@@ -19,10 +19,15 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Subasta" asp-action="Index">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-gavel me-1"></i>Subastas
                     </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Activas">Activas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Finalizadas">Finalizadas</a></li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">

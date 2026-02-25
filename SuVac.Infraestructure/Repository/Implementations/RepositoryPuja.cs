@@ -1,4 +1,4 @@
-using SuVac.Infraestructure.Data;
+﻿using SuVac.Infraestructure.Data;
 using SuVac.Infraestructure.Models;
 using SuVac.Infraestructure.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -58,7 +58,7 @@ public class RepositoryPuja : IRepositoryPuja
         {
             var puja = await _context.Pujas.FindAsync(id);
             if (puja == null) return false;
-            
+
             _context.Pujas.Remove(puja);
             await _context.SaveChangesAsync();
             return true;
@@ -67,5 +67,14 @@ public class RepositoryPuja : IRepositoryPuja
         {
             return false;
         }
+    }
+
+    public async Task<IEnumerable<Puja>> GetBySubasta(int subastaId)
+    {
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
+            .Where(p => p.SubastaId == subastaId)
+            .OrderBy(p => p.FechaHora)
+            .ToListAsync();
     }
 }

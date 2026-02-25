@@ -9,4 +9,6 @@ public interface IRepositoryPuja
     Task<bool> Create(Puja entity);
     Task<bool> Update(Puja entity);
     Task<bool> Delete(int id);
+
+    Task<IEnumerable<Puja>> GetBySubasta(int subastaId);
 }
