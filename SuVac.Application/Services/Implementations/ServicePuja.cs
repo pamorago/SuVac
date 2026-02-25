@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using SuVac.Infraestructure.Models;
@@ -44,5 +44,19 @@ public class ServicePuja : IServicePuja
     public async Task<bool> Delete(int id)
     {
         return await _repository.Delete(id);
+    }
+
+    public async Task<IEnumerable<PujaDTO>> GetBySubasta(int subastaId)
+    {
+        var pujas = await _repository.GetBySubasta(subastaId);
+        return pujas.Select(p => new PujaDTO
+        {
+            PujaId = p.PujaId,
+            SubastaId = p.SubastaId,
+            UsuarioId = p.UsuarioId,
+            NombreUsuario = p.IdUsuarioNavigation.NombreCompleto,
+            Monto = p.Monto,
+            FechaHora = p.FechaHora
+        });
     }
 }

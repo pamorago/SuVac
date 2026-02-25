@@ -1,4 +1,4 @@
-using SuVac.Application.DTOs;
+﻿using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,11 +7,54 @@ namespace SuVac.Web.Controllers;
 public class SubastaController : Controller
 {
     private readonly IServiceSubasta _service;
+    private readonly IServicePuja _servicePuja;
 
-    public SubastaController(IServiceSubasta service)
+    public SubastaController(IServiceSubasta service, IServicePuja servicePuja)
     {
         _service = service;
+        _servicePuja = servicePuja;
     }
+
+    public async Task<IActionResult> Activas()
+    {
+        var subastas = await _service.GetActivas();
+        return View(subastas);
+    }
+
+    public async Task<IActionResult> Finalizadas()
+    {
+        var subastas = await _service.GetFinalizadas();
+        return View(subastas);
+    }
+
+    public async Task<IActionResult> Detalle(int? id)
+    {
+        if (id is null or <= 0) return NotFound();
+
+        var subasta = await _service.GetDetalle(id.Value);
+        if (subasta is null) return NotFound();
+
+        return View(subasta);
+    }
+
+    public async Task<IActionResult> HistorialPujas(int? id)
+    {
+        if (id is null or <= 0) return NotFound();
+
+        var subasta = await _service.GetDetalle(id.Value);
+        if (subasta is null) return NotFound();
+
+        var pujas = await _servicePuja.GetBySubasta(id.Value);
+
+        ViewBag.SubastaId = id.Value;
+        ViewBag.NombreGanado = subasta.NombreGanado;
+        ViewBag.EstadoSubasta = subasta.EstadoSubasta;
+        ViewBag.TotalPujas = subasta.TotalPujas;
+
+        return View(pujas.ToList());
+    }
+
+    // â”€â”€ CRUD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     // GET: SubastaController
     public async Task<IActionResult> Index()

@@ -9,4 +9,6 @@ public interface IServicePuja
     Task<bool> Create(PujaDTO dto);
     Task<bool> Update(PujaDTO dto);
     Task<bool> Delete(int id);
+
+    Task<IEnumerable<PujaDTO>> GetBySubasta(int subastaId);
 }
