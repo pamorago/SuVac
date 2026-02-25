@@ -1,0 +1,26 @@
+@model SuVac.Application.DTOs.TipoGanadoDTO
+@{
+    ViewData["Title"] = "Editar Tipo de Ganado";
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <form asp-action="Edit" asp-route-id="@Model.TipoGanadoId">
+                <div class="form-group mb-3">
+                    <input asp-for="TipoGanadoId" class="form-control" readonly hidden />
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>

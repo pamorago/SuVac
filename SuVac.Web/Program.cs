@@ -86,6 +86,11 @@ builder.Services.AddTransient<IRepositorySubasta, RepositorySubasta>();
 builder.Services.AddTransient<IRepositoryPuja, RepositoryPuja>();
 builder.Services.AddTransient<IRepositoryPago, RepositoryPago>();
 builder.Services.AddTransient<IRepositoryUsuario, RepositoryUsuario>();
+builder.Services.AddTransient<IRepositoryCategoria, RepositoryCategoria>();
+builder.Services.AddTransient<IRepositoryRaza, RepositoryRaza>();
+builder.Services.AddTransient<IRepositoryTipoGanado, RepositoryTipoGanado>();
+builder.Services.AddTransient<IRepositoryRol, RepositoryRol>();
+builder.Services.AddTransient<IRepositoryResultadoSubasta, RepositoryResultadoSubasta>();
 
 //*** Services SuVac
 builder.Services.AddTransient<IServiceGanado, ServiceGanado>();
@@ -93,6 +98,11 @@ builder.Services.AddTransient<IServiceSubasta, ServiceSubasta>();
 builder.Services.AddTransient<IServicePuja, ServicePuja>();
 builder.Services.AddTransient<IServicePago, ServicePago>();
 builder.Services.AddTransient<IServiceUsuario, ServiceUsuario>();
+builder.Services.AddTransient<IServiceCategoria, ServiceCategoria>();
+builder.Services.AddTransient<IServiceRaza, ServiceRaza>();
+builder.Services.AddTransient<IServiceTipoGanado, ServiceTipoGanado>();
+builder.Services.AddTransient<IServiceRol, ServiceRol>();
+builder.Services.AddTransient<IServiceResultadoSubasta, ServiceResultadoSubasta>();
 
 // =======================
 // Configurar AutoMapper
@@ -142,7 +152,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-}else
+}
+else
 {
     // Middleware personalizado
     app.UseMiddleware<ErrorHandlingMiddleware>();

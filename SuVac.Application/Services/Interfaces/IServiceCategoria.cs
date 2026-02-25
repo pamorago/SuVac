@@ -12,5 +12,8 @@ namespace SuVac.Application.Services.Interfaces
     {
         Task<ICollection<CategoriaDTO>> ListAsync();
         Task<CategoriaDTO?> FindByIdAsync(int id);
+        Task<bool> Create(CategoriaDTO dto);
+        Task<bool> Update(CategoriaDTO dto);
+        Task<bool> Delete(int id);
     }
 }

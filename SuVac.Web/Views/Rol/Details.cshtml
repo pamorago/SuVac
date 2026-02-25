@@ -1,0 +1,19 @@
+@model SuVac.Application.DTOs.RolDTO
+@{
+    ViewData["Title"] = "Detalles";
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>ID:</strong> @Model.RolId</p>
+                    <p><strong>Nombre:</strong> @Model.Nombre</p>
+                </div>
+            </div>
+            <a asp-action="Edit" asp-route-id="@Model.RolId" class="btn btn-warning mt-3">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
+        </div>
+    </div>
+</div>

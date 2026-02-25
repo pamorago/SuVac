@@ -7,4 +7,5 @@ public class PujaDTO
     public int UsuarioId { get; set; }
     public decimal Monto { get; set; }
     public DateTime FechaHora { get; set; }
+    public string? NombreUsuario { get; set; }
 }

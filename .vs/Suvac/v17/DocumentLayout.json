@@ -7,10 +7,6 @@
       "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|SuVac.Application\\SuVac.Application.csproj|solutionrelative:suvac.application\\dtos\\ganadodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|SuVac.Application\\SuVac.Application.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.application\\dtos\\librodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BC5F07E0-656C-4BF5-B3EE-E18EA53584F1}|SuVac.Application\\SuVac.Application.csproj|solutionrelative:suvac.application\\dtos\\librodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.web\\views\\ganado\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|solutionrelative:suvac.web\\views\\ganado\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -21,6 +17,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.web\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|solutionrelative:suvac.web\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Application\\DTOs\\LibroDTO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SuVac.Application\\DTOs\\LibroDTO.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -55,7 +55,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "LibroDTO.cs",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Application\\DTOs\\LibroDTO.cs",
               "RelativeDocumentMoniker": "SuVac.Application\\DTOs\\LibroDTO.cs",
@@ -67,7 +67,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Ganado\\Create.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Ganado\\Create.cshtml",
@@ -79,7 +79,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "RepositoryGanado.cs",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
               "RelativeDocumentMoniker": "SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
@@ -91,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Home\\Index.cshtml",
