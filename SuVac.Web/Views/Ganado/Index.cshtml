@@ -43,13 +43,13 @@ else
                             <strong>Peso:</strong> <span class="text-success">@item.PesoKg kg</span>
                         </p>
                         <p class="mb-2">
-                            <strong>Tipo:</strong> @item.TipoGanadoId
+                            <strong>Tipo:</strong> @item.NombreTipoGanado
                         </p>
                         <p class="mb-2">
-                            <strong>Raza:</strong> @item.RazaId
+                            <strong>Raza:</strong> @item.NombreRaza
                         </p>
                         <p class="mb-3 text-muted small">
-                            <strong>Sexo:</strong> @item.SexoId
+                            <strong>Sexo:</strong> @item.NombreSexo
                         </p>
                         <p class="card-text small">
                             @(item.Descripcion?.Substring(0, Math.Min(80, item.Descripcion?.Length ?? 0)) ?? "...")

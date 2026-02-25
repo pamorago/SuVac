@@ -31,15 +31,15 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <p><strong class="text-muted">Tipo de Ganado:</strong></p>
-                            <p class="h6">@Model.TipoGanadoId</p>
+                            <p class="h6">@Model.NombreTipoGanado</p>
                         </div>
                         <div class="col-md-6 mb-3">
                             <p><strong class="text-muted">Raza:</strong></p>
-                            <p class="h6">@Model.RazaId</p>
+                            <p class="h6">@Model.NombreRaza</p>
                         </div>
                         <div class="col-md-6 mb-3">
                             <p><strong class="text-muted">Sexo:</strong></p>
-                            <p class="h6">@Model.SexoId</p>
+                            <p class="h6">@Model.NombreSexo</p>
                         </div>
                         <div class="col-md-6 mb-3">
                             <p><strong class="text-muted">Fecha de Nacimiento:</strong></p>
@@ -77,15 +77,15 @@
                             <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong class="text-muted">ID Vendedor:</strong></p>
-                            <p class="h6">@Model.UsuarioVendedorId</p>
+                            <p><strong class="text-muted">Nombre Vendedor:</strong></p>
+                            <p class="h6">@Model.NombreVendedor</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="d-flex gap-2 justify-content-start">
-                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId"          class="btn btn-warning">
+                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
                     <i class="bi bi-pencil me-2"></i>Editar
                 </a>
                 <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">

@@ -87,7 +87,7 @@
                                 <strong>Estatus:</strong> <span class="badge bg-success">Disponible</span>
                             </p>
                             <p class="text-muted small">@(ganado.Descripcion?.Substring(0, Math.Min(100,
-                                                                                                                                                                                                                        ganado.Descripcion?.Length ?? 0)) ?? "")</p>
+                                                                                                                                                                                                                                                                                        ganado.Descripcion?.Length ?? 0)) ?? "")</p>
                                 <a asp-controller="Ganado" asp-action="Details" asp-route-id="@ganado.GanadoId"
                                        class="btn btn-primary btn-sm">
                                     Ver Detalles
@@ -225,34 +225,34 @@
 
     @section Scripts {
         <script>
-            const enableHoverEffect = () => {
-                // Efecto hover genérico para tarjetas
-                const cards = document.querySelectorAll('.hover-card');
-                cards.forEach(card => {
-                    card.addEventListener('mouseenter', function () {
-                        this.style.transform = 'translateY(-4px)';
-                        this.style.transition = 'all 0.25s ease';
-                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
-                    });
-                    card.addEventListener('mouseleave', function () {
-                        this.style.transform = 'translateY(0)';
-                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
-                    });
-                });
-            };
+                            const enableHoverEffect = () => {
+                                // Efecto hover genérico para tarjetas
+                                const cards = document.querySelectorAll('.hover-card');
+                                cards.forEach(card => {
+                                    card.addEventListener('mouseenter', function () {
+                                        this.style.transform = 'translateY(-4px)';
+                                        this.style.transition = 'all 0.25s ease';
+                                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
+                                    });
+                                    card.addEventListener('mouseleave', function () {
+                                        this.style.transform = 'translateY(0)';
+                                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                                    });
+                                });
+                            };
 
-            document.addEventListener('DOMContentLoaded', enableHoverEffect);
+                            document.addEventListener('DOMContentLoaded', enableHoverEffect);
         </script>
 
         <style>
-            .hover-card {
-                transition: all 0.25s ease;
-                cursor: pointer;
-            }
+                            .hover-card {
+                                transition: all 0.25s ease;
+                                cursor: pointer;
+                            }
 
-            .hover-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-            }
+                            .hover-card:hover {
+                                transform: translateY(-4px);
+                                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+                            }
         </style>
     }

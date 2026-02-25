@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using SuVac.Infraestructure.Models;
@@ -44,68 +44,5 @@ public class ServiceSubasta : IServiceSubasta
     public async Task<bool> Delete(int id)
     {
         return await _repository.Delete(id);
-    }
-
-    // â”€â”€ Avance 2: mapeo manual para DTOs con campos calculados â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-    public async Task<IEnumerable<SubastaListadoDTO>> GetActivas()
-    {
-        var subastas = await _repository.GetActivas();
-        return subastas.Select(s => new SubastaListadoDTO
-        {
-            SubastaId = s.SubastaId,
-            NombreGanado = s.IdGanadoNavigation.Nombre,
-            ImagenGanado = s.IdGanadoNavigation.ImagenesGanado.FirstOrDefault()?.UrlImagen,
-            FechaInicio = s.FechaInicio,
-            FechaFin = s.FechaFin,
-            PrecioBase = s.PrecioBase,
-            IncrementoMinimo = s.IncrementoMinimo,
-            EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-            CantidadPujas = s.Pujas.Count
-        }).ToList();
-    }
-
-    public async Task<IEnumerable<SubastaListadoDTO>> GetFinalizadas()
-    {
-        var subastas = await _repository.GetFinalizadas();
-        return subastas.Select(s => new SubastaListadoDTO
-        {
-            SubastaId = s.SubastaId,
-            NombreGanado = s.IdGanadoNavigation.Nombre,
-            ImagenGanado = s.IdGanadoNavigation.ImagenesGanado.FirstOrDefault()?.UrlImagen,
-            FechaInicio = s.FechaInicio,
-            FechaFin = s.FechaFin,
-            PrecioBase = s.PrecioBase,
-            IncrementoMinimo = s.IncrementoMinimo,
-            EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-            CantidadPujas = s.Pujas.Count
-        }).ToList();
-    }
-
-    public async Task<SubastaDetalleDTO?> GetDetalle(int id)
-    {
-        var s = await _repository.GetByIdFull(id);
-        if (s is null) return null;
-
-        return new SubastaDetalleDTO
-        {
-            SubastaId = s.SubastaId,
-            NombreGanado = s.IdGanadoNavigation.Nombre,
-            TipoGanado = s.IdGanadoNavigation.IdTipoGanadoNavigation.Nombre,
-            EstadoGanado = s.IdGanadoNavigation.IdEstadoGanadoNavigation.Nombre,
-            Categorias = s.IdGanadoNavigation.GanadoCategorias
-                                 .Select(gc => gc.IdCategoriaNavigation.Nombre)
-                                 .ToList(),
-            ImagenesGanado = s.IdGanadoNavigation.ImagenesGanado
-                                 .Select(i => i.UrlImagen)
-                                 .ToList(),
-            FechaInicio = s.FechaInicio,
-            FechaFin = s.FechaFin,
-            PrecioBase = s.PrecioBase,
-            IncrementoMinimo = s.IncrementoMinimo,
-            EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-            TotalPujas = s.Pujas.Count,
-            NombreCreador = s.IdUsuarioCreadorNavigation.NombreCompleto
-        };
     }
 }

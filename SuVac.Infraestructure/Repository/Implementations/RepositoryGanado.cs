@@ -16,12 +16,24 @@ public class RepositoryGanado : IRepositoryGanado
 
     public async Task<IEnumerable<Ganado>> GetAll()
     {
-        return await _context.Ganados.ToListAsync();
+        return await _context.Ganados
+            .Include(g => g.IdTipoGanadoNavigation)
+            .Include(g => g.IdRazaNavigation)
+            .Include(g => g.IdSexoNavigation)
+            .Include(g => g.IdEstadoGanadoNavigation)
+            .Include(g => g.IdUsuarioVendedorNavigation)
+            .ToListAsync();
     }
 
     public async Task<Ganado> GetById(int id)
     {
-        return await _context.Ganados.FindAsync(id);
+        return await _context.Ganados
+            .Include(g => g.IdTipoGanadoNavigation)
+            .Include(g => g.IdRazaNavigation)
+            .Include(g => g.IdSexoNavigation)
+            .Include(g => g.IdEstadoGanadoNavigation)
+            .Include(g => g.IdUsuarioVendedorNavigation)
+            .FirstOrDefaultAsync(g => g.GanadoId == id);
     }
 
     public async Task<bool> Create(Ganado entity)
@@ -58,7 +70,7 @@ public class RepositoryGanado : IRepositoryGanado
         {
             var ganado = await _context.Ganados.FindAsync(id);
             if (ganado == null) return false;
-            
+
             _context.Ganados.Remove(ganado);
             await _context.SaveChangesAsync();
             return true;

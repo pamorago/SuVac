@@ -58,7 +58,7 @@ public class RepositorySubasta : IRepositorySubasta
         {
             var subasta = await _context.Subastas.FindAsync(id);
             if (subasta == null) return false;
-
+            
             _context.Subastas.Remove(subasta);
             await _context.SaveChangesAsync();
             return true;
@@ -67,58 +67,5 @@ public class RepositorySubasta : IRepositorySubasta
         {
             return false;
         }
-    }
-
-    // ── Avance 2 ────────────────────────────────────────────────────────
-
-    public async Task<IEnumerable<Subasta>> GetActivas()
-    {
-        return await _context.Subastas
-            .Include(s => s.IdEstadoSubastaNavigation)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.ImagenesGanado)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.GanadoCategorias)
-                    .ThenInclude(gc => gc.IdCategoriaNavigation)
-            .Include(s => s.Pujas)
-            .Include(s => s.IdUsuarioCreadorNavigation)
-            .Where(s => s.IdEstadoSubastaNavigation.Nombre == "Activa")
-            .OrderBy(s => s.FechaFin)
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<Subasta>> GetFinalizadas()
-    {
-        return await _context.Subastas
-            .Include(s => s.IdEstadoSubastaNavigation)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.ImagenesGanado)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.GanadoCategorias)
-                    .ThenInclude(gc => gc.IdCategoriaNavigation)
-            .Include(s => s.Pujas)
-            .Include(s => s.IdUsuarioCreadorNavigation)
-            .Where(s => s.IdEstadoSubastaNavigation.Nombre == "Finalizada"
-                     || s.IdEstadoSubastaNavigation.Nombre == "Cancelada")
-            .OrderByDescending(s => s.FechaFin)
-            .ToListAsync();
-    }
-
-    public async Task<Subasta?> GetByIdFull(int id)
-    {
-        return await _context.Subastas
-            .Include(s => s.IdEstadoSubastaNavigation)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.ImagenesGanado)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.GanadoCategorias)
-                    .ThenInclude(gc => gc.IdCategoriaNavigation)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.IdTipoGanadoNavigation)
-            .Include(s => s.IdGanadoNavigation)
-                .ThenInclude(g => g.IdEstadoGanadoNavigation)
-            .Include(s => s.Pujas)
-            .Include(s => s.IdUsuarioCreadorNavigation)
-            .FirstOrDefaultAsync(s => s.SubastaId == id);
     }
 }

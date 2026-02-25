@@ -9,7 +9,4 @@ public interface IServicePuja
     Task<bool> Create(PujaDTO dto);
     Task<bool> Update(PujaDTO dto);
     Task<bool> Delete(int id);
-
-    // Avance 2: historial de pujas por subasta
-    Task<IEnumerable<PujaDTO>> GetBySubasta(int subastaId);
 }
