@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|SuVac.Infraestructure\\SuVac.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.infraestructure\\repository\\implementations\\repositoryrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|SuVac.Infraestructure\\SuVac.Infraestructure.csproj|solutionrelative:suvac.infraestructure\\repository\\implementations\\repositoryrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|SuVac.Infraestructure\\SuVac.Infraestructure.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.infraestructure\\repository\\implementations\\repositoryganado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7EE3553-D4EB-464B-BB42-1DCE0BAE0501}|SuVac.Infraestructure\\SuVac.Infraestructure.csproj|solutionrelative:suvac.infraestructure\\repository\\implementations\\repositoryganado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -26,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,7 +42,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "RepositoryRol.cs",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Infraestructure\\Repository\\Implementations\\RepositoryRol.cs",
+              "RelativeDocumentMoniker": "SuVac.Infraestructure\\Repository\\Implementations\\RepositoryRol.cs",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Infraestructure\\Repository\\Implementations\\RepositoryRol.cs",
+              "RelativeToolTip": "SuVac.Infraestructure\\Repository\\Implementations\\RepositoryRol.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-26T00:22:42.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "GanadoDTO.cs",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Application\\DTOs\\GanadoDTO.cs",
               "RelativeDocumentMoniker": "SuVac.Application\\DTOs\\GanadoDTO.cs",
@@ -50,7 +67,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Ganado\\Create.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Ganado\\Create.cshtml",
@@ -62,20 +79,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "RepositoryGanado.cs",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
               "RelativeDocumentMoniker": "SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
               "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
               "RelativeToolTip": "SuVac.Infraestructure\\Repository\\Implementations\\RepositoryGanado.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAAwBsAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAwBUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-24T03:41:46.519Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Home\\Index.cshtml",
