@@ -1,16 +1,21 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SuVac.Web.Controllers;
 
 public class GanadoController : Controller
 {
     private readonly IServiceGanado _service;
+    private readonly IServiceTipoGanado _serviceTipoGanado;
+    private readonly IServiceRaza _serviceRaza;
 
-    public GanadoController(IServiceGanado service)
+    public GanadoController(IServiceGanado service, IServiceTipoGanado serviceTipoGanado, IServiceRaza serviceRaza)
     {
         _service = service;
+        _serviceTipoGanado = serviceTipoGanado;
+        _serviceRaza = serviceRaza;
     }
 
     // GET: GanadoController
@@ -34,8 +39,9 @@ public class GanadoController : Controller
     }
 
     // GET: GanadoController/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
+        await CargarListas();
         return View();
     }
 
@@ -54,10 +60,12 @@ public class GanadoController : Controller
                     return RedirectToAction(nameof(Index));
                 }
             }
+            await CargarListas();
             return View(dto);
         }
         catch
         {
+            await CargarListas();
             return View(dto);
         }
     }
@@ -72,6 +80,7 @@ public class GanadoController : Controller
         if (ganado == null)
             return NotFound();
 
+        await CargarListas();
         return View(ganado);
     }
 
@@ -93,10 +102,12 @@ public class GanadoController : Controller
                     return RedirectToAction(nameof(Index));
                 }
             }
+            await CargarListas();
             return View(dto);
         }
         catch
         {
+            await CargarListas();
             return View(dto);
         }
     }
@@ -132,5 +143,21 @@ public class GanadoController : Controller
         {
             return BadRequest();
         }
+    }
+
+    private async Task CargarListas()
+    {
+        var tiposGanado = await _serviceTipoGanado.GetAll();
+        var razas = await _serviceRaza.GetAll();
+
+        ViewBag.TiposGanado = new SelectList(tiposGanado, "TipoGanadoId", "Nombre");
+        ViewBag.Razas = new SelectList(razas, "RazaId", "Nombre");
+
+        // Para Sexo, usamos una lista hardcodeada (Macho/Hembra)
+        ViewBag.Sexos = new SelectList(new[]
+        {
+            new { id = 1, nombre = "Macho" },
+            new { id = 2, nombre = "Hembra" }
+        }, "id", "nombre");
     }
 }

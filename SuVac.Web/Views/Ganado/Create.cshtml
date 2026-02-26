@@ -47,17 +47,23 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="TipoGanadoId" class="form-label">Tipo de Ganado</label>
-                <input type="number" class="form-control" id="TipoGanadoId" asp-for="TipoGanadoId" required>
+                <select class="form-control" id="TipoGanadoId" asp-for="TipoGanadoId" asp-items="@ViewBag.TiposGanado" required>
+                    <option value="">-- Seleccionar Tipo de Ganado --</option>
+                </select>
                 <span asp-validation-for="TipoGanadoId" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="RazaId" class="form-label">Raza</label>
-                <input type="number" class="form-control" id="RazaId" asp-for="RazaId" required>
+                <select class="form-control" id="RazaId" asp-for="RazaId" asp-items="@ViewBag.Razas" required>
+                    <option value="">-- Seleccionar Raza --</option>
+                </select>
                 <span asp-validation-for="RazaId" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="SexoId" class="form-label">Sexo</label>
-                <input type="number" class="form-control" id="SexoId" asp-for="SexoId" required>
+                <select class="form-control" id="SexoId" asp-for="SexoId" asp-items="@ViewBag.Sexos" required>
+                    <option value="">-- Seleccionar Sexo --</option>
+                </select>
                 <span asp-validation-for="SexoId" class="text-danger"></span>
             </div>
         </div>
