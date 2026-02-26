@@ -24,17 +24,32 @@ namespace SuVac.Application.Services.Implementations
 
         public async Task<CategoriaDTO?> FindByIdAsync(int id)
         {
-            var @object= await _repository.FindByIdAsync(id);
-            var objectMapped=_mapper.Map<CategoriaDTO>(@object);
+            var @object = await _repository.GetById(id);
+            var objectMapped = _mapper.Map<CategoriaDTO>(@object);
             return objectMapped;
         }
 
         public async Task<ICollection<CategoriaDTO>> ListAsync()
         {
-            var list = await _repository.ListAsync();
+            var list = await _repository.GetAll();
             return _mapper.Map<ICollection<CategoriaDTO>>(list);
         }
 
-        
+        public async Task<bool> Create(CategoriaDTO dto)
+        {
+            var categoria = _mapper.Map<Categoria>(dto);
+            return await _repository.Create(categoria);
+        }
+
+        public async Task<bool> Update(CategoriaDTO dto)
+        {
+            var categoria = _mapper.Map<Categoria>(dto);
+            return await _repository.Update(categoria);
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            return await _repository.Delete(id);
+        }
     }
 }

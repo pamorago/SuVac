@@ -6,6 +6,8 @@ public interface IServiceUsuario
 {
     Task<IEnumerable<UsuarioDTO>> GetAll();
     Task<UsuarioDTO> GetById(int id);
+    Task<IEnumerable<UsuarioDTO>> GetAllConDetalle();
+    Task<UsuarioDTO?> GetByIdConDetalle(int id);
     Task<bool> Create(UsuarioDTO dto);
     Task<bool> Update(UsuarioDTO dto);
     Task<bool> Delete(int id);

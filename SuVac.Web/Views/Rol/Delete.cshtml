@@ -1,0 +1,22 @@
+@model SuVac.Application.DTOs.RolDTO
+@{
+    ViewData["Title"] = "Eliminar Rol";
+}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <div class="alert alert-warning">¿Está seguro?</div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong>ID:</strong> @Model.RolId</p>
+                    <p><strong>Nombre:</strong> @Model.Nombre</p>
+                </div>
+            </div>
+            <form asp-action="DeleteConfirmed" asp-route-id="@Model.RolId" method="post">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>

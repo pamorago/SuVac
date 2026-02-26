@@ -1,15 +1,12 @@
 using SuVac.Infraestructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SuVac.Infraestructure.Repository.Interfaces
+namespace SuVac.Infraestructure.Repository.Interfaces;
+
+public interface IRepositoryCategoria
 {
-    public interface IRepositoryCategoria
-    {
-        Task<ICollection<Categoria>> ListAsync();
-        Task<Categoria?> FindByIdAsync(int id);
-    }
+    Task<IEnumerable<Categoria>> GetAll();
+    Task<Categoria> GetById(int id);
+    Task<bool> Create(Categoria entity);
+    Task<bool> Update(Categoria entity);
+    Task<bool> Delete(int id);
 }

@@ -1,0 +1,31 @@
+@model SuVac.Application.DTOs.CategoriaDTO
+
+@{
+    ViewData["Title"] = "Detalles de la Categoría";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>ID:</strong></label>
+                        <p>@Model.CategoriaId</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Nombre:</strong></label>
+                        <p>@Model.Nombre</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Descripción:</strong></label>
+                        <p>@Model.Descripcion</p>
+                    </div>
+                </div>
+            </div>
+            <a asp-action="Edit" asp-route-id="@Model.CategoriaId" class="btn btn-warning mt-3">Editar</a>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+@model SuVac.Application.DTOs.RazaDTO
+
+@{
+    ViewData["Title"] = "Eliminar Raza";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <div class="alert alert-warning" role="alert">
+                <strong>¿Está seguro de que desea eliminar esta raza?</strong>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>ID:</strong></label>
+                        <p>@Model.RazaId</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Nombre:</strong></label>
+                        <p>@Model.Nombre</p>
+                    </div>
+                </div>
+            </div>
+            <form asp-action="DeleteConfirmed" asp-route-id="@Model.RazaId" method="post" class="mt-3">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
