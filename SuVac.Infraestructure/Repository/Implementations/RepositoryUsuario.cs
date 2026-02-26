@@ -24,6 +24,26 @@ public class RepositoryUsuario : IRepositoryUsuario
         return await _context.Usuarios.FindAsync(id);
     }
 
+    public async Task<IEnumerable<Usuario>> GetAllFull()
+    {
+        return await _context.Usuarios
+            .Include(u => u.IdRolNavigation)
+            .Include(u => u.IdEstadoNavigation)
+            .Include(u => u.Subastas)
+            .Include(u => u.Pujas)
+            .ToListAsync();
+    }
+
+    public async Task<Usuario?> GetByIdFull(int id)
+    {
+        return await _context.Usuarios
+            .Include(u => u.IdRolNavigation)
+            .Include(u => u.IdEstadoNavigation)
+            .Include(u => u.Subastas)
+            .Include(u => u.Pujas)
+            .FirstOrDefaultAsync(u => u.UsuarioId == id);
+    }
+
     public async Task<bool> Create(Usuario entity)
     {
         try
@@ -58,7 +78,7 @@ public class RepositoryUsuario : IRepositoryUsuario
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null) return false;
-            
+
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;

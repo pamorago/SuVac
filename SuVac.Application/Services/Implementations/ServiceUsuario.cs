@@ -29,6 +29,19 @@ public class ServiceUsuario : IServiceUsuario
         return _mapper.Map<UsuarioDTO>(usuario);
     }
 
+    public async Task<IEnumerable<UsuarioDTO>> GetAllConDetalle()
+    {
+        var usuarios = await _repository.GetAllFull();
+        return usuarios.Select(u => MapearUsuarioConDetalle(u));
+    }
+
+    public async Task<UsuarioDTO?> GetByIdConDetalle(int id)
+    {
+        var usuario = await _repository.GetByIdFull(id);
+        if (usuario is null) return null;
+        return MapearUsuarioConDetalle(usuario);
+    }
+
     public async Task<bool> Create(UsuarioDTO dto)
     {
         var usuario = _mapper.Map<Usuario>(dto);
@@ -44,5 +57,22 @@ public class ServiceUsuario : IServiceUsuario
     public async Task<bool> Delete(int id)
     {
         return await _repository.Delete(id);
+    }
+
+    private UsuarioDTO MapearUsuarioConDetalle(Usuario usuario)
+    {
+        return new UsuarioDTO
+        {
+            UsuarioId = usuario.UsuarioId,
+            Correo = usuario.Correo,
+            NombreCompleto = usuario.NombreCompleto,
+            RolId = usuario.RolId,
+            NombreRol = usuario.IdRolNavigation?.Nombre,
+            EstadoUsuarioId = usuario.EstadoUsuarioId,
+            NombreEstado = usuario.IdEstadoNavigation?.Nombre,
+            FechaRegistro = usuario.FechaRegistro,
+            CantidadSubastasCreadas = usuario.Subastas?.Count ?? 0,
+            CantidadPujasRealizadas = usuario.Pujas?.Count ?? 0
+        };
     }
 }

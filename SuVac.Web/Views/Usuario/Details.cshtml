@@ -1,0 +1,146 @@
+@model SuVac.Application.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = $"Perfil de {Model.NombreCompleto}";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3>
+                        <i class="bi bi-person"></i> Perfil de Usuario
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Información Básica -->
+                    <h5 class="mb-3">Información Básica del Perfil</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre Completo</label>
+                            <p class="form-control-plaintext">@Model.NombreCompleto</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Email</label>
+                            <p class="form-control-plaintext">@Model.Correo</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Rol</label>
+                            <p class="form-control-plaintext">
+                                @if (Model.NombreRol == "Administrador")
+                                {
+                                    <span class="badge bg-danger">@Model.NombreRol</span>
+                                }
+                                else if (Model.NombreRol == "Vendedor")
+                                {
+                                    <span class="badge bg-warning text-dark">@Model.NombreRol</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info">@Model.NombreRol</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Estado</label>
+                            <p class="form-control-plaintext">
+                                @if (Model.NombreEstado == "Activo")
+                                {
+                                    <span class="badge bg-success">@Model.NombreEstado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@Model.NombreEstado</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Fecha de Registro</label>
+                            <p class="form-control-plaintext">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Historial Mínimo -->
+                    <h5 class="mb-3">Historial</h5>
+
+                    <div class="row">
+                        @if (Model.NombreRol?.Contains("Vendedor") == true)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Subastas Creadas</h6>
+                                        <h2 class="text-primary">@Model.CantidadSubastasCreadas</h2>
+                                        <small class="text-muted">como vendedor</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.NombreRol?.Contains("Comprador") == true || Model.NombreRol == "Administrador")
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Pujas Realizadas</h6>
+                                        <h2 class="text-info">@Model.CantidadPujasRealizadas</h2>
+                                        <small class="text-muted">participaciones en subastas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.NombreRol != "Vendedor" && Model.NombreRol != "Administrador")
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Pujas Realizadas</h6>
+                                        <h2 class="text-info">@Model.CantidadPujasRealizadas</h2>
+                                        <small class="text-muted">participaciones en subastas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <!-- Acciones -->
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Usuario" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver al Listado
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .form-control-plaintext {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .card.bg-light {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6;
+    }
+</style>

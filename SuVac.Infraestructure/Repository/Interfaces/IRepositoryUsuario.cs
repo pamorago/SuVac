@@ -6,6 +6,8 @@ public interface IRepositoryUsuario
 {
     Task<IEnumerable<Usuario>> GetAll();
     Task<Usuario> GetById(int id);
+    Task<IEnumerable<Usuario>> GetAllFull();
+    Task<Usuario?> GetByIdFull(int id);
     Task<bool> Create(Usuario entity);
     Task<bool> Update(Usuario entity);
     Task<bool> Delete(int id);
