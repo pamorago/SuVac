@@ -39,4 +39,7 @@ public class GanadoDTO
 
     [DisplayName("Nombre Vendedor")]
     public string? NombreVendedor { get; set; }
+
+    [DisplayName("Imágenes")]
+    public ICollection<ImagenGanadoDTO>? ImagenesGanado { get; set; }
 }

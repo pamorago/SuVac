@@ -17,6 +17,8 @@ public class GanadoProfile : Profile
                 opt => opt.MapFrom(src => src.IdSexoNavigation != null ? src.IdSexoNavigation.Nombre : null))
             .ForMember(dest => dest.NombreVendedor,
                 opt => opt.MapFrom(src => src.IdUsuarioVendedorNavigation != null ? src.IdUsuarioVendedorNavigation.NombreCompleto : null))
+            .ForMember(dest => dest.ImagenesGanado,
+                opt => opt.MapFrom(src => src.ImagenesGanado))
             .ReverseMap();
     }
 }

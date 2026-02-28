@@ -22,6 +22,7 @@ public class RepositoryGanado : IRepositoryGanado
             .Include(g => g.IdSexoNavigation)
             .Include(g => g.IdEstadoGanadoNavigation)
             .Include(g => g.IdUsuarioVendedorNavigation)
+            .Include(g => g.ImagenesGanado)
             .ToListAsync();
     }
 
@@ -33,6 +34,7 @@ public class RepositoryGanado : IRepositoryGanado
             .Include(g => g.IdSexoNavigation)
             .Include(g => g.IdEstadoGanadoNavigation)
             .Include(g => g.IdUsuarioVendedorNavigation)
+            .Include(g => g.ImagenesGanado)
             .FirstOrDefaultAsync(g => g.GanadoId == id);
     }
 
