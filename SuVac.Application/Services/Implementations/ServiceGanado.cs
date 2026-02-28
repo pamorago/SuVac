@@ -26,7 +26,24 @@ public class ServiceGanado : IServiceGanado
     public async Task<GanadoDTO> GetById(int id)
     {
         var ganado = await _repository.GetById(id);
-        return _mapper.Map<GanadoDTO>(ganado);
+        var dto = _mapper.Map<GanadoDTO>(ganado);
+
+        // Calcular historial de subastas via LINQ (campo calculado, no almacenado)
+        if (ganado?.Subastas != null)
+        {
+            dto.SubastasParticipacion = ganado.Subastas
+                .OrderByDescending(s => s.FechaInicio)
+                .Select(s => new SubastaResumenDTO
+                {
+                    SubastaId = s.SubastaId,
+                    FechaInicio = s.FechaInicio,
+                    FechaFin = s.FechaFin,
+                    EstadoSubasta = s.IdEstadoSubastaNavigation?.Nombre ?? "-"
+                })
+                .ToList();
+        }
+
+        return dto;
     }
 
     public async Task<bool> Create(GanadoDTO dto)

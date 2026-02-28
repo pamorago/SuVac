@@ -32,14 +32,29 @@ public class ServiceUsuario : IServiceUsuario
     public async Task<IEnumerable<UsuarioDTO>> GetAllConDetalle()
     {
         var usuarios = await _repository.GetAllFull();
-        return usuarios.Select(u => MapearUsuarioConDetalle(u));
+        var listado = new List<UsuarioDTO>();
+
+        foreach (var u in usuarios)
+        {
+            // Campos calculados mediante LINQ CountAsync (no almacenados en BD)
+            var cantSubastas = await _repository.CountSubastasAsync(u.UsuarioId);
+            var cantPujas = await _repository.CountPujasAsync(u.UsuarioId);
+            listado.Add(MapearUsuario(u, cantSubastas, cantPujas));
+        }
+
+        return listado;
     }
 
     public async Task<UsuarioDTO?> GetByIdConDetalle(int id)
     {
         var usuario = await _repository.GetByIdFull(id);
         if (usuario is null) return null;
-        return MapearUsuarioConDetalle(usuario);
+
+        // Campos calculados mediante LINQ CountAsync (no almacenados en BD)
+        var cantSubastas = await _repository.CountSubastasAsync(id);
+        var cantPujas = await _repository.CountPujasAsync(id);
+
+        return MapearUsuario(usuario, cantSubastas, cantPujas);
     }
 
     public async Task<bool> Create(UsuarioDTO dto)
@@ -59,7 +74,11 @@ public class ServiceUsuario : IServiceUsuario
         return await _repository.Delete(id);
     }
 
-    private UsuarioDTO MapearUsuarioConDetalle(Usuario usuario)
+    /// <summary>
+    /// Mapea un Usuario a UsuarioDTO con campos calculados recibidos como parámetros.
+    /// Los conteos provienen de consultas LINQ CountAsync ejecutadas contra la BD.
+    /// </summary>
+    private static UsuarioDTO MapearUsuario(Usuario usuario, int cantSubastas, int cantPujas)
     {
         return new UsuarioDTO
         {
@@ -71,8 +90,8 @@ public class ServiceUsuario : IServiceUsuario
             EstadoUsuarioId = usuario.EstadoUsuarioId,
             NombreEstado = usuario.IdEstadoNavigation?.Nombre,
             FechaRegistro = usuario.FechaRegistro,
-            CantidadSubastasCreadas = usuario.Subastas?.Count ?? 0,
-            CantidadPujasRealizadas = usuario.Pujas?.Count ?? 0
+            CantidadSubastasCreadas = cantSubastas,
+            CantidadPujasRealizadas = cantPujas
         };
     }
 }

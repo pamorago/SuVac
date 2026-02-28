@@ -16,7 +16,9 @@ public class RepositorySubasta : IRepositorySubasta
 
     public async Task<IEnumerable<Subasta>> GetAll()
     {
-        return await _context.Subastas.ToListAsync();
+        return await _context.Subastas
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Subasta?> GetById(int id)
@@ -78,10 +80,10 @@ public class RepositorySubasta : IRepositorySubasta
             .Include(s => s.IdGanadoNavigation)
                 .ThenInclude(g => g.GanadoCategorias)
                     .ThenInclude(gc => gc.IdCategoriaNavigation)
-            .Include(s => s.Pujas)
             .Include(s => s.IdUsuarioCreadorNavigation)
             .Where(s => s.IdEstadoSubastaNavigation.Nombre == "Activa")
             .OrderBy(s => s.FechaFin)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -94,11 +96,11 @@ public class RepositorySubasta : IRepositorySubasta
             .Include(s => s.IdGanadoNavigation)
                 .ThenInclude(g => g.GanadoCategorias)
                     .ThenInclude(gc => gc.IdCategoriaNavigation)
-            .Include(s => s.Pujas)
             .Include(s => s.IdUsuarioCreadorNavigation)
             .Where(s => s.IdEstadoSubastaNavigation.Nombre == "Finalizada" ||
                         s.IdEstadoSubastaNavigation.Nombre == "Cancelada")
             .OrderByDescending(s => s.FechaFin)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -115,8 +117,16 @@ public class RepositorySubasta : IRepositorySubasta
                 .ThenInclude(g => g.IdTipoGanadoNavigation)
             .Include(s => s.IdGanadoNavigation)
                 .ThenInclude(g => g.IdEstadoGanadoNavigation)
-            .Include(s => s.Pujas)
             .Include(s => s.IdUsuarioCreadorNavigation)
+            .AsNoTracking()
             .FirstOrDefaultAsync(s => s.SubastaId == id);
+    }
+
+    /// <inheritdoc />
+    public async Task<int> CountPujasAsync(int subastaId)
+    {
+        // LINQ sobre EF Core: genera SELECT COUNT(*) FROM Puja WHERE SubastaId = @p
+        return await _context.Pujas
+            .CountAsync(p => p.SubastaId == subastaId);
     }
 }

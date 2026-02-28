@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Inicio - SuVac Subastas";
+    ViewData["Title"] = "Inicio";
 }
 
 <section class="py-5 text-center bg-light rounded-3 mb-4 shadow-sm">
@@ -11,15 +11,6 @@
         <p class="lead text-muted mb-4">
             Plataforma digital para subastas de ganado de calidad. Explora nuestro catálogo y realiza tus pujas.
         </p>
-
-        <div class="mt-4">
-            <a asp-controller="Ganado" asp-action="Index" class="btn btn-primary btn-lg me-2">
-                <i class="bi bi-cow me-2"></i>Ver Catálogo de Ganado
-            </a>
-            <a asp-controller="Subasta" asp-action="Activas" class="btn btn-success btn-lg">
-                <i class="bi bi-gavel me-2"></i>Ver Subastas Activas
-            </a>
-        </div>
     </div>
 </section>
 
@@ -56,12 +47,9 @@
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-credit-card me-2"></i>Mis Pujas
-                    </h5>
-                    <p class="card-text">Realiza un seguimiento de tus pujas y pagos pendientes.</p>
+                    <p class="card-text">Realiza un seguimiento las pujas y pagos pendientes.</p>
                     <a asp-controller="Puja" asp-action="Index" class="btn btn-outline-info">
-                        Ver Mis Pujas
+                        Ver Pujas
                     </a>
                 </div>
             </div>
@@ -69,75 +57,8 @@
     </div>
 </div>
 
-<!-- GANADO DESTACADO -->
+<!-- INFORMACION -->
 <section class="container mb-5">
-    <h2 class="h4 fw-bold mb-4">Ganado Destacado</h2>
-    @if (ViewBag.Ganados != null && ((System.Collections.IEnumerable)ViewBag.Ganados).Cast<dynamic>().Any())
-    {
-        <div class="row g-4">
-            @foreach (var ganado in ViewBag.Ganados)
-            {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">@ganado.Nombre</h5>
-                            <p class="card-text">
-                                <strong>Tipo:</strong> @ganado.TipoGanadoId<br>
-                                <strong>Peso:</strong> @ganado.PesoKg kg<br>
-                                <strong>Estatus:</strong> <span class="badge bg-success">Disponible</span>
-                            </p>
-                            <p class="text-muted small">@(ganado.Descripcion?.Substring(0, Math.Min(100,
-                                                                                                                                                                                                                                                                                                                                                                                                                        ganado.Descripcion?.Length ?? 0)) ?? "")</p>
-                                <a asp-controller="Ganado" asp-action="Details" asp-route-id="@ganado.GanadoId"
-                                       class="btn btn-primary btn-sm">
-                                    Ver Detalles
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-    else
-        {
-            <div class="alert alert-info">No hay ganado disponible en este momento.</div>
-        }
-    </section>
-
-    <!-- SUBASTAS ACTIVAS -->
-    <section class="container mb-5">
-        <h2 class="h4 fw-bold mb-4">Subastas Activas</h2>
-        @if (ViewBag.Subastas != null && ((System.Collections.IEnumerable)ViewBag.Subastas).Cast<dynamic>().Any())
-        {
-            <div class="row g-4">
-                @foreach (var subasta in ViewBag.Subastas)
-                {
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5 class="card-title text-danger">Subasta #@subasta.SubastaId</h5>
-                                <p class="card-text">
-                                    <strong>Ganado ID:</strong> @subasta.GanadoId<br>
-                                    <strong>Inicio:</strong> @subasta.FechaInicio.ToString("dd/MM/yyyy")<br>
-                                    <strong>Cierre:</strong> @subasta.FechaFin.ToString("dd/MM/yyyy")<br>
-                                    <strong>Precio Base:</strong> <span class="badge bg-warning">$@subasta.PrecioBase</span>
-                                </p>
-                                <p class="text-muted small">Incremento mínimo: $@subasta.IncrementoMinimo</p>
-                                <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@subasta.SubastaId"
-                                       class="btn btn-danger btn-sm">
-                                    Participar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-info">No hay subastas activas en este momento.</div>
-        }
-    </section>
 
     <section class="py-5 bg-light rounded-3 mb-4">
         <div class="container">
@@ -175,84 +96,37 @@
         </div>
     </section>
 
-    <!-- CATEGORÍAS -->
-    <section class="container mb-5">
-        <h2 class="h4 fw-bold mb-4 text-center">Explora por Categoría</h2>
-
-        <div class="row g-4">
-
-            <!-- Ganado Vacuno -->
-            <div class="col-12 col-md-4">
-                <a asp-controller="Ganado" asp-action="Index" class="text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm border-0 hover-card">
-                        <div class="card-body text-center py-4">
-                            <i class="bi bi-cow fs-1 mb-3 text-primary"></i>
-                            <h5 class="fw-semibold">Ganado Vacuno</h5>
-                            <p class="text-muted small">Explorá nuestro catálogo de ganado vacuno en subasta.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Subastas Activas -->
-            <div class="col-12 col-md-4">
-                <a asp-controller="Subasta" asp-action="Activas" class="text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm border-0 hover-card">
-                        <div class="card-body text-center py-4">
-                            <i class="bi bi-fire fs-1 mb-3 text-danger"></i>
-                            <h5 class="fw-semibold">Subastas Activas</h5>
-                            <p class="text-muted small">Participá en nuestras subastas en vivo.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Mis Pujas -->
-            <div class="col-12 col-md-4">
-                <a asp-controller="Puja" asp-action="Index" class="text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm border-0 hover-card">
-                        <div class="card-body text-center py-4">
-                            <i class="bi bi-hand-index fs-1 mb-3 text-success"></i>
-                            <h5 class="fw-semibold">Pujas</h5>
-                            <p class="text-muted small">Realizá un seguimiento de tus pujas.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-    </section>
 
     @section Scripts {
         <script>
-                                                            const enableHoverEffect = () => {
-                                                                // Efecto hover genérico para tarjetas
-                                                                const cards = document.querySelectorAll('.hover-card');
-                                                                cards.forEach(card => {
-                                                                    card.addEventListener('mouseenter', function () {
-                                                                        this.style.transform = 'translateY(-4px)';
-                                                                        this.style.transition = 'all 0.25s ease';
-                                                                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
-                                                                    });
-                                                                    card.addEventListener('mouseleave', function () {
-                                                                        this.style.transform = 'translateY(0)';
-                                                                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
-                                                                    });
-                                                                });
-                                                            };
+                                                                                                                                                            const enableHoverEffect = () => {
+                                                                                                                                                                // Efecto hover genérico para tarjetas
+                                                                                                                                                                const cards = document.querySelectorAll('.hover-card');
+                                                                                                                                                                cards.forEach(card => {
+                                                                                                                                                                    card.addEventListener('mouseenter', function () {
+                                                                                                                                                                        this.style.transform = 'translateY(-4px)';
+                                                                                                                                                                        this.style.transition = 'all 0.25s ease';
+                                                                                                                                                                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
+                                                                                                                                                                    });
+                                                                                                                                                                    card.addEventListener('mouseleave', function () {
+                                                                                                                                                                        this.style.transform = 'translateY(0)';
+                                                                                                                                                                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                                                                                                                                                                    });
+                                                                                                                                                                });
+                                                                                                                                                            };
 
-                                                            document.addEventListener('DOMContentLoaded', enableHoverEffect);
+                                                                                                                                                            document.addEventListener('DOMContentLoaded', enableHoverEffect);
         </script>
 
         <style>
-                                                            .hover-card {
-                                                                transition: all 0.25s ease;
-                                                                cursor: pointer;
-                                                            }
+                                                                                                                                                            .hover-card {
+                                                                                                                                                                transition: all 0.25s ease;
+                                                                                                                                                                cursor: pointer;
+                                                                                                                                                            }
 
-                                                            .hover-card:hover {
-                                                                transform: translateY(-4px);
-                                                                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-                                                            }
+                                                                                                                                                            .hover-card:hover {
+                                                                                                                                                                transform: translateY(-4px);
+                                                                                                                                                                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+                                                                                                                                                            }
         </style>
     }

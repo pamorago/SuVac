@@ -13,4 +13,7 @@ public interface IRepositorySubasta
     Task<IEnumerable<Subasta>> GetActivas();
     Task<IEnumerable<Subasta>> GetFinalizadas();
     Task<Subasta?> GetByIdFull(int id);
+
+    /// <summary>Conteo de pujas asociadas a una subasta (LINQ CountAsync).</summary>
+    Task<int> CountPujasAsync(int subastaId);
 }

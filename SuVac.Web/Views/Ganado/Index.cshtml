@@ -51,24 +51,34 @@ else
                         <h5 class="card-title mb-0">@item.Nombre</h5>
                     </div>
                     <div class="card-body">
+                        <!-- Campo: Condición (Certificado de Salud) -->
                         <p class="mb-2">
-                            <strong>ID:</strong> <span class="badge bg-secondary">@item.GanadoId</span>
+                            <strong>Condición:</strong>
+                            @if (!string.IsNullOrEmpty(item.CertificadoSalud))
+                            {
+                                <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Certificado</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Sin certificación</span>
+                            }
                         </p>
+                        <!-- Campo: Categorías -->
                         <p class="mb-2">
-                            <strong>Peso:</strong> <span class="text-success">@item.PesoKg kg</span>
+                            <strong>Categorías:</strong>
+                            @if (item.Categorias != null && item.Categorias.Any())
+                            {
+                                @foreach (var cat in item.Categorias)
+                                {
+                                    <span class="badge bg-info text-dark me-1">@cat</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Sin categorías</span>
+                            }
                         </p>
-                        <p class="mb-2">
-                            <strong>Tipo:</strong> @item.NombreTipoGanado
-                        </p>
-                        <p class="mb-2">
-                            <strong>Raza:</strong> @item.NombreRaza
-                        </p>
-                        <p class="mb-3 text-muted small">
-                            <strong>Sexo:</strong> @item.NombreSexo
-                        </p>
-                        <p class="card-text small">
-                            @(item.Descripcion?.Substring(0, Math.Min(80, item.Descripcion?.Length ?? 0)) ?? "...")
-                        </p>
+
                     </div>
                     <div class="card-footer bg-body border-0 pt-0 pb-3">
                         <div class="d-grid gap-2 px-2">

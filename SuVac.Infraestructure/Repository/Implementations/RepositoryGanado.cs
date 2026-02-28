@@ -23,6 +23,9 @@ public class RepositoryGanado : IRepositoryGanado
             .Include(g => g.IdEstadoGanadoNavigation)
             .Include(g => g.IdUsuarioVendedorNavigation)
             .Include(g => g.ImagenesGanado)
+            .Include(g => g.GanadoCategorias)
+                .ThenInclude(gc => gc.IdCategoriaNavigation)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -35,6 +38,11 @@ public class RepositoryGanado : IRepositoryGanado
             .Include(g => g.IdEstadoGanadoNavigation)
             .Include(g => g.IdUsuarioVendedorNavigation)
             .Include(g => g.ImagenesGanado)
+            .Include(g => g.GanadoCategorias)
+                .ThenInclude(gc => gc.IdCategoriaNavigation)
+            .Include(g => g.Subastas)
+                .ThenInclude(s => s.IdEstadoSubastaNavigation)
+            .AsNoTracking()
             .FirstOrDefaultAsync(g => g.GanadoId == id);
     }
 

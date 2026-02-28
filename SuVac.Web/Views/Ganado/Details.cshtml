@@ -12,7 +12,10 @@
                     <h1 class="h3 mb-1">@Model.Nombre</h1>
                     <p class="text-muted mb-0">Detalles completos del ganado</p>
                 </div>
-                <span class="badge bg-success bg-lg p-2">Disponible</span>
+                @{
+                    var headerBadgeClass = Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary";
+                }
+                <span class="badge @headerBadgeClass bg-lg p-2">@(Model.NombreEstadoGanado ?? "Sin estado")</span>
             </div>
 
             <div class="card shadow-sm border-0 mb-4">
@@ -59,6 +62,27 @@
             </div>
 
             <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Categorías Asociadas</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Categorias != null && Model.Categorias.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var cat in Model.Categorias)
+                            {
+                                <span class="badge bg-info text-dark fs-6 px-3 py-2">@cat</span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No hay categorías asignadas a este ganado.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-warning text-dark">
                     <h5 class="mb-0">Imágenes del Ganado</h5>
                 </div>
@@ -71,7 +95,7 @@
                                 <div class="col-md-6 col-lg-4">
                                     <div class="border rounded bg-light d-flex align-items-center justify-content-center"
                                          style="height: 280px;">
-                                        <img src="@imagen.UrlImagen"                                    alt="Imagen del ganado @Model.Nombre"
+                                        <img src="@imagen.UrlImagen" alt="Imagen del ganado @Model.Nombre"
                                              style="max-width: 100%; max-height: 100%; object-fit: contain;">
                                     </div>
                                 </div>
@@ -89,39 +113,112 @@
             </div>
 
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-secondary text-white">
+                <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">Información de Registro</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body text-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Certificado de Salud:</strong></p>
-                            <p class="h6">@(Model.CertificadoSalud ?? "No disponible")</p>
+                            <p><strong class="text-muted">Condición (Certificado de Salud):</strong></p>
+                            <p class="h6">
+                                @if (!string.IsNullOrEmpty(Model.CertificadoSalud))
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Certificado y
+                                        apto</span>
+                                        <br />
+
+                                        <small class="text-muted mt-1 d-inline-block">@Model.CertificadoSalud</small>
+                                    }
+                                else
+                                    {
+                                        <span class="badge bg-warning text-dark"><i
+                                            class="bi bi-exclamation-triangle me-1"></i>Sin certificación</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p><strong class="text-muted">Estado:</strong></p>
+                                    <p class="h6">
+                                        @if (Model.NombreEstadoGanado == "Activo")
+                                        {
+                                            <span class="badge bg-success">@Model.NombreEstadoGanado</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@(Model.NombreEstadoGanado ?? "No definido")</span>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong class="text-muted">Fecha de Registro:</strong></p>
+                                    <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong class="text-muted">Nombre Vendedor:</strong></p>
+                                    <p class="h6">@Model.NombreVendedor</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Estado:</strong></p>
-                            <p class="h6"><span class="badge bg-success">Activo</span></p>
+                    </div>
+
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="bi bi-gavel me-1"></i> Historial de Subastas</h5>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong class="text-muted">Fecha de Registro:</strong></p>
-                            <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                        <div class="card-body p-0">
+                            @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID Subasta</th>
+                                                <th>Fecha de Inicio</th>
+                                                <th>Fecha de Cierre</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var sub in Model.SubastasParticipacion)
+                                            {
+                                                <tr>
+                                                    <td><span class="badge bg-secondary">#@sub.SubastaId</span></td>
+                                                    <td>@sub.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                                    <td>@sub.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                                    <td>
+                                                        @{
+                                                            var estadoBadge = sub.EstadoSubasta switch
+                                                            {
+                                                                "Activa" => "bg-success",
+                                                                "Finalizada" => "bg-secondary",
+                                                                "Cancelada" => "bg-danger",
+                                                                "Programada" => "bg-warning text-dark",
+                                                                _ => "bg-info"
+                                                            };
+                                                        }
+                                                        <span class="badge @estadoBadge">@sub.EstadoSubasta</span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0 p-3">Este ganado no ha participado en ninguna subasta.</p>
+                            }
                         </div>
-                        <div class="col-md-6">
-                            <p><strong class="text-muted">Nombre Vendedor:</strong></p>
-                            <p class="h6">@Model.NombreVendedor</p>
-                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-start">
+                        <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
+                            <i class="bi bi-pencil me-2"></i>Editar
+                        </a>
+                        <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Volver al Catálogo
+                        </a>
                     </div>
                 </div>
             </div>
-
-            <div class="d-flex gap-2 justify-content-start">
-                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
-                    <i class="bi bi-pencil me-2"></i>Editar
-                </a>
-                <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Volver al Catálogo
-                </a>
-            </div>
         </div>
-    </div>
-</div>

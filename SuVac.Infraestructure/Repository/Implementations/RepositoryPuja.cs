@@ -18,6 +18,7 @@ public class RepositoryPuja : IRepositoryPuja
     {
         return await _context.Pujas
             .Include(p => p.IdUsuarioNavigation)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -25,6 +26,7 @@ public class RepositoryPuja : IRepositoryPuja
     {
         return await _context.Pujas
             .Include(p => p.IdUsuarioNavigation)
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.PujaId == id);
     }
 
@@ -79,6 +81,7 @@ public class RepositoryPuja : IRepositoryPuja
             .Include(p => p.IdUsuarioNavigation)
             .Where(p => p.SubastaId == subastaId)
             .OrderBy(p => p.FechaHora)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

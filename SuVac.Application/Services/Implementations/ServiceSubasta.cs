@@ -49,13 +49,31 @@ public class ServiceSubasta : IServiceSubasta
     public async Task<IEnumerable<SubastaListadoDTO>> GetActivas()
     {
         var subastas = await _repository.GetActivas();
-        return subastas.Select(ToListadoDTO);
+        var listado = new List<SubastaListadoDTO>();
+
+        foreach (var s in subastas)
+        {
+            // Campo calculado: cantidad de pujas mediante LINQ CountAsync
+            var cantPujas = await _repository.CountPujasAsync(s.SubastaId);
+            listado.Add(ToListadoDTO(s, cantPujas));
+        }
+
+        return listado;
     }
 
     public async Task<IEnumerable<SubastaListadoDTO>> GetFinalizadas()
     {
         var subastas = await _repository.GetFinalizadas();
-        return subastas.Select(ToListadoDTO);
+        var listado = new List<SubastaListadoDTO>();
+
+        foreach (var s in subastas)
+        {
+            // Campo calculado: cantidad de pujas mediante LINQ CountAsync
+            var cantPujas = await _repository.CountPujasAsync(s.SubastaId);
+            listado.Add(ToListadoDTO(s, cantPujas));
+        }
+
+        return listado;
     }
 
     public async Task<SubastaDetalleDTO?> GetDetalle(int id)
@@ -63,12 +81,16 @@ public class ServiceSubasta : IServiceSubasta
         var s = await _repository.GetByIdFull(id);
         if (s is null) return null;
 
+        // Campo calculado: total de pujas mediante LINQ CountAsync (no almacenado en BD)
+        var totalPujas = await _repository.CountPujasAsync(id);
+
         return new SubastaDetalleDTO
         {
             SubastaId = s.SubastaId,
             NombreGanado = s.IdGanadoNavigation.Nombre,
             TipoGanado = s.IdGanadoNavigation.IdTipoGanadoNavigation?.Nombre ?? "-",
             EstadoGanado = s.IdGanadoNavigation.IdEstadoGanadoNavigation?.Nombre ?? "-",
+            CertificadoSalud = s.IdGanadoNavigation.CertificadoSalud,
             Categorias = s.IdGanadoNavigation.GanadoCategorias
                                  .Select(gc => gc.IdCategoriaNavigation.Nombre).ToList(),
             ImagenesGanado = s.IdGanadoNavigation.ImagenesGanado
@@ -78,12 +100,16 @@ public class ServiceSubasta : IServiceSubasta
             PrecioBase = s.PrecioBase,
             IncrementoMinimo = s.IncrementoMinimo,
             EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-            TotalPujas = s.Pujas.Count,
+            TotalPujas = totalPujas,
             NombreCreador = s.IdUsuarioCreadorNavigation.NombreCompleto
         };
     }
 
-    private static SubastaListadoDTO ToListadoDTO(Subasta s) => new()
+    /// <summary>
+    /// Mapea una Subasta a SubastaListadoDTO. CantidadPujas se recibe como parámetro
+    /// ya que fue calculado mediante LINQ CountAsync.
+    /// </summary>
+    private static SubastaListadoDTO ToListadoDTO(Subasta s, int cantidadPujas) => new()
     {
         SubastaId = s.SubastaId,
         NombreGanado = s.IdGanadoNavigation.Nombre,
@@ -93,6 +119,6 @@ public class ServiceSubasta : IServiceSubasta
         PrecioBase = s.PrecioBase,
         IncrementoMinimo = s.IncrementoMinimo,
         EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-        CantidadPujas = s.Pujas.Count
+        CantidadPujas = cantidadPujas
     };
 }

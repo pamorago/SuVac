@@ -17,6 +17,9 @@ public record SubastaDetalleDTO
     [Display(Name = "Estado del Ganado")]
     public string EstadoGanado { get; set; } = string.Empty;
 
+    [Display(Name = "Condición (Certificado de Salud)")]
+    public string? CertificadoSalud { get; set; }
+
     [Display(Name = "Categorías")]
     public List<string> Categorias { get; set; } = new();
 

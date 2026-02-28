@@ -16,7 +16,9 @@ public class RepositoryUsuario : IRepositoryUsuario
 
     public async Task<IEnumerable<Usuario>> GetAll()
     {
-        return await _context.Usuarios.ToListAsync();
+        return await _context.Usuarios
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Usuario?> GetById(int id)
@@ -26,22 +28,40 @@ public class RepositoryUsuario : IRepositoryUsuario
 
     public async Task<IEnumerable<Usuario>> GetAllFull()
     {
+        // Solo Include de navegaciones necesarias para mostrar (Rol, Estado).
+        // Los conteos de subastas/pujas se calculan aparte con LINQ CountAsync.
         return await _context.Usuarios
             .Include(u => u.IdRolNavigation)
             .Include(u => u.IdEstadoNavigation)
-            .Include(u => u.Subastas)
-            .Include(u => u.Pujas)
+            .AsNoTracking()
             .ToListAsync();
     }
 
     public async Task<Usuario?> GetByIdFull(int id)
     {
+        // Solo Include de navegaciones necesarias para mostrar (Rol, Estado).
+        // Los conteos de subastas/pujas se calculan aparte con LINQ CountAsync.
         return await _context.Usuarios
             .Include(u => u.IdRolNavigation)
             .Include(u => u.IdEstadoNavigation)
-            .Include(u => u.Subastas)
-            .Include(u => u.Pujas)
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.UsuarioId == id);
+    }
+
+    /// <inheritdoc />
+    public async Task<int> CountSubastasAsync(int usuarioId)
+    {
+        // LINQ sobre EF Core: genera SELECT COUNT(*) FROM Subasta WHERE UsuarioCreadorId = @p
+        return await _context.Subastas
+            .CountAsync(s => s.UsuarioCreadorId == usuarioId);
+    }
+
+    /// <inheritdoc />
+    public async Task<int> CountPujasAsync(int usuarioId)
+    {
+        // LINQ sobre EF Core: genera SELECT COUNT(*) FROM Puja WHERE UsuarioId = @p
+        return await _context.Pujas
+            .CountAsync(p => p.UsuarioId == usuarioId);
     }
 
     public async Task<bool> Create(Usuario entity)

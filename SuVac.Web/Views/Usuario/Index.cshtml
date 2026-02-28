@@ -31,12 +31,12 @@
                 <tbody>
                     @foreach (var usuario in Model)
                     {
-                        <tr class="@(usuario.NombreRol == "Administrador" ? "table-danger" : "")">
+                        <tr class="@(usuario.NombreRol == "Admin" ? "table-danger" : "")">
                             <td>
                                 <strong>@usuario.NombreCompleto</strong>
                             </td>
                             <td>
-                                @if (usuario.NombreRol == "Administrador")
+                                @if (usuario.NombreRol == "Admin")
                                 {
                                     <span class="badge bg-danger">@usuario.NombreRol</span>
                                 }

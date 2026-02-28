@@ -40,6 +40,16 @@ public class GanadoDTO
     [DisplayName("Nombre Vendedor")]
     public string? NombreVendedor { get; set; }
 
+    [DisplayName("Estado Ganado")]
+    public string? NombreEstadoGanado { get; set; }
+
+    [DisplayName("Categorías")]
+    public ICollection<string>? Categorias { get; set; }
+
     [DisplayName("Imágenes")]
     public ICollection<ImagenGanadoDTO>? ImagenesGanado { get; set; }
+
+    /// <summary>Historial de subastas donde ha participado este ganado (calculado via LINQ).</summary>
+    [DisplayName("Subastas")]
+    public ICollection<SubastaResumenDTO>? SubastasParticipacion { get; set; }
 }

@@ -25,10 +25,10 @@ namespace SuVac.Web.Controllers
             try
             {
                 var ganados = await _serviceGanado.GetAll();
-                var subastas = await _serviceSubasta.GetAll();
+                var subastas = await _serviceSubasta.GetActivas();
 
-                ViewBag.Ganados = ganados.Take(6); // Ultimos 6 ganados
-                ViewBag.Subastas = subastas.Take(6); // Ultimas 6 subastas
+                ViewBag.Ganados = ganados.Take(6);
+                ViewBag.Subastas = subastas.Take(6);
             }
             catch (Exception ex)
             {
