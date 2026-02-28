@@ -1,16 +1,22 @@
 @model ICollection<SuVac.Application.DTOs.PujaDTO>
 @{
-    var subastaId   = (int)ViewBag.SubastaId;
-    var nombreGanado= (string)ViewBag.NombreGanado;
-    var estadoSub   = (string)ViewBag.EstadoSubasta;
-    var totalPujas  = (int)ViewBag.TotalPujas;
+    var subastaId = (int)ViewBag.SubastaId;
+    var nombreGanado = (string)ViewBag.NombreGanado;
+    var estadoSub = (string)ViewBag.EstadoSubasta;
+    var totalPujas = (int)ViewBag.TotalPujas;
     ViewData["Title"] = $"Historial de Pujas — {nombreGanado}";
 }
 
 <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Activas">Subastas Activas</a></li>
-        <li class="breadcrumb-item"><a asp-action="Finalizadas">Finalizadas</a></li>
+        @if (estadoSub == "Activa" || estadoSub == "Programada")
+        {
+            <li class="breadcrumb-item"><a asp-action="Activas">Subastas Activas</a></li>
+        }
+        else
+        {
+            <li class="breadcrumb-item"><a asp-action="Finalizadas">Finalizadas</a></li>
+        }
         <li class="breadcrumb-item"><a asp-action="Detalle" asp-route-id="@subastaId">Detalle #@subastaId</a></li>
         <li class="breadcrumb-item active" aria-current="page">Historial de Pujas</li>
     </ol>
@@ -20,7 +26,7 @@
 <div class="card shadow-sm mb-4">
     <div class="card-body d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="mb-0 fw-bold">📜 Historial de Pujas</h4>
+            <h4 class="mb-0 fw-bold"><i class="bi bi-list-ul me-1"></i> Historial de Pujas</h4>
             <p class="text-muted mb-0">
                 Subasta #@subastaId &mdash; <strong>@nombreGanado</strong>
             </p>
@@ -42,8 +48,8 @@
 else
 {
     <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light position-sticky top-0" style="z-index:1;">
                 <tr>
                     <th class="text-center" style="width:60px">#</th>
                     <th>Pujador</th>
@@ -53,7 +59,9 @@ else
                 </tr>
             </thead>
             <tbody>
-                @{int posicion = 1;}
+                @{
+                    int posicion = 1;
+                }
                 @foreach (var puja in Model)
                 {
                     <!-- Validación: solo se muestran pujas asociadas a esta subasta -->
@@ -79,8 +87,9 @@ else
             </tbody>
         </table>
     </div>
-    <p class="text-muted small">
-        ℹ️ Las pujas se presentan en orden cronológico ascendente (de la más antigua a la más reciente).
+    <p class="text-muted small mt-2">
+        <i class="bi bi-info-circle me-1"></i> Las pujas se presentan en orden cronológico ascendente (de la más antigua a
+        la más reciente).
         La fila resaltada corresponde a la puja más reciente.
     </p>
 }

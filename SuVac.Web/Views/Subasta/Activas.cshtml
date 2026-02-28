@@ -1,72 +1,108 @@
-@model ICollection<SuVac.Application.DTOs.SubastaListadoDTO>
+@model IEnumerable<SuVac.Application.DTOs.SubastaListadoDTO>
 @{
     ViewData["Title"] = "Subastas Activas";
+    var total = Model?.Count() ?? 0;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
-        <h2 class="mb-0">🟢 Subastas Activas</h2>
-        <p class="text-muted small mb-0">Subastas en curso disponibles para pujar</p>
+        <h1 class="h3 mb-1">Subastas Activas</h1>
+        <p class="text-muted mb-0">Subastas en curso disponibles para pujar. Total: <strong>@total</strong>.</p>
     </div>
-    <a asp-action="Finalizadas" class="btn btn-outline-secondary btn-sm">
-        Ver Finalizadas →
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Finalizadas" class="btn btn-outline-secondary">
+            <i class="bi bi-archive me-1"></i> Ver Finalizadas
+        </a>
+        <a asp-action="Create" asp-route-from="activas" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Subasta
+        </a>
+    </div>
 </div>
 
-@if (!Model.Any())
+@if (Model == null || !Model.Any())
 {
-    <div class="alert alert-info">
-        No hay subastas activas en este momento.
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>No hay subastas activas en este momento.</div>
     </div>
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var subasta in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm border-success">
-                    @if (!string.IsNullOrEmpty(subasta.ImagenGanado))
-                    {
-                        <img src="@subasta.ImagenGanado" class="card-img-top"
-                             alt="Imagen de @subasta.NombreGanado"
-                             style="height:200px; object-fit:cover;"
-                             onerror="this.src='/img/sin-imagen.png'" />
-                    }
-                    else
-                    {
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                             style="height:200px;">
-                            <span class="text-muted">Sin imagen</span>
+    <section aria-label="Listado de subastas activas">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            @foreach (var subasta in Model)
+            {
+                <div class="col">
+                    <article class="card h-100 shadow-sm border-0">
+                        <div class="rounded-top overflow-hidden bg-body-tertiary" style="height: 200px;">
+                            @if (!string.IsNullOrEmpty(subasta.ImagenGanado))
+                            {
+                                <img class="w-100 h-100 object-fit-cover rounded-top"
+                                     src="@subasta.ImagenGanado"
+                                     alt="Imagen de @subasta.NombreGanado"
+                                     loading="lazy"
+                                     onerror="this.src='/img/sin-imagen.png'" />
+                            }
+                            else
+                            {
+                                <div class="d-flex flex-column justify-content-center align-items-center text-muted h-100">
+                                    <i class="bi bi-image fs-1"></i>
+                                    <span class="small">Sin imagen</span>
+                                </div>
+                            }
                         </div>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">@subasta.NombreGanado</h5>
-                        <span class="badge bg-success mb-2">@subasta.EstadoSubasta</span>
 
-                        <ul class="list-unstyled small mb-2">
-                            <li><strong>Inicio:</strong> @subasta.FechaInicio.ToString("dd/MM/yyyy HH:mm")</li>
-                            <li><strong>Cierre:</strong> @subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</li>
-                            <li><strong>Precio base:</strong> ₡@subasta.PrecioBase.ToString("N2")</li>
-                            <li><strong>Incremento mínimo:</strong> ₡@subasta.IncrementoMinimo.ToString("N2")</li>
-                            <li>
-                                <strong>Cantidad de pujas:</strong>
-                                <span class="badge bg-primary">@subasta.CantidadPujas</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-footer d-flex gap-2">
-                        <a asp-action="Detalle" asp-route-id="@subasta.SubastaId"
-                           class="btn btn-primary btn-sm flex-fill">
-                            Ver Detalle
-                        </a>
-                        <a asp-action="HistorialPujas" asp-route-id="@subasta.SubastaId"
-                           class="btn btn-outline-primary btn-sm flex-fill">
-                            Historial de Pujas
-                        </a>
-                    </div>
+                        <div class="card-body">
+                            <h2 class="h6 fw-semibold mb-2">@subasta.NombreGanado</h2>
+
+                            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                                <span class="badge text-bg-success">
+                                    <i class="bi bi-circle-fill me-1"></i>@subasta.EstadoSubasta
+                                </span>
+                                <span class="badge text-bg-primary">
+                                    <i class="bi bi-hammer me-1"></i>@subasta.CantidadPujas puja(s)
+                                </span>
+                            </div>
+
+                            <dl class="row small mb-0">
+                                <dt class="col-5 text-muted">Cierre</dt>
+                                <dd class="col-7">@subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
+                                <dt class="col-5 text-muted">Precio base</dt>
+                                <dd class="col-7 fw-semibold text-success">&#8353;@subasta.PrecioBase.ToString("N2")</dd>
+                            </dl>
+                        </div>
+
+                        <div class="card-footer bg-body border-0 pt-0 pb-3">
+                            <div class="d-grid gap-2 px-2">
+                                <a asp-action="Detalle" asp-route-id="@subasta.SubastaId"
+                                   class="btn btn-secondary">
+                                    <i class="bi bi-eye me-1"></i> Ver detalle
+                                </a>
+                                <a asp-action="HistorialPujas" asp-route-id="@subasta.SubastaId"
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-list-ul me-1"></i> Historial de pujas
+                                </a>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
+                                       class="btn btn-outline-warning flex-fill">
+                                        <i class="bi bi-pencil me-1"></i> Editar
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
+                                       class="btn btn-outline-danger flex-fill">
+                                        <i class="bi bi-trash me-1"></i> Eliminar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <style>
+        .card:hover { transform: translateY(-3px); transition: transform .18s ease; }
+    </style>
 }

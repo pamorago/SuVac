@@ -54,36 +54,17 @@ public class SubastaController : Controller
         return View(pujas.ToList());
     }
 
-    // GET: SubastaController
-    public async Task<IActionResult> Index()
-    {
-        var subastas = await _service.GetAll();
-        return View(subastas);
-    }
-
-    // GET: SubastaController/Details/5
-    public async Task<IActionResult> Details(int id)
-    {
-        if (id <= 0)
-            return NotFound();
-
-        var subasta = await _service.GetById(id);
-        if (subasta == null)
-            return NotFound();
-
-        return View(subasta);
-    }
-
     // GET: SubastaController/Create
-    public IActionResult Create()
+    public IActionResult Create(string? from = null)
     {
+        ViewBag.From = from ?? "activas";
         return View();
     }
 
     // POST: SubastaController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(SubastaDTO dto)
+    public async Task<IActionResult> Create(SubastaDTO dto, string? from = null)
     {
         try
         {
@@ -92,19 +73,21 @@ public class SubastaController : Controller
                 var result = await _service.Create(dto);
                 if (result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Activas));
                 }
             }
+            ViewBag.From = from ?? "activas";
             return View(dto);
         }
         catch
         {
+            ViewBag.From = from ?? "activas";
             return View(dto);
         }
     }
 
     // GET: SubastaController/Edit/5
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int id, string? from = null)
     {
         if (id <= 0)
             return NotFound();
@@ -113,13 +96,14 @@ public class SubastaController : Controller
         if (subasta == null)
             return NotFound();
 
+        ViewBag.From = from ?? "activas";
         return View(subasta);
     }
 
     // POST: SubastaController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, SubastaDTO dto)
+    public async Task<IActionResult> Edit(int id, SubastaDTO dto, string? from = null)
     {
         if (id != dto.SubastaId)
             return NotFound();
@@ -131,19 +115,21 @@ public class SubastaController : Controller
                 var result = await _service.Update(dto);
                 if (result)
                 {
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(from == "finalizadas" ? nameof(Finalizadas) : nameof(Activas));
                 }
             }
+            ViewBag.From = from ?? "activas";
             return View(dto);
         }
         catch
         {
+            ViewBag.From = from ?? "activas";
             return View(dto);
         }
     }
 
     // GET: SubastaController/Delete/5
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, string? from = null)
     {
         if (id <= 0)
             return NotFound();
@@ -152,20 +138,21 @@ public class SubastaController : Controller
         if (subasta == null)
             return NotFound();
 
+        ViewBag.From = from ?? "activas";
         return View(subasta);
     }
 
     // POST: SubastaController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id, string? from = null)
     {
         try
         {
             var result = await _service.Delete(id);
             if (result)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(from == "finalizadas" ? nameof(Finalizadas) : nameof(Activas));
             }
             return NotFound();
         }

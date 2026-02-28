@@ -1,12 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\Libreria.Application",
-    "\\Libreria.Infraestructure",
-    "\\Libreria.Web",
-    "\\Libreria.Web\\Controllers",
-    "\\Libreria.Web\\Util"
+    ""
   ],
-  "SelectedNode": "\\ScriptLibreria.sql",
+  "SelectedNode": "\\Suvac.sln",
   "PreviewInSolutionExplorer": false
 }

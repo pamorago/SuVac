@@ -10,47 +10,71 @@
         <h1 class="h3 mb-1">Historial de Pujas</h1>
         <p class="text-muted mb-0">Total de pujas: <strong>@total</strong>.</p>
     </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Nueva Puja
+    </a>
 </div>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info d-flex align-items-center" role="alert">
-        <i class="bi bi-info-circle me-2"></i>
-        <div>No hay pujas registradas en este momento.</div>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-body d-flex align-items-center justify-content-between">
+        <span class="fw-semibold">Listado</span>
+        <span class="small text-muted">Mostrando <strong>@total</strong> registro(s)</span>
     </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Subasta</th>
-                    <th>Usuario</th>
-                    <th>Monto</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.PujaId</td>
-                        <td>@item.SubastaId</td>
-                        <td>@item.UsuarioId</td>
-                        <td>$@item.Monto.ToString("F2")</td>
-                        <td>@item.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")</td>
-                        <td>
-                            <a asp-controller="Puja" asp-action="Details" asp-route-id="@item.PujaId" 
-                               class="btn btn-sm btn-info">Ver</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="p-4 text-center">
+                <div class="display-6 mb-2"><i class="bi bi-cash-coin"></i></div>
+                <h2 class="h5 mb-2">No hay pujas registradas</h2>
+                <p class="text-muted mb-0">No se encontraron pujas en el sistema.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light position-sticky top-0" style="z-index:1;">
+                        <tr>
+                            <th class="ps-3" style="width:60px;">#</th>
+                            <th>Subasta</th>
+                            <th>Usuario</th>
+                            <th style="width:130px;">Monto</th>
+                            <th style="width:170px;">Fecha y Hora</th>
+                            <th class="text-end pe-3" style="width:170px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 text-muted small">@item.PujaId</td>
+                                <td>
+                                    <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@item.SubastaId" asp-route-from="pujas"
+                                           class="text-decoration-none">
+                                        Subasta #@item.SubastaId
+                                    </a>
+                                </td>
+                                <td>@item.NombreUsuario</td>
+                                <td class="fw-semibold">&#8353;@item.Monto.ToString("N2")</td>
+                                <td class="text-muted small">@item.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-end pe-3">
+                                    <a asp-action="Details" asp-route-id="@item.PujaId"
+                                           class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.PujaId"                            class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.PujaId"                     class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     </div>
-}
-
-
+</div>

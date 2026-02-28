@@ -1,0 +1,63 @@
+@model SuVac.Application.DTOs.PujaDTO
+
+@{
+    ViewData["Title"] = "Editar Puja";
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Editar Puja <small class="text-muted fs-5">#@Model.PujaId</small></h1>
+        <p class="text-muted mb-0">Modificar los datos de la puja seleccionada.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Volver
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <input type="hidden" asp-for="PujaId" />
+
+            <div class="mb-3">
+                <label asp-for="SubastaId" class="form-label fw-semibold"></label>
+                <input asp-for="SubastaId" class="form-control" />
+                <span asp-validation-for="SubastaId" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UsuarioId" class="form-label fw-semibold"></label>
+                <input asp-for="UsuarioId" class="form-control" />
+                <span asp-validation-for="UsuarioId" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Monto" class="form-label fw-semibold"></label>
+                <input asp-for="Monto" class="form-control" />
+                <span asp-validation-for="Monto" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaHora" class="form-label fw-semibold"></label>
+                <input asp-for="FechaHora" class="form-control" type="datetime-local" />
+                <span asp-validation-for="FechaHora" class="text-danger small"></span>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-end">
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-save me-1"></i> Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -337,3 +337,162 @@ IF NOT EXISTS (SELECT 1 FROM Ganado WHERE Nombre = 'Toro Brahman 001')
     ('Vaca Simmental 001','Vaca Simmental de proposito dual (carne y leche). Excelentes caracteristicas reproductivas.',3,6,2,'2019-09-30',650.00,'CERT-2024-006',1,GETDATE(),2),
     ('Ternero Brahman 002','Ternero Brahman macho, joven, ideal para crianza y futura reproduccion. Genealogia de campeones.',3,1,1,'2023-06-12',280.50,'CERT-2024-007',1,GETDATE(),3),
     ('Vaca Brahman 002','Hembra Brahman de 6 anos, con registro de sangre pura. Productiva para crianza.',3,1,2,'2018-04-22',700.00,'CERT-2024-008',1,GETDATE(),2);
+
+-- =========================
+-- CATEGORIAS
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM Categoria WHERE Nombre = 'Premium')
+    INSERT INTO Categoria (Nombre, Descripcion) VALUES
+    ('Premium',     'Ganado de alta genetica y calidad superior'),
+    ('Lechero',     'Ganado especializado en produccion de leche'),
+    ('Reproductor', 'Ganado destinado a la reproduccion y mejora genetica'),
+    ('Engorde',     'Ganado orientado al engorde y produccion de carne');
+
+-- =========================
+-- IMAGENES DE GANADO
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM ImagenGanado WHERE GanadoId = 1)
+    INSERT INTO ImagenGanado (GanadoId, UrlImagen) VALUES
+    (1, '/img/Brahman.jpg'),
+    (2, '/img/Holstein.jpg'),
+    (3, '/img/Angus.jpg'),
+    (4, '/img/Gyr.jpg'),
+    (5, '/img/Charolais.jpeg'),
+    (6, '/img/Simmental.jpg'),
+    (7, '/img/Brahman.jpg'),
+    (8, '/img/Brangus.jpg');
+
+-- =========================
+-- GANADO - CATEGORIAS
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM GanadoCategoria WHERE GanadoId = 1)
+    INSERT INTO GanadoCategoria (GanadoId, CategoriaId) VALUES
+    (1, 1), (1, 4),   -- Brahman: Premium, Engorde
+    (2, 2),           -- Holstein: Lechero
+    (3, 1), (3, 4),   -- Angus: Premium, Engorde
+    (4, 2),           -- Jersey: Lechero
+    (5, 1), (5, 4),   -- Charolais: Premium, Engorde
+    (6, 2), (6, 3),   -- Simmental: Lechero, Reproductor
+    (7, 3),           -- Ternero Brahman: Reproductor
+    (8, 3);           -- Vaca Brahman: Reproductor
+
+-- =========================
+-- SUBASTAS
+-- Plan:
+--   Activas  (EstadoSubastaId=2): ganados 1, 2, 3  +  7 (reactivado)
+--   Finalizadas (=3): ganados 4, 5, 6  +  8 (reactivado y cerrado)
+--   Canceladas  (=4): ganados 7 y 8 (primera vez, antes de reactivar)
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 1)
+BEGIN
+    -- ── SUBASTAS ACTIVAS NORMALES ───────────────────────────────────────────
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    VALUES
+    -- Activa 1: Toro Brahman 001
+    (1, '2026-02-10 08:00', '2026-03-10 18:00', 450000.00, 15000.00, 2, 2),
+    -- Activa 2: Vaca Holstein 001
+    (2, '2026-02-20 09:00', '2026-03-07 18:00', 380000.00, 10000.00, 2, 2),
+    -- Activa 3: Toro Angus 001
+    (3, '2026-02-25 08:00', '2026-03-15 18:00', 520000.00, 20000.00, 2, 3),
+
+    -- ── CANCELADA (primera vez) ─────────────────────────────────────────────
+    -- Cancelada 1: Ternero Brahman 002 - no llego al minimo, se cancelo
+    (7, '2026-01-05 08:00', '2026-01-25 18:00', 250000.00,  8000.00, 4, 2),
+
+    -- ── REACTIVADA como ACTIVA tras cancelacion ─────────────────────────────
+    -- Activa 4: Ternero Brahman 002 - segunda oportunidad (precio ajustado)
+    (7, '2026-02-26 08:00', '2026-03-12 18:00', 265000.00,  8000.00, 2, 2),
+
+    -- ── CANCELADA (primera vez) ─────────────────────────────────────────────
+    -- Cancelada 2: Vaca Brahman 002 - problema tecnico, se cancelo
+    (8, '2026-01-10 09:00', '2026-01-28 18:00', 400000.00, 12000.00, 4, 3),
+
+    -- ── REACTIVADA y ya FINALIZADA ───────────────────────────────────────────
+    -- Finalizada 1: Vaca Brahman 002 - se relisto y cerro con vendedor
+    (8, '2026-02-05 09:00', '2026-02-22 18:00', 415000.00, 12000.00, 3, 3),
+
+    -- ── SUBASTAS FINALIZADAS NORMALES ───────────────────────────────────────
+    -- Finalizada 2: Vaca Jersey 001
+    (4, '2026-01-08 08:00', '2026-02-05 18:00', 300000.00, 10000.00, 3, 2),
+    -- Finalizada 3: Toro Charolais 001
+    (5, '2026-01-12 08:00', '2026-02-15 18:00', 480000.00, 15000.00, 3, 3),
+    -- Finalizada 4: Vaca Simmental 001
+    (6, '2026-02-01 09:00', '2026-02-20 18:00', 350000.00, 12000.00, 3, 2);
+END
+
+-- =========================
+-- PUJAS
+-- SubastaId asignado por orden de insercion arriba:
+--   1=Brahman Activa, 2=Holstein Activa, 3=Angus Activa,
+--   4=Ternero Cancelada, 5=Ternero Reactivada,
+--   6=VacaBrahman Cancelada, 7=VacaBrahman Finalizada,
+--   8=Jersey Finalizada, 9=Charolais Finalizada, 10=Simmental Finalizada
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM Puja WHERE SubastaId = 1)
+BEGIN
+    -- Subasta 1 - Toro Brahman 001 (Activa) - 4 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (1, 4, 450000.00, '2026-02-11 10:15'),
+    (1, 5, 465000.00, '2026-02-13 14:30'),
+    (1, 4, 480000.00, '2026-02-18 09:05'),
+    (1, 5, 495000.00, '2026-02-22 16:45');
+
+    -- Subasta 2 - Vaca Holstein 001 (Activa) - 3 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (2, 5, 380000.00, '2026-02-21 11:00'),
+    (2, 4, 390000.00, '2026-02-23 08:30'),
+    (2, 5, 400000.00, '2026-02-26 17:10');
+
+    -- Subasta 3 - Toro Angus 001 (Activa) - 5 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (3, 4, 520000.00, '2026-02-25 09:00'),
+    (3, 5, 540000.00, '2026-02-25 11:30'),
+    (3, 4, 560000.00, '2026-02-26 08:15'),
+    (3, 5, 580000.00, '2026-02-26 13:00'),
+    (3, 4, 600000.00, '2026-02-27 09:40');
+
+    -- Subasta 4 - Ternero Brahman 002 (CANCELADA) - 2 pujas (no llego al minimo)
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (4, 4, 250000.00, '2026-01-07 10:00'),
+    (4, 5, 258000.00, '2026-01-10 15:20');
+
+    -- Subasta 5 - Ternero Brahman 002 (Reactivada - Activa) - 3 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (5, 5, 265000.00, '2026-02-26 10:00'),
+    (5, 4, 273000.00, '2026-02-26 14:30'),
+    (5, 5, 281000.00, '2026-02-27 08:00');
+
+    -- Subasta 6 - Vaca Brahman 002 (CANCELADA) - 1 puja
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (6, 4, 400000.00, '2026-01-12 12:00');
+
+    -- Subasta 7 - Vaca Brahman 002 (Reactivada - Finalizada) - 6 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (7, 4, 415000.00, '2026-02-06 09:00'),
+    (7, 5, 427000.00, '2026-02-08 11:15'),
+    (7, 4, 439000.00, '2026-02-11 14:00'),
+    (7, 5, 451000.00, '2026-02-14 09:30'),
+    (7, 4, 463000.00, '2026-02-18 16:00'),
+    (7, 5, 475000.00, '2026-02-21 10:45');
+
+    -- Subasta 8 - Vaca Jersey 001 (Finalizada) - 4 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (8, 5, 300000.00, '2026-01-10 08:30'),
+    (8, 4, 310000.00, '2026-01-15 12:00'),
+    (8, 5, 320000.00, '2026-01-22 15:45'),
+    (8, 4, 330000.00, '2026-02-03 10:20');
+
+    -- Subasta 9 - Toro Charolais 001 (Finalizada) - 5 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (9, 4, 480000.00, '2026-01-14 09:00'),
+    (9, 5, 495000.00, '2026-01-18 14:00'),
+    (9, 4, 510000.00, '2026-01-24 11:30'),
+    (9, 5, 525000.00, '2026-01-30 08:45'),
+    (9, 4, 540000.00, '2026-02-12 17:00');
+
+    -- Subasta 10 - Vaca Simmental 001 (Finalizada) - 3 pujas
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
+    (10, 5, 350000.00, '2026-02-03 10:00'),
+    (10, 4, 362000.00, '2026-02-10 13:30'),
+    (10, 5, 374000.00, '2026-02-17 09:15');
+END
