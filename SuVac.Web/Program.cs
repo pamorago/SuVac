@@ -111,6 +111,7 @@ builder.Services.AddAutoMapper(config =>
 {
     //*** Profiles SuVac
     config.AddProfile<GanadoProfile>();
+    config.AddProfile<ImagenGanadoProfile>();
     config.AddProfile<SubastaProfile>();
     config.AddProfile<PujaProfile>();
     config.AddProfile<PagoProfile>();
@@ -162,6 +163,7 @@ else
 
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSerilogRequestLogging();

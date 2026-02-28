@@ -31,7 +31,7 @@
                 <tbody>
                     @foreach (var usuario in Model)
                     {
-                        <tr>
+                        <tr class="@(usuario.NombreRol == "Administrador" ? "table-danger" : "")">
                             <td>
                                 <strong>@usuario.NombreCompleto</strong>
                             </td>

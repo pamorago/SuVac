@@ -181,6 +181,22 @@
 </div>
 
 <div class="mt-3">
-    <a asp-action="Activas" class="btn btn-outline-secondary btn-sm me-2">← Subastas Activas</a>
-    <a asp-action="Finalizadas" class="btn btn-outline-secondary btn-sm">← Subastas Finalizadas</a>
+    <div class="d-grid gap-2 d-md-block">
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-action="Activas" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Subastas Activas
+            </a>
+            <a asp-action="Finalizadas" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Subastas Finalizadas
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.SubastaId" asp-route-from="activas"
+                   class="btn btn-outline-warning">
+                <i class="bi bi-pencil me-1"></i> Editar
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.SubastaId" asp-route-from="activas"
+                   class="btn btn-outline-danger">
+                <i class="bi bi-trash me-1"></i> Eliminar
+            </a>
+        </div>
+    </div>
 </div>

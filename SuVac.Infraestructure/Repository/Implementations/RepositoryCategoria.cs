@@ -21,7 +21,11 @@ public class RepositoryCategoria : IRepositoryCategoria
 
     public async Task<Categoria> GetById(int id)
     {
-        return await _context.Categorias.FirstOrDefaultAsync(c => c.CategoriaId == id);
+        return await _context.Categorias
+            .Include(c => c.GanadoCategorias)
+            .ThenInclude(gc => gc.IdGanadoNavigation)
+            .ThenInclude(g => g.ImagenesGanado)
+            .FirstOrDefaultAsync(c => c.CategoriaId == id);
     }
 
     public async Task<bool> Create(Categoria entity)

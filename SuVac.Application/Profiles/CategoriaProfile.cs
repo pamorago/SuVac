@@ -8,6 +8,11 @@ public class CategoriaProfile : Profile
 {
     public CategoriaProfile()
     {
-        CreateMap<Categoria, CategoriaDTO>().ReverseMap();
+        CreateMap<Categoria, CategoriaDTO>()
+            .ForMember(dest => dest.Ganados,
+                opt => opt.MapFrom(src => src.GanadoCategorias.Select(gc => gc.IdGanadoNavigation).ToList()));
+
+        CreateMap<CategoriaDTO, Categoria>()
+            .ForMember(dest => dest.GanadoCategorias, opt => opt.Ignore());
     }
 }

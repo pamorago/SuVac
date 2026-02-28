@@ -351,8 +351,8 @@ IF NOT EXISTS (SELECT 1 FROM Categoria WHERE Nombre = 'Premium')
 -- =========================
 -- IMAGENES DE GANADO
 -- =========================
-IF NOT EXISTS (SELECT 1 FROM ImagenGanado WHERE GanadoId = 1)
-    INSERT INTO ImagenGanado (GanadoId, UrlImagen) VALUES
+DELETE FROM ImagenGanado;
+INSERT INTO ImagenGanado (GanadoId, UrlImagen) VALUES
     (1, '/img/Brahman.jpg'),
     (2, '/img/Holstein.jpg'),
     (3, '/img/Angus.jpg'),

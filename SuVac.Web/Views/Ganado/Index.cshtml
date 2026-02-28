@@ -36,10 +36,8 @@ else
                     <div class="position-relative bg-light" style="height: 200px; overflow: hidden;">
                         @if (item.ImagenesGanado != null && item.ImagenesGanado.Any())
                         {
-                            <img src="@item.ImagenesGanado.First().UrlImagen" 
-                                 alt="@item.Nombre" 
-                                 class="w-100 h-100 object-fit-cover" 
-                                 style="object-fit: cover;">
+                            <img src="@item.ImagenesGanado.First().UrlImagen"                    alt="@item.Nombre"
+                                 class="w-100 h-100 object-fit-cover"   style="object-fit: cover;">
                         }
                         else
                         {
@@ -72,16 +70,56 @@ else
                             @(item.Descripcion?.Substring(0, Math.Min(80, item.Descripcion?.Length ?? 0)) ?? "...")
                         </p>
                     </div>
-                    <div class="card-footer bg-light">
-                        <div class="d-flex gap-2">
+                    <div class="card-footer bg-body border-0 pt-0 pb-3">
+                        <div class="d-grid gap-2 px-2">
                             <a asp-controller="Ganado" asp-action="Details" asp-route-id="@item.GanadoId"
-                                   class="btn btn-sm btn-primary flex-grow-1">
-                                <i class="bi bi-eye me-1"></i>Ver Detalles
+                               class="btn btn-secondary">
+                                <i class="bi bi-eye me-1"></i> Ver Detalles
                             </a>
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@item.GanadoId"
+                                   class="btn btn-outline-warning flex-fill">
+                                    <i class="bi bi-pencil me-1"></i> Editar
+                                </a>
+                                <form asp-controller="Ganado" asp-action="DeleteConfirmed" asp-route-id="@item.GanadoId"
+                                      method="post" class="delete-form flex-fill">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button" class="btn btn-outline-danger w-100 btn-delete"
+                                            data-nombre="@item.Nombre">
+                                        <i class="bi bi-trash me-1"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
+}
+
+@section Scripts {
+    <style>
+        .card:hover { transform: translateY(-3px); transition: transform .18s ease; }
+    </style>
+    <script>
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const nombre = this.dataset.nombre;
+                    const form = this.closest('form');
+                    Swal.fire({
+                        title: '¿Eliminar ganado?',
+                        html: `¿Estás seguro de que deseas eliminar <strong>${nombre}</strong>? Esta acción no se puede deshacer.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: '<i class="bi bi-trash me-1"></i>Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then(result => {
+                        if (result.isConfirmed) form.submit();
+                    });
+                });
+            });
+    </script>
 }

@@ -24,6 +24,66 @@
                     </div>
                 </div>
             </div>
+
+            @if (Model.Ganados != null && Model.Ganados.Any())
+            {
+                <div class="mt-4">
+                    <h2>Ganados en esta Categoría</h2>
+                    <div class="row g-4 mt-3">
+                        @foreach (var ganado in Model.Ganados)
+                        {
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="card shadow-sm h-100 border-0 overflow-hidden">
+                                    <!-- Imagen del Ganado -->
+                                    <div class="position-relative bg-light" style="height: 200px; overflow: hidden;">
+                                        @if (ganado.ImagenesGanado != null && ganado.ImagenesGanado.Any())
+                                        {
+                                            <img src="@ganado.ImagenesGanado.First().UrlImagen" 
+                                                 alt="@ganado.Nombre" 
+                                                 class="w-100 h-100 object-fit-cover" 
+                                                 style="object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25">
+                                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="card-title mb-0">@ganado.Nombre</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-2">
+                                            <strong>ID:</strong> <span class="badge bg-secondary">@ganado.GanadoId</span>
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>Peso:</strong> <span class="text-success">@ganado.PesoKg kg</span>
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>Tipo:</strong> @ganado.NombreTipoGanado
+                                        </p>
+                                        <p class="mb-2">
+                                            <strong>Raza:</strong> @ganado.NombreRaza
+                                        </p>
+                                        <p class="card-text small">
+                                            @(ganado.Descripcion?.Substring(0, Math.Min(80, ganado.Descripcion?.Length ?? 0)) ?? "...")
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-light">
+                                        <a asp-controller="Ganado" asp-action="Details" asp-route-id="@ganado.GanadoId"
+                                               class="btn btn-sm btn-primary w-100">
+                                            <i class="bi bi-eye me-1"></i>Ver Detalles
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
             <a asp-action="Edit" asp-route-id="@Model.CategoriaId" class="btn btn-warning mt-3">Editar</a>
             <a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
         </div>
