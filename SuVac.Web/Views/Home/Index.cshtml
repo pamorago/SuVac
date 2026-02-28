@@ -20,7 +20,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-cow me-2"></i>Ganado Disponible
+                        Ganado Disponible
                     </h5>
                     <p class="card-text">Explora nuestro catálogo completo de ganado en subasta.</p>
                     <a asp-controller="Ganado" asp-action="Index" class="btn btn-outline-primary">
@@ -34,7 +34,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-gavel me-2"></i>Subastas Activas
+                        Subastas Activas
                     </h5>
                     <p class="card-text">Participá en nuestras subastas en vivo y realiza tus pujas.</p>
                     <a asp-controller="Subasta" asp-action="Activas" class="btn btn-outline-success">
@@ -47,6 +47,9 @@
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
+                    <h5 class="card-title">
+                        Pujas
+                    </h5>
                     <p class="card-text">Realiza un seguimiento las pujas y pagos pendientes.</p>
                     <a asp-controller="Puja" asp-action="Index" class="btn btn-outline-info">
                         Ver Pujas
@@ -99,34 +102,34 @@
 
     @section Scripts {
         <script>
-                                                                                                                                                            const enableHoverEffect = () => {
-                                                                                                                                                                // Efecto hover genérico para tarjetas
-                                                                                                                                                                const cards = document.querySelectorAll('.hover-card');
-                                                                                                                                                                cards.forEach(card => {
-                                                                                                                                                                    card.addEventListener('mouseenter', function () {
-                                                                                                                                                                        this.style.transform = 'translateY(-4px)';
-                                                                                                                                                                        this.style.transition = 'all 0.25s ease';
-                                                                                                                                                                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
-                                                                                                                                                                    });
-                                                                                                                                                                    card.addEventListener('mouseleave', function () {
-                                                                                                                                                                        this.style.transform = 'translateY(0)';
-                                                                                                                                                                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
-                                                                                                                                                                    });
-                                                                                                                                                                });
-                                                                                                                                                            };
+                                                                                                                                                                    const enableHoverEffect = () => {
+                                                                                                                                                                        // Efecto hover genérico para tarjetas
+                                                                                                                                                                        const cards = document.querySelectorAll('.hover-card');
+                                                                                                                                                                        cards.forEach(card => {
+                                                                                                                                                                            card.addEventListener('mouseenter', function () {
+                                                                                                                                                                                this.style.transform = 'translateY(-4px)';
+                                                                                                                                                                                this.style.transition = 'all 0.25s ease';
+                                                                                                                                                                                this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
+                                                                                                                                                                            });
+                                                                                                                                                                            card.addEventListener('mouseleave', function () {
+                                                                                                                                                                                this.style.transform = 'translateY(0)';
+                                                                                                                                                                                this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                                                                                                                                                                            });
+                                                                                                                                                                        });
+                                                                                                                                                                    };
 
-                                                                                                                                                            document.addEventListener('DOMContentLoaded', enableHoverEffect);
+                                                                                                                                                                    document.addEventListener('DOMContentLoaded', enableHoverEffect);
         </script>
 
         <style>
-                                                                                                                                                            .hover-card {
-                                                                                                                                                                transition: all 0.25s ease;
-                                                                                                                                                                cursor: pointer;
-                                                                                                                                                            }
+                                                                                                                                                                    .hover-card {
+                                                                                                                                                                        transition: all 0.25s ease;
+                                                                                                                                                                        cursor: pointer;
+                                                                                                                                                                    }
 
-                                                                                                                                                            .hover-card:hover {
-                                                                                                                                                                transform: translateY(-4px);
-                                                                                                                                                                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-                                                                                                                                                            }
+                                                                                                                                                                    .hover-card:hover {
+                                                                                                                                                                        transform: translateY(-4px);
+                                                                                                                                                                        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+                                                                                                                                                                    }
         </style>
     }
