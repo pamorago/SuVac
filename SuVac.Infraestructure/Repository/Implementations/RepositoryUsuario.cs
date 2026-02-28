@@ -19,7 +19,7 @@ public class RepositoryUsuario : IRepositoryUsuario
         return await _context.Usuarios.ToListAsync();
     }
 
-    public async Task<Usuario> GetById(int id)
+    public async Task<Usuario?> GetById(int id)
     {
         return await _context.Usuarios.FindAsync(id);
     }

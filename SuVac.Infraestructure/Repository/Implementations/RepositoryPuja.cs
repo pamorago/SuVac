@@ -16,12 +16,16 @@ public class RepositoryPuja : IRepositoryPuja
 
     public async Task<IEnumerable<Puja>> GetAll()
     {
-        return await _context.Pujas.ToListAsync();
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
+            .ToListAsync();
     }
 
-    public async Task<Puja> GetById(int id)
+    public async Task<Puja?> GetById(int id)
     {
-        return await _context.Pujas.FindAsync(id);
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
+            .FirstOrDefaultAsync(p => p.PujaId == id);
     }
 
     public async Task<bool> Create(Puja entity)

@@ -22,7 +22,7 @@ public class RepositoryResultadoSubasta : IRepositoryResultadoSubasta
             .ToListAsync();
     }
 
-    public async Task<ResultadoSubasta> GetById(int id)
+    public async Task<ResultadoSubasta?> GetById(int id)
     {
         return await _context.ResultadosSubasta
             .Include(r => r.IdSubastaNavigation)
@@ -75,7 +75,7 @@ public class RepositoryResultadoSubasta : IRepositoryResultadoSubasta
         }
     }
 
-    public async Task<ResultadoSubasta> GetBySubastaId(int subastaId)
+    public async Task<ResultadoSubasta?> GetBySubastaId(int subastaId)
     {
         return await _context.ResultadosSubasta
             .Include(r => r.IdSubastaNavigation)

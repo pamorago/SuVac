@@ -19,7 +19,7 @@ public class RepositoryRaza : IRepositoryRaza
         return await _context.Razas.ToListAsync();
     }
 
-    public async Task<Raza> GetById(int id)
+    public async Task<Raza?> GetById(int id)
     {
         return await _context.Razas.FirstOrDefaultAsync(r => r.RazaId == id);
     }

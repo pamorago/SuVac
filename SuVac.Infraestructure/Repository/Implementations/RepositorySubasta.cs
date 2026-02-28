@@ -19,7 +19,7 @@ public class RepositorySubasta : IRepositorySubasta
         return await _context.Subastas.ToListAsync();
     }
 
-    public async Task<Subasta> GetById(int id)
+    public async Task<Subasta?> GetById(int id)
     {
         return await _context.Subastas.FindAsync(id);
     }

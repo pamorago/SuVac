@@ -87,7 +87,7 @@
                                 <strong>Estatus:</strong> <span class="badge bg-success">Disponible</span>
                             </p>
                             <p class="text-muted small">@(ganado.Descripcion?.Substring(0, Math.Min(100,
-                                                                                                                                                                                                                                                                                                                                                                                        ganado.Descripcion?.Length ?? 0)) ?? "")</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                        ganado.Descripcion?.Length ?? 0)) ?? "")</p>
                                 <a asp-controller="Ganado" asp-action="Details" asp-route-id="@ganado.GanadoId"
                                        class="btn btn-primary btn-sm">
                                     Ver Detalles
@@ -196,7 +196,7 @@
 
             <!-- Subastas Activas -->
             <div class="col-12 col-md-4">
-                <a asp-controller="Subasta" asp-action="Index" class="text-decoration-none text-dark">
+                <a asp-controller="Subasta" asp-action="Activas" class="text-decoration-none text-dark">
                     <div class="card h-100 shadow-sm border-0 hover-card">
                         <div class="card-body text-center py-4">
                             <i class="bi bi-fire fs-1 mb-3 text-danger"></i>
@@ -213,7 +213,7 @@
                     <div class="card h-100 shadow-sm border-0 hover-card">
                         <div class="card-body text-center py-4">
                             <i class="bi bi-hand-index fs-1 mb-3 text-success"></i>
-                            <h5 class="fw-semibold">Mis Pujas</h5>
+                            <h5 class="fw-semibold">Pujas</h5>
                             <p class="text-muted small">Realizá un seguimiento de tus pujas.</p>
                         </div>
                     </div>
@@ -225,34 +225,34 @@
 
     @section Scripts {
         <script>
-                                                    const enableHoverEffect = () => {
-                                                        // Efecto hover genérico para tarjetas
-                                                        const cards = document.querySelectorAll('.hover-card');
-                                                        cards.forEach(card => {
-                                                            card.addEventListener('mouseenter', function () {
-                                                                this.style.transform = 'translateY(-4px)';
-                                                                this.style.transition = 'all 0.25s ease';
-                                                                this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
-                                                            });
-                                                            card.addEventListener('mouseleave', function () {
-                                                                this.style.transform = 'translateY(0)';
-                                                                this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
-                                                            });
-                                                        });
-                                                    };
+                                                            const enableHoverEffect = () => {
+                                                                // Efecto hover genérico para tarjetas
+                                                                const cards = document.querySelectorAll('.hover-card');
+                                                                cards.forEach(card => {
+                                                                    card.addEventListener('mouseenter', function () {
+                                                                        this.style.transform = 'translateY(-4px)';
+                                                                        this.style.transition = 'all 0.25s ease';
+                                                                        this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
+                                                                    });
+                                                                    card.addEventListener('mouseleave', function () {
+                                                                        this.style.transform = 'translateY(0)';
+                                                                        this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                                                                    });
+                                                                });
+                                                            };
 
-                                                    document.addEventListener('DOMContentLoaded', enableHoverEffect);
+                                                            document.addEventListener('DOMContentLoaded', enableHoverEffect);
         </script>
 
         <style>
-                                                    .hover-card {
-                                                        transition: all 0.25s ease;
-                                                        cursor: pointer;
-                                                    }
+                                                            .hover-card {
+                                                                transition: all 0.25s ease;
+                                                                cursor: pointer;
+                                                            }
 
-                                                    .hover-card:hover {
-                                                        transform: translateY(-4px);
-                                                        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-                                                    }
+                                                            .hover-card:hover {
+                                                                transform: translateY(-4px);
+                                                                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+                                                            }
         </style>
     }

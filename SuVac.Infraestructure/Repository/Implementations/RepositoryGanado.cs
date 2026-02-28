@@ -26,7 +26,7 @@ public class RepositoryGanado : IRepositoryGanado
             .ToListAsync();
     }
 
-    public async Task<Ganado> GetById(int id)
+    public async Task<Ganado?> GetById(int id)
     {
         return await _context.Ganados
             .Include(g => g.IdTipoGanadoNavigation)

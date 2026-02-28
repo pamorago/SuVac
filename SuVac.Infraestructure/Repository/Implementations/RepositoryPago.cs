@@ -19,7 +19,7 @@ public class RepositoryPago : IRepositoryPago
         return await _context.Pagos.ToListAsync();
     }
 
-    public async Task<Pago> GetById(int id)
+    public async Task<Pago?> GetById(int id)
     {
         return await _context.Pagos.FindAsync(id);
     }
@@ -58,7 +58,7 @@ public class RepositoryPago : IRepositoryPago
         {
             var pago = await _context.Pagos.FindAsync(id);
             if (pago == null) return false;
-            
+
             _context.Pagos.Remove(pago);
             await _context.SaveChangesAsync();
             return true;

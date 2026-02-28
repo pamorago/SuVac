@@ -19,7 +19,7 @@ public class RepositoryTipoGanado : IRepositoryTipoGanado
         return await _context.TiposGanado.ToListAsync();
     }
 
-    public async Task<TipoGanado> GetById(int id)
+    public async Task<TipoGanado?> GetById(int id)
     {
         return await _context.TiposGanado.FirstOrDefaultAsync(t => t.TipoGanadoId == id);
     }

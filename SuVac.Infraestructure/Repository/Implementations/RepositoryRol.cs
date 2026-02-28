@@ -19,7 +19,7 @@ public class RepositoryRol : IRepositoryRol
         return await _context.Roles.ToListAsync();
     }
 
-    public async Task<Rol> GetById(int id)
+    public async Task<Rol?> GetById(int id)
     {
         return await _context.Roles.FirstOrDefaultAsync(r => r.RolId == id);
     }

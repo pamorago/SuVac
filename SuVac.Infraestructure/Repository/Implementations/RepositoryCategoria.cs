@@ -19,7 +19,7 @@ public class RepositoryCategoria : IRepositoryCategoria
         return await _context.Categorias.ToListAsync();
     }
 
-    public async Task<Categoria> GetById(int id)
+    public async Task<Categoria?> GetById(int id)
     {
         return await _context.Categorias
             .Include(c => c.GanadoCategorias)

@@ -1,4 +1,4 @@
-@model IEnumerable<SuVac.Application.DTOs.SubastaListadoDTO>
+﻿@model IEnumerable<SuVac.Application.DTOs.SubastaListadoDTO>
 @{
     ViewData["Title"] = "Subastas Activas";
     var total = Model?.Count() ?? 0;
@@ -68,7 +68,7 @@ else
                                 <dt class="col-5 text-muted">Cierre</dt>
                                 <dd class="col-7">@subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
                                 <dt class="col-5 text-muted">Precio base</dt>
-                                <dd class="col-7 fw-semibold text-success">&#8353;@subasta.PrecioBase.ToString("N2")</dd>
+                                <dd class="col-7 fw-semibold text-success">@subasta.PrecioBase.ToString("N2")</dd>
                             </dl>
                         </div>
 
