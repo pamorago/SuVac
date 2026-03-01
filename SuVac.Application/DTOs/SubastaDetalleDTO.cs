@@ -8,6 +8,8 @@ public record SubastaDetalleDTO
     public int SubastaId { get; set; }
 
     // ── Datos del ganado ──────────────────────────────────────────────
+    public int GanadoId { get; set; }
+
     [Display(Name = "Nombre del Ganado")]
     public string NombreGanado { get; set; } = string.Empty;
 

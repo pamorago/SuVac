@@ -182,7 +182,21 @@
                                             @foreach (var sub in Model.SubastasParticipacion)
                                             {
                                                 <tr>
-                                                    <td><span class="badge bg-secondary">#@sub.SubastaId</span></td>
+                                                    <td>
+                                                        @if (sub.EstadoSubasta == "Activa" || sub.EstadoSubasta == "Programada" ||
+                                                                                                                                                        sub.EstadoSubasta == "Finalizada")
+                                                        {
+                                                            <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@sub.SubastaId"
+                                                                   asp-route-from="ganado" class="text-decoration-none">
+                                                                <span class="badge bg-secondary">#@sub.SubastaId</span>
+                                                                <i class="bi bi-box-arrow-up-right small"></i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-secondary">#@sub.SubastaId</span>
+                                                        }
+                                                    </td>
                                                     <td>@sub.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
                                                     <td>@sub.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
                                                     <td>

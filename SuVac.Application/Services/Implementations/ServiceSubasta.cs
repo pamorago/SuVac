@@ -87,6 +87,7 @@ public class ServiceSubasta : IServiceSubasta
         return new SubastaDetalleDTO
         {
             SubastaId = s.SubastaId,
+            GanadoId = s.GanadoId,
             NombreGanado = s.IdGanadoNavigation.Nombre,
             TipoGanado = s.IdGanadoNavigation.IdTipoGanadoNavigation?.Nombre ?? "-",
             EstadoGanado = s.IdGanadoNavigation.IdEstadoGanadoNavigation?.Nombre ?? "-",
