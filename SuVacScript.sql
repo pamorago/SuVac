@@ -341,17 +341,17 @@ IF NOT EXISTS (SELECT 1 FROM Ganado WHERE Nombre = 'Toro Brahman 001')
     ('Toro Brahman 001',    'Toro Brahman de excelente genetica, ideal para produccion de carne. Certificado de salud vigente.',                 1,1,1,'2020-03-15',750.50,'CERT-2024-001',1,GETDATE(),2),
     ('Vaca Holstein 001',   'Vaca Holstein de alta produccion lechera. Registrada y con historial de produccion comprobado.',                    2,3,2,'2019-05-20',680.75,'CERT-2024-002',1,GETDATE(),2),
     ('Toro Angus 001',      'Toro Angus Negro, raza pura de carne premium. Genealogia completa documentada.',                                   1,2,1,'2021-08-10',620.00,'CERT-2024-003',1,GETDATE(),3),
-    ('Vaca Jersey 001',     'Vaca Jersey de produccion lechera, pequena pero eficiente. Leche de alta calidad con 4.8% grasa.',                  2,4,2,'2020-11-25',450.25,'CERT-2024-004',1,GETDATE(),2),
-    ('Toro Charolais 001',  'Toro Charolais para reproduccion o engorde. Musculatura excepcional y crecimiento rapido.',                         1,5,1,'2021-02-14',720.80,'CERT-2024-005',1,GETDATE(),3),
-    ('Vaca Simmental 001',  'Vaca Simmental de proposito dual (carne y leche). Excelentes caracteristicas reproductivas.',                       3,6,2,'2019-09-30',650.00,'CERT-2024-006',1,GETDATE(),2),
+    ('Vaca Jersey 001',     'Vaca Jersey de produccion lechera, pequena pero eficiente. Leche de alta calidad con 4.8% grasa.',                  2,4,2,'2020-11-25',450.25,'CERT-2024-004',2,GETDATE(),2),
+    ('Toro Charolais 001',  'Toro Charolais para reproduccion o engorde. Musculatura excepcional y crecimiento rapido.',                         1,5,1,'2021-02-14',720.80,'CERT-2024-005',2,GETDATE(),3),
+    ('Vaca Simmental 001',  'Vaca Simmental de proposito dual (carne y leche). Excelentes caracteristicas reproductivas.',                       3,6,2,'2019-09-30',650.00,'CERT-2024-006',2,GETDATE(),2),
     ('Ternero Brahman 002', 'Ternero Brahman macho, joven, ideal para crianza y futura reproduccion. Genealogia de campeones.',                  3,1,1,'2023-06-12',280.50,'CERT-2024-007',1,GETDATE(),3),
-    ('Vaca Brahman 002',    'Hembra Brahman de 6 anos, con registro de sangre pura. Productiva para crianza.',                                   3,1,2,'2018-04-22',700.00,'CERT-2024-008',1,GETDATE(),2),
+    ('Vaca Brahman 002',    'Hembra Brahman de 6 anos, con registro de sangre pura. Productiva para crianza.',                                   3,1,2,'2018-04-22',700.00,'CERT-2024-008',2,GETDATE(),2),
     ('Toro Hereford 001',   'Toro Hereford de cara blanca, rustico y de facil manejo. Ideal para cruces comerciales en zonas templadas.',         1,7,1,'2022-01-18',690.30,'CERT-2024-009',1,GETDATE(),4),
-    ('Vaca Brangus 001',    'Vaca Brangus F1 de primera generacion. Combina resistencia cebuina con calidad carnica angus.',                     1,8,2,'2021-07-05',580.60, NULL,           1,GETDATE(),4),
+    ('Vaca Brangus 001',    'Vaca Brangus F1 de primera generacion. Combina resistencia cebuina con calidad carnica angus.',                     1,8,2,'2021-07-05',580.60, NULL,           2,GETDATE(),4),
     ('Toro Gyr 001',        'Toro Gyr lechero de alta genetica brasilena. Excelentes indices de fertilidad en condiciones tropicales.',           2,9,1,'2020-10-30',550.00,'CERT-2024-010',1,GETDATE(),3),
     ('Vaca Nelore 001',     'Vaca Nelore de registro, temperamento docil. Gran eficiencia alimenticia para engorde a pastoreo.',                  1,10,2,'2022-03-20',520.40, NULL,          1,GETDATE(),4),
     ('Ternero Angus 002',   'Ternero Angus Rojo, 10 meses de edad. Destetado y con plan sanitario completo. Potencial reproductor.',             3,2,1,'2025-04-11',310.00,'CERT-2025-001',1,GETDATE(),2),
-    ('Vaca Holstein 002',   'Vaca Holstein multimpara con 3 partos. Produccion de 28 litros diarios promedio. Libre de mastitis.',                2,3,2,'2018-12-08',710.90,'CERT-2025-002',1,GETDATE(),3),
+    ('Vaca Holstein 002',   'Vaca Holstein multimpara con 3 partos. Produccion de 28 litros diarios promedio. Libre de mastitis.',                2,3,2,'2018-12-08',710.90,'CERT-2025-002',2,GETDATE(),3),
     ('Toro Brahman 003',    'Toro Brahman joven, listo para servicio. Pruebas de progenie sobresalientes y aplomos correctos.',                   3,1,1,'2023-09-02',420.75,'CERT-2025-003',1,GETDATE(),2);
 
 -- =========================

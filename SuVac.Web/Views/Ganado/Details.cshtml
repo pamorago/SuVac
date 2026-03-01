@@ -13,7 +13,7 @@
                     <p class="text-muted mb-0">Detalles completos del ganado</p>
                 </div>
                 @{
-                    var headerBadgeClass = Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary";
+                    var headerBadgeClass = Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-danger";
                 }
                 <span class="badge @headerBadgeClass bg-lg p-2">@(Model.NombreEstadoGanado ?? "Sin estado")</span>
             </div>
@@ -145,7 +145,7 @@
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary">@(Model.NombreEstadoGanado ?? "No definido")</span>
+                                            <span class="badge bg-danger">@(Model.NombreEstadoGanado ?? "No definido")</span>
                                         }
                                     </p>
                                 </div>
@@ -184,7 +184,7 @@
                                                 <tr>
                                                     <td>
                                                         @if (sub.EstadoSubasta == "Activa" || sub.EstadoSubasta == "Programada" ||
-                                                                                                                                                        sub.EstadoSubasta == "Finalizada")
+                                                                                                                                                                                                                sub.EstadoSubasta == "Finalizada")
                                                         {
                                                             <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@sub.SubastaId"
                                                                    asp-route-from="ganado" class="text-decoration-none">
