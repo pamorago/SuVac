@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h1 class="h3 mb-1">@Model.Nombre</h1>
-                    <p class="text-muted mb-0">Detalles completos del ganado</p>
+                    <p class="text-muted mb-0" data-i18n="ganadoDetalle.detallesCompletos">Detalles completos del ganado</p>
                 </div>
                 @{
                     var headerBadgeClass = Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-danger";
@@ -20,32 +20,32 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Información General</h5>
+                    <h5 class="mb-0" data-i18n="ganadoDetalle.infoGeneral">Información General</h5>
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">ID del Ganado:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.idGanado">ID del Ganado:</strong></p>
                             <p class="h6 text-primary">@Model.GanadoId</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Peso:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.peso">Peso:</strong></p>
                             <p class="h6 text-success">@Model.PesoKg kg</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Tipo de Ganado:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.tipoGanado">Tipo de Ganado:</strong></p>
                             <p class="h6">@Model.NombreTipoGanado</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Raza:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.raza">Raza:</strong></p>
                             <p class="h6">@Model.NombreRaza</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Sexo:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.sexo">Sexo:</strong></p>
                             <p class="h6">@Model.NombreSexo</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Fecha de Nacimiento:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaNacimiento">Fecha de Nacimiento:</strong></p>
                             <p class="h6">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Descripción</h5>
+                    <h5 class="mb-0" data-i18n="ganadoDetalle.descripcionSection">Descripción</h5>
                 </div>
                 <div class="card-body">
                     <p class="lead">@Model.Descripcion</p>
@@ -63,7 +63,7 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Categorías Asociadas</h5>
+                    <h5 class="mb-0" data-i18n="ganadoDetalle.categoriasSection">Categorías Asociadas</h5>
                 </div>
                 <div class="card-body">
                     @if (Model.Categorias != null && Model.Categorias.Any())
@@ -77,14 +77,14 @@
                     }
                     else
                     {
-                        <p class="text-muted mb-0">No hay categorías asignadas a este ganado.</p>
+                        <p class="text-muted mb-0" data-i18n="ganadoDetalle.sinCategoriasDetalle">No hay categorías asignadas a este ganado.</p>
                     }
                 </div>
             </div>
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0">Imágenes del Ganado</h5>
+                    <h5 class="mb-0" data-i18n="ganadoDetalle.imagenesSection">Imágenes del Ganado</h5>
                 </div>
                 <div class="card-body">
                     @if (Model.ImagenesGanado != null && Model.ImagenesGanado.Any())
@@ -106,7 +106,7 @@
                     {
                         <div class="alert alert-warning" role="alert">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            No hay imágenes disponibles para este ganado.
+                            <span data-i18n="ganadoDetalle.noImagenes">No hay imágenes disponibles para este ganado.</span>
                         </div>
                     }
                 </div>
@@ -114,7 +114,7 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Información de Registro</h5>
+                    <h5 class="mb-0" data-i18n="ganadoDetalle.infoRegistro">Información de Registro</h5>
                 </div>
                 <div class="card-body text-body">
                     <div class="row">
@@ -137,7 +137,7 @@
                                     </p>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <p><strong class="text-muted">Estado:</strong></p>
+                                    <p><strong class="text-muted" data-i18n="ganadoDetalle.estado">Estado:</strong></p>
                                     <p class="h6">
                                         @if (Model.NombreEstadoGanado == "Activo")
                                         {
@@ -150,12 +150,12 @@
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong class="text-muted">Fecha de Registro:</strong></p>
-                                    <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                                <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaRegistro">Fecha de Registro:</strong></p>
+                                <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong class="text-muted">Nombre Vendedor:</strong></p>
-                                    <p class="h6">@Model.NombreVendedor</p>
+                                <p><strong class="text-muted" data-i18n="ganadoDetalle.vendedor">Nombre Vendedor:</strong></p>
+                                <p class="h6">@Model.NombreVendedor</p>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
 
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0"><i class="bi bi-gavel me-1"></i> Historial de Subastas</h5>
+                            <h5 class="mb-0"><i class="bi bi-gavel me-1"></i> <span data-i18n="ganadoDetalle.historialSubastas">Historial de Subastas</span></h5>
                         </div>
                         <div class="card-body p-0">
                             @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
@@ -172,10 +172,10 @@
                                     <table class="table table-hover align-middle mb-0">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>ID Subasta</th>
-                                                <th>Fecha de Inicio</th>
-                                                <th>Fecha de Cierre</th>
-                                                <th>Estado</th>
+                                                <th data-i18n="ganadoDetalle.colIdSubasta">ID Subasta</th>
+                                                <th data-i18n="ganadoDetalle.colFechaInicio">Fecha de Inicio</th>
+                                                <th data-i18n="ganadoDetalle.colFechaCierre">Fecha de Cierre</th>
+                                                <th data-i18n="ganadoDetalle.colEstado">Estado</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -220,17 +220,17 @@
                             }
                             else
                             {
-                                <p class="text-muted mb-0 p-3">Este ganado no ha participado en ninguna subasta.</p>
+                                <p class="text-muted mb-0 p-3" data-i18n="ganadoDetalle.noSubastas">Este ganado no ha participado en ninguna subasta.</p>
                             }
                         </div>
                     </div>
 
                     <div class="d-flex gap-2 justify-content-start">
                         <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
-                            <i class="bi bi-pencil me-2"></i>Editar
+                            <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
                         </a>
                         <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Volver al Catálogo
+                            <i class="bi bi-arrow-left me-2"></i><span data-i18n="ganadoDetalle.volverCatalogo">Volver al Catálogo</span>
                         </a>
                     </div>
                 </div>

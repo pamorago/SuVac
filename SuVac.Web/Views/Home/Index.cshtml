@@ -5,10 +5,10 @@
 <section class="py-5 text-center bg-light rounded-3 mb-4 shadow-sm">
     <div class="container">
         <h1 class="display-5 fw-bold mb-3">
-            <i class="bi bi-cow me-2"></i>Bienvenido a SuVac
+            <i class="bi bi-cow me-2"></i><span data-i18n="home.bienvenido">Bienvenido a SuVac</span>
         </h1>
 
-        <p class="lead text-muted mb-4">
+        <p class="lead text-muted mb-4" data-i18n="home.subtitulo">
             Plataforma digital para subastas de ganado de calidad. Explora nuestro catálogo y realiza tus pujas.
         </p>
     </div>
@@ -19,117 +19,122 @@
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">
+                    <h5 class="card-title" data-i18n="home.card1Title">
                         Ganado Disponible
                     </h5>
-                    <p class="card-text">Explora nuestro catálogo completo de ganado en subasta.</p>
-                    <a asp-controller="Ganado" asp-action="Index" class="btn btn-outline-primary">
-                        Ver Ganado
-                    </a>
+                    <p class="card-text" data-i18n="home.card1Text">Explora nuestro catálogo completo de ganado en
+                        subasta.</p>
+                        <a asp-controller="Ganado" asp-action="Index" class="btn btn-outline-primary"
+                               data-i18n="home.card1Btn">
+                            Ver Ganado
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title" data-i18n="home.card2Title">
+                            Subastas Activas
+                        </h5>
+                        <p class="card-text" data-i18n="home.card2Text">Participá en nuestras subastas en vivo y realiza tus
+                            pujas.</p>
+                            <a asp-controller="Subasta" asp-action="Activas" class="btn btn-outline-success"
+                                   data-i18n="home.card2Btn">
+                                Ver Subastas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title" data-i18n="home.card3Title">
+                                Pujas
+                            </h5>
+                            <p class="card-text" data-i18n="home.card3Text">Realiza un seguimiento las pujas y pagos pendientes.
+                            </p>
+                            <a asp-controller="Puja" asp-action="Index" class="btn btn-outline-info"                       data-i18n="home.card3Btn">
+                                Ver Pujas
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        Subastas Activas
-                    </h5>
-                    <p class="card-text">Participá en nuestras subastas en vivo y realiza tus pujas.</p>
-                    <a asp-controller="Subasta" asp-action="Activas" class="btn btn-outline-success">
-                        Ver Subastas
-                    </a>
-                </div>
-            </div>
-        </div>
+        <!-- INFORMACION -->
+        <section class="container mb-5">
 
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        Pujas
-                    </h5>
-                    <p class="card-text">Realiza un seguimiento las pujas y pagos pendientes.</p>
-                    <a asp-controller="Puja" asp-action="Index" class="btn btn-outline-info">
-                        Ver Pujas
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- INFORMACION -->
-<section class="container mb-5">
-
-    <section class="py-5 bg-light rounded-3 mb-4">
-        <div class="container">
-            <h2 class="mb-4 text-center">Cómo Funciona SuVac</h2>
-            <div class="row">
-                <div class="col-md-3 text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-1-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
+            <section class="py-5 bg-light rounded-3 mb-4">
+                <div class="container">
+                    <h2 class="mb-4 text-center" data-i18n="home.comoFunciona">Cómo Funciona SuVac</h2>
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-1-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                            </div>
+                            <h5 data-i18n="home.paso1">Explora</h5>
+                            <p class="text-muted" data-i18n="home.paso1Desc">Revisa el catálogo de ganado disponible.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-2-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                            </div>
+                            <h5 data-i18n="home.paso2">Participa</h5>
+                            <p class="text-muted" data-i18n="home.paso2Desc">Realiza pujas en las subastas.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-3-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                            </div>
+                            <h5 data-i18n="home.paso3">Compra</h5>
+                            <p class="text-muted" data-i18n="home.paso3Desc">Si ganas, completa el pago.</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-4-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
+                            </div>
+                            <h5 data-i18n="home.paso4">Retira</h5>
+                            <p class="text-muted" data-i18n="home.paso4Desc">Recibe tu ganado comprado.</p>
+                        </div>
                     </div>
-                    <h5>Explora</h5>
-                    <p class="text-muted">Revisa el catálogo de ganado disponible.</p>
                 </div>
-                <div class="col-md-3 text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-2-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
-                    </div>
-                    <h5>Participa</h5>
-                    <p class="text-muted">Realiza pujas en las subastas.</p>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-3-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
-                    </div>
-                    <h5>Compra</h5>
-                    <p class="text-muted">Si ganas, completa el pago.</p>
-                </div>
-                <div class="col-md-3 text-center">
-                    <div class="mb-3">
-                        <i class="bi bi-4-circle" style="font-size: 2.5rem; color: #0d6efd;"></i>
-                    </div>
-                    <h5>Retira</h5>
-                    <p class="text-muted">Recibe tu ganado comprado.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
 
-    @section Scripts {
-        <script>
-                                                                                                                                                                    const enableHoverEffect = () => {
-                                                                                                                                                                        // Efecto hover genérico para tarjetas
-                                                                                                                                                                        const cards = document.querySelectorAll('.hover-card');
-                                                                                                                                                                        cards.forEach(card => {
-                                                                                                                                                                            card.addEventListener('mouseenter', function () {
-                                                                                                                                                                                this.style.transform = 'translateY(-4px)';
-                                                                                                                                                                                this.style.transition = 'all 0.25s ease';
-                                                                                                                                                                                this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
-                                                                                                                                                                            });
-                                                                                                                                                                            card.addEventListener('mouseleave', function () {
-                                                                                                                                                                                this.style.transform = 'translateY(0)';
-                                                                                                                                                                                this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
-                                                                                                                                                                            });
-                                                                                                                                                                        });
-                                                                                                                                                                    };
+            @section Scripts {
+                <script>
+                                                                                                                                                                                    const enableHoverEffect = () => {
+                                                                                                                                                                                        // Efecto hover genérico para tarjetas
+                                                                                                                                                                                        const cards = document.querySelectorAll('.hover-card');
+                                                                                                                                                                                        cards.forEach(card => {
+                                                                                                                                                                                            card.addEventListener('mouseenter', function () {
+                                                                                                                                                                                                this.style.transform = 'translateY(-4px)';
+                                                                                                                                                                                                this.style.transition = 'all 0.25s ease';
+                                                                                                                                                                                                this.style.boxShadow = '0 0.75rem 1.5rem rgba(0, 0, 0, 0.1)';
+                                                                                                                                                                                            });
+                                                                                                                                                                                            card.addEventListener('mouseleave', function () {
+                                                                                                                                                                                                this.style.transform = 'translateY(0)';
+                                                                                                                                                                                                this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
+                                                                                                                                                                                            });
+                                                                                                                                                                                        });
+                                                                                                                                                                                    };
 
-                                                                                                                                                                    document.addEventListener('DOMContentLoaded', enableHoverEffect);
-        </script>
+                                                                                                                                                                                    document.addEventListener('DOMContentLoaded', enableHoverEffect);
+                </script>
 
-        <style>
-                                                                                                                                                                    .hover-card {
-                                                                                                                                                                        transition: all 0.25s ease;
-                                                                                                                                                                        cursor: pointer;
-                                                                                                                                                                    }
+                <style>
+                                                                                                                                                                                    .hover-card {
+                                                                                                                                                                                        transition: all 0.25s ease;
+                                                                                                                                                                                        cursor: pointer;
+                                                                                                                                                                                    }
 
-                                                                                                                                                                    .hover-card:hover {
-                                                                                                                                                                        transform: translateY(-4px);
-                                                                                                                                                                        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
-                                                                                                                                                                    }
-        </style>
-    }
+                                                                                                                                                                                    .hover-card:hover {
+                                                                                                                                                                                        transform: translateY(-4px);
+                                                                                                                                                                                        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+                                                                                                                                                                                    }
+                </style>
+            }

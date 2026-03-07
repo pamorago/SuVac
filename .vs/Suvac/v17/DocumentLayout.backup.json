@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Github\\SuVac\\",
+  "WorkspaceRootPath": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|d:\\github\\suvac\\suvac.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|solutionrelative:suvac.web\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|d:\\github\\suvac\\suvac.web\\views\\subasta\\activas.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|c:\\users\\angel\\onedrive\\desktop\\reposuvac\\suvac\\suvac.web\\views\\subasta\\activas.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{259B94A2-7F1D-4F82-B03C-C34E76D27E41}|SuVac.Web\\SuVac.Web.csproj|solutionrelative:suvac.web\\views\\subasta\\activas.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
@@ -18,12 +18,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -36,11 +32,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\Github\\SuVac\\SuVac.Web\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\Github\\SuVac\\SuVac.Web\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "SuVac.Web\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-02-28T23:24:08.086Z",
               "EditorCaption": ""
@@ -49,14 +45,13 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Activas.cshtml",
-              "DocumentMoniker": "D:\\Github\\SuVac\\SuVac.Web\\Views\\Subasta\\Activas.cshtml",
+              "DocumentMoniker": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Subasta\\Activas.cshtml",
               "RelativeDocumentMoniker": "SuVac.Web\\Views\\Subasta\\Activas.cshtml",
-              "ToolTip": "D:\\Github\\SuVac\\SuVac.Web\\Views\\Subasta\\Activas.cshtml",
+              "ToolTip": "C:\\Users\\angel\\OneDrive\\Desktop\\RepoSuVac\\SuVac\\SuVac.Web\\Views\\Subasta\\Activas.cshtml",
               "RelativeToolTip": "SuVac.Web\\Views\\Subasta\\Activas.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-28T04:10:32.133Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-28T04:10:32.133Z"
             }
           ]
         }

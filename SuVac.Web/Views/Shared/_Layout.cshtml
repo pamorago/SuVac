@@ -51,9 +51,8 @@
                 Paula Nicole Mora Gómez &amp; Angélica Jazmín Esquivel Mairena
             </div>
             <div>
-                <a class="link-secondary text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">
-                    Privacidad
-                </a>
+                <a class="link-secondary text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy"
+                   data-i18n="footer.privacidad">Privacidad</a>
             </div>
         </div>
     </footer>
@@ -84,6 +83,8 @@
     }
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- I18N: cargado después de jQuery y Bootstrap -->
+    <script src="~/js/i18n.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

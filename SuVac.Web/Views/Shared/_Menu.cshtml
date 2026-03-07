@@ -1,12 +1,13 @@
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="light">
     <div class="container">
         <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
-            <i class="bi bi-cow me-2"></i>SuVac
+            <i class="bi bi-cow me-2"></i><span data-i18n="nav.brand">SuVac</span>
         </a>
 
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir mens">
+                aria-controls="navbarMain" aria-expanded="false"
+                data-i18n="[aria-label]nav.abrirMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -14,42 +15,55 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Ganado" asp-action="Index">
-                        Ganado
-                    </a>
+                    <a class="nav-link" asp-controller="Ganado" asp-action="Index"
+                       data-i18n="nav.ganado">Ganado</a>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Subastas
-                    </a>
+                       data-bs-toggle="dropdown" aria-expanded="false"
+                       data-i18n="nav.subastas">Subastas</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Activas">Activas</a></li>
-                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Finalizadas">Finalizadas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Activas"
+                               data-i18n="nav.activas">Activas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Finalizadas"
+                               data-i18n="nav.finalizadas">Finalizadas</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Puja" asp-action="Index">
-                        Pujas
-                    </a>
+                    <a class="nav-link" asp-controller="Puja" asp-action="Index"
+                       data-i18n="nav.pujas">Pujas</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Pago" asp-action="Index">
-                        Pagos
-                    </a>
+                    <a class="nav-link" asp-controller="Pago" asp-action="Index"
+                       data-i18n="nav.pagos">Pagos</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="Usuario" asp-action="Index">
-                        Usuarios
-                    </a>
+                    <a class="nav-link" asp-controller="Usuario" asp-action="Index"
+                       data-i18n="nav.usuarios">Usuarios</a>
                 </li>
             </ul>
 
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
+
+                <!-- ── Botón de cambio de idioma ── -->
+                <li class="nav-item">
+                    <button id="btn-lang-switch"
+                            type="button"
+                            class="btn btn-sm btn-outline-light d-flex align-items-center gap-1"
+                            data-lang-target="en"
+                            title="Cambiar idioma / Switch language">
+                        <i class="bi bi-translate"></i>
+                        <span id="lang-current-badge" class="fw-semibold" style="min-width:1.6rem;">ES</span>
+                        <span class="vr opacity-50"></span>
+                        <span class="lang-btn-text" data-i18n="lang.switchBtn">English</span>
+                    </button>
+                </li>
+
+                <!-- ── Menú de usuario ── -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -57,14 +71,11 @@
                              src="~/images/profile.png"
                              alt="Perfil"
                              width="32" height="32" />
-                        <span class="d-none d-sm-inline">
-                            Invitado
-                        </span>
+                        <span class="d-none d-sm-inline" data-i18n="nav.invitado">Invitado</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item">Salir</a></li>
-                        <li><a class=" dropdown-item">Ingresar</a></li>
-
+                        <li><a class="dropdown-item" data-i18n="nav.salir">Salir</a></li>
+                        <li><a class="dropdown-item" data-i18n="nav.ingresar">Ingresar</a></li>
                     </ul>
                 </li>
             </ul>

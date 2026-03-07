@@ -7,8 +7,8 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Gestión de Pagos</h1>
-        <p class="text-muted mb-0">Total de pagos: <strong>@total</strong>.</p>
+        <h1 class="h3 mb-1" data-i18n="pago.historialTitle">Gestión de Pagos</h1>
+        <p class="text-muted mb-0"><span data-i18n="pago.totalPagos">Total de pagos:</span> <strong>@total</strong>.</p>
     </div>
 </div>
 
@@ -16,7 +16,7 @@
 {
     <div class="alert alert-info d-flex align-items-center" role="alert">
         <i class="bi bi-info-circle me-2"></i>
-        <div>No hay pagos registrados en este momento.</div>
+        <div data-i18n="pago.noHay">No hay pagos registrados en este momento.</div>
     </div>
 }
 else
@@ -26,12 +26,12 @@ else
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Subasta</th>
-                    <th>Usuario</th>
-                    <th>Monto</th>
-                    <th>Estado</th>
-                    <th>Fecha Pago</th>
-                    <th>Acciones</th>
+                    <th data-i18n="pago.colSubasta">Subasta</th>
+                    <th data-i18n="pago.colUsuario">Usuario</th>
+                    <th data-i18n="pago.colMonto">Monto</th>
+                    <th data-i18n="pago.colEstado">Estado</th>
+                    <th data-i18n="pago.colFecha">Fecha Pago</th>
+                    <th data-i18n="pago.colAcciones">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,19 +45,19 @@ else
                         <td>
                             @if (item.EstadoPagoId == 1)
                             {
-                                <span class="badge bg-warning">Pendiente</span>
+                                <span class="badge bg-warning" data-i18n="pago.estadoPendiente">Pendiente</span>
                             }
                             else
                             {
-                                <span class="badge bg-success">Confirmado</span>
+                                <span class="badge bg-success" data-i18n="pago.estadoConfirmado">Confirmado</span>
                             }
                         </td>
                         <td>@(item.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
                         <td>
-                            <a asp-controller="Pago" asp-action="Details" asp-route-id="@item.PagoId" 
-                               class="btn btn-sm btn-info">Ver</a>
-                            <a asp-controller="Pago" asp-action="Edit" asp-route-id="@item.PagoId" 
-                               class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-controller="Pago" asp-action="Details" asp-route-id="@item.PagoId"
+                               class="btn btn-sm btn-info" data-i18n="subasta.verDetalle">Ver</a>
+                            <a asp-controller="Pago" asp-action="Edit" asp-route-id="@item.PagoId"
+                               class="btn btn-sm btn-warning" data-i18n="comun.editar">Editar</a>
                         </td>
                     </tr>
                 }
@@ -65,5 +65,3 @@ else
         </table>
     </div>
 }
-
-

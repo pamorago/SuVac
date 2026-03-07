@@ -5,13 +5,13 @@
 }
 
 <div class="container mt-5">
-    <h1 class="mb-4">Registrar Nuevo Ganado</h1>
+    <h1 class="mb-4" data-i18n="ganado.createTitle">Registrar Nuevo Ganado</h1>
 
     <form asp-controller="Ganado" asp-action="Create" method="post" class="card p-4">
         @if (ViewData.ModelState.ErrorCount > 0)
         {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error de validación</strong>
+                <strong data-i18n="ganado.errorValidacion">Error de validación</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <ul class="mb-0">
                     @foreach (var modelState in ViewData.ModelState.Values)
@@ -27,42 +27,45 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="Nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="Nombre" asp-for="Nombre" required>
+                <label for="Nombre" class="form-label" data-i18n="ganado.nombre">Nombre</label>
+                <input type="text" class="form-control" id="Nombre" asp-for="Nombre" required
+                       data-i18n="[placeholder]ganado.nombre">
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="col-md-6 mb-3">
-                <label for="PesoKg" class="form-label">Peso (kg)</label>
+                <label for="PesoKg" class="form-label" data-i18n="ganado.pesoKg">Peso (kg)</label>
                 <input type="number" class="form-control" id="PesoKg" asp-for="PesoKg" step="0.01" required>
                 <span asp-validation-for="PesoKg" class="text-danger"></span>
             </div>
         </div>
 
         <div class="mb-3">
-            <label for="Descripcion" class="form-label">Descripción</label>
-            <textarea class="form-control" id="Descripcion" asp-for="Descripcion" rows="4" required></textarea>
+            <label for="Descripcion" class="form-label" data-i18n="ganado.descripcion">Descripción</label>
+            <textarea class="form-control" id="Descripcion" asp-for="Descripcion" rows="4" required
+                      data-i18n="[placeholder]ganado.descripcion"></textarea>
             <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
 
         <div class="row">
             <div class="col-md-4 mb-3">
-                <label for="TipoGanadoId" class="form-label">Tipo de Ganado</label>
-                <select class="form-control" id="TipoGanadoId" asp-for="TipoGanadoId" asp-items="@ViewBag.TiposGanado" required>
-                    <option value="">-- Seleccionar Tipo de Ganado --</option>
+                <label for="TipoGanadoId" class="form-label" data-i18n="ganado.tipoGanado">Tipo de Ganado</label>
+                <select class="form-control" id="TipoGanadoId" asp-for="TipoGanadoId" asp-items="@ViewBag.TiposGanado"
+                        required>
+                    <option value="" data-i18n="ganado.seleccionarTipo">-- Seleccionar Tipo de Ganado --</option>
                 </select>
                 <span asp-validation-for="TipoGanadoId" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
-                <label for="RazaId" class="form-label">Raza</label>
+                <label for="RazaId" class="form-label" data-i18n="ganado.raza">Raza</label>
                 <select class="form-control" id="RazaId" asp-for="RazaId" asp-items="@ViewBag.Razas" required>
-                    <option value="">-- Seleccionar Raza --</option>
+                    <option value="" data-i18n="ganado.seleccionarRaza">-- Seleccionar Raza --</option>
                 </select>
                 <span asp-validation-for="RazaId" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
-                <label for="SexoId" class="form-label">Sexo</label>
+                <label for="SexoId" class="form-label" data-i18n="ganado.sexo">Sexo</label>
                 <select class="form-control" id="SexoId" asp-for="SexoId" asp-items="@ViewBag.Sexos" required>
-                    <option value="">-- Seleccionar Sexo --</option>
+                    <option value="" data-i18n="ganado.seleccionarSexo">-- Seleccionar Sexo --</option>
                 </select>
                 <span asp-validation-for="SexoId" class="text-danger"></span>
             </div>
@@ -70,22 +73,23 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" id="FechaNacimiento" asp-for="FechaNacimiento" required>
-                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="CertificadoSalud" class="form-label">Certificado de Salud</label>
-                <input type="text" class="form-control" id="CertificadoSalud" asp-for="CertificadoSalud">
-                <span asp-validation-for="CertificadoSalud" class="text-danger"></span>
-            </div>
+                <label for="FechaNacimiento" class="form-label" data-i18n="ganado.fechaNacimiento">Fecha de
+                    Nacimiento</label>
+                    <input type="date" class="form-control" id="FechaNacimiento" asp-for="FechaNacimiento" required>
+                    <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="CertificadoSalud" class="form-label" data-i18n="ganado.certificadoSalud">Certificado de
+                        Salud</label>
+                        <input type="text" class="form-control" id="CertificadoSalud" asp-for="CertificadoSalud">
+                        <span asp-validation-for="CertificadoSalud" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" data-i18n="ganado.guardar">Guardar</button>
+                    <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary"
+                       data-i18n="ganado.cancelar">Cancelar</a>
+                </div>
+            </form>
         </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">Guardar</button>
-            <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
-</div>
-
-
