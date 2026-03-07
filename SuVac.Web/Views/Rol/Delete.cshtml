@@ -5,17 +5,17 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h1>@ViewData["Title"]</h1>
-            <div class="alert alert-warning">¿Está seguro?</div>
+            <h1 data-i18n="rol.eliminarTitle">Eliminar Rol</h1>
+            <div class="alert alert-warning" data-i18n="rol.confirmarEliminar">¿Está seguro?</div>
             <div class="card mb-3">
                 <div class="card-body">
                     <p><strong>ID:</strong> @Model.RolId</p>
-                    <p><strong>Nombre:</strong> @Model.Nombre</p>
+                    <p><strong data-i18n="comun.nombre">Nombre</strong>: @Model.Nombre</p>
                 </div>
             </div>
             <form asp-action="DeleteConfirmed" asp-route-id="@Model.RolId" method="post">
-                <button type="submit" class="btn btn-danger">Eliminar</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger" data-i18n="comun.eliminar">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary" data-i18n="comun.cancelar">Cancelar</a>
             </form>
         </div>
     </div>

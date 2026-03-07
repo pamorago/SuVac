@@ -29,10 +29,15 @@
         }
     }
 
-    // ─── Guardar idioma en localStorage ─────────────────────────────────────
+    // ─── Guardar idioma en localStorage Y cookie ────────────────────────────
+    // localStorage → para traducción instantánea del DOM (client-side)
+    // Cookie       → para que el servidor C# pueda generar respuestas en el
+    //                idioma correcto (viaja automáticamente en cada request HTTP)
     function storeLang(lang) {
         try {
             localStorage.setItem(STORAGE_KEY, lang);
+            const maxAge = 60 * 60 * 24 * 365; // 1 año en segundos
+            document.cookie = `suvac_lang=${lang};path=/;max-age=${maxAge};SameSite=Lax`;
         } catch { }
     }
 
@@ -120,7 +125,11 @@
         }
     }
 
-    //  FuncióN Cambiar 
+    // ─── Mostrar el body (revierte el ocultamiento del script inline en <head>) ──
+    function showBody() {
+        document.documentElement.style.visibility = '';
+    }
+
     async function changeLanguage(lang) {
         if (!SUPPORTED.includes(lang)) lang = DEFAULT_LANG;
 
@@ -134,9 +143,14 @@
             applyTranslations(translations);
             updateLangButton(lang, translations);
 
+            // Mostrar el body DESPUÉS de aplicar traducciones (evita flash de texto en español)
+            showBody();
+
             document.dispatchEvent(new CustomEvent('suvac:langChanged', { detail: { lang, translations } }));
         } catch (err) {
             console.error('[SuVac i18n] Error al cargar traducciones:', err);
+            // Mostrar de todas formas para no dejar la página invisible ante un error
+            showBody();
         }
     }
 

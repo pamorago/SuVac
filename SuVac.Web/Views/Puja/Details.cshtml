@@ -7,19 +7,19 @@
 <nav class="mb-3">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
-            <a asp-action="Index" class="text-decoration-none">Pujas</a>
+            <a asp-action="Index" class="text-decoration-none" data-i18n="puja.title">Pujas</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">Detalle</li>
+        <li class="breadcrumb-item active" aria-current="page" data-i18n="puja.breadcrumb">Detalle</li>
     </ol>
 </nav>
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Detalle de Puja</h1>
-        <p class="text-muted mb-0">Información completa de la puja seleccionada.</p>
+        <h1 class="h3 mb-1" data-i18n="puja.detailTitle">Detalle de Puja</h1>
+        <p class="text-muted mb-0" data-i18n="puja.detailSubtitulo">Información completa de la puja seleccionada.</p>
     </div>
     <div class="d-flex gap-2">
-        <a asp-action="Index" class="btn btn-outline-secondary">
+        <a asp-action="Index" class="btn btn-outline-secondary" data-i18n="puja.regresarListado">
             <i class="bi bi-arrow-left me-1"></i> Volver al listado
         </a>
     </div>
@@ -42,10 +42,10 @@
         <hr class="my-3" />
 
         <dl class="row mb-0">
-            <dt class="col-12 col-md-3 text-muted">Usuario</dt>
+            <dt class="col-12 col-md-3 text-muted" data-i18n="puja.colUsuario">Usuario</dt>
             <dd class="col-12 col-md-9 fw-semibold">@Model.NombreUsuario</dd>
 
-            <dt class="col-12 col-md-3 text-muted">Subasta</dt>
+            <dt class="col-12 col-md-3 text-muted" data-i18n="puja.colSubasta">Subasta</dt>
             <dd class="col-12 col-md-9">
                 <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@Model.SubastaId"
                        class="text-decoration-none">
@@ -53,17 +53,17 @@
                 </a>
             </dd>
 
-            <dt class="col-12 col-md-3 text-muted">Monto ofertado</dt>
+            <dt class="col-12 col-md-3 text-muted" data-i18n="puja.montoOfertado">Monto ofertado</dt>
             <dd class="col-12 col-md-9">₡@Model.Monto.ToString("N2")</dd>
 
-            <dt class="col-12 col-md-3 text-muted">Fecha y hora</dt>
+            <dt class="col-12 col-md-3 text-muted" data-i18n="puja.colFecha">Fecha y hora</dt>
             <dd class="col-12 col-md-9">@Model.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")</dd>
         </dl>
 
         <hr class="my-4" />
 
         <div class="d-flex flex-column flex-sm-row gap-2 justify-content-end">
-            <a asp-action="Index" class="btn btn-outline-secondary">
+            <a asp-action="Index" class="btn btn-outline-secondary" data-i18n="puja.regresarListado">
                 <i class="bi bi-arrow-left me-1"></i> Regresar al listado
             </a>
         </div>

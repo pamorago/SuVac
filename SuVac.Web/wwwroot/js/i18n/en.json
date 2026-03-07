@@ -92,7 +92,15 @@
     "verDetalle": "View detail",
     "historialPujas": "Bid history",
     "editar": "Edit",
-    "eliminar": "Delete"
+    "eliminar": "Delete",
+    "editarTitle": "Edit Auction",
+    "eliminarTitle": "Delete Auction",
+    "confirmarEliminar": "Are you sure you want to delete this auction? This action cannot be undone.",
+    "ganadoId": "Livestock (ID)",
+    "estadoId": "Status (ID)",
+    "fechaFin": "End Date",
+    "guardarCambios": "Save changes",
+    "siEliminar": "Yes, delete"
   },
   "puja": {
     "title": "Bids",
@@ -108,7 +116,19 @@
     "colUsuario": "User",
     "colMonto": "Amount",
     "colFecha": "Date & Time",
-    "colAcciones": "Actions"
+    "colAcciones": "Actions",
+    "detailTitle": "Bid Detail",
+    "detailSubtitulo": "Complete information of the selected bid.",
+    "breadcrumb": "Detail",
+    "montoOfertado": "Bid Amount",
+    "regresarListado": "Back to list",
+    "editTitle": "Edit Bid",
+    "editSubtitulo": "Modify the selected bid data.",
+    "guardarCambios": "Save changes",
+    "deleteTitle": "Delete Bid",
+    "deleteSubtitulo": "Confirm deletion of the selected bid.",
+    "confirmarEliminar": "Are you sure you want to delete this bid? This action cannot be undone.",
+    "siEliminar": "Yes, delete"
   },
   "pago": {
     "title": "Payments",
@@ -143,7 +163,20 @@
     "colRol": "Role",
     "colAcciones": "Actions",
     "editar": "Edit",
-    "eliminar": "Delete"
+    "eliminar": "Delete",
+    "detallesTitle": "User Profile",
+    "infoBasica": "Basic Profile Information",
+    "nombreCompleto": "Full Name",
+    "email": "Email",
+    "rol": "Role",
+    "estado": "Status",
+    "fechaRegistro": "Registration Date",
+    "historial": "History",
+    "subastasCreadas": "Created Auctions",
+    "comoVendedor": "as seller",
+    "pujasRealizadas": "Bids Placed",
+    "participaciones": "auction participations",
+    "volverListado": "Back to List"
   },
   "comun": {
     "verDetalles": "View Details",
@@ -155,7 +188,10 @@
     "acciones": "Actions",
     "total": "Total:",
     "mostrando": "Showing",
-    "registros": "record(s)"
+    "registros": "record(s)",
+    "nombre": "Name",
+    "descripcion": "Description",
+    "crear": "Create"
   },
   "detalle": {
     "infoGanado": "Livestock Information",
@@ -240,6 +276,48 @@
     "volver": "Back",
     "cancelar": "Cancel",
     "guardar": "Save"
+  },
+  "rol": {
+    "title": "Roles",
+    "crearBtn": "Create New",
+    "noHay": "No roles registered.",
+    "crearTitle": "Create Role",
+    "editarTitle": "Edit Role",
+    "detallesTitle": "Details",
+    "eliminarTitle": "Delete Role",
+    "confirmarEliminar": "Are you sure?"
+  },
+  "categoria": {
+    "title": "Categories",
+    "crearBtn": "Create New Category",
+    "noHay": "No categories registered.",
+    "crearTitle": "Create Category",
+    "editarTitle": "Edit Category",
+    "detallesTitle": "Category Details",
+    "eliminarTitle": "Delete Category",
+    "confirmarEliminar": "Are you sure you want to delete this category?",
+    "ganadosEnCategoria": "Livestock in this Category",
+    "crearBtnForm": "Create"
+  },
+  "raza": {
+    "title": "Breeds",
+    "crearBtn": "Create New Breed",
+    "noHay": "No breeds registered.",
+    "crearTitle": "Create Breed",
+    "editarTitle": "Edit Breed",
+    "detallesTitle": "Breed Details",
+    "eliminarTitle": "Delete Breed",
+    "confirmarEliminar": "Are you sure you want to delete this breed?"
+  },
+  "tipoGanado": {
+    "title": "Livestock Types",
+    "crearBtn": "Create New",
+    "noHay": "No livestock types registered.",
+    "crearTitle": "Create Livestock Type",
+    "editarTitle": "Edit Livestock Type",
+    "detallesTitle": "Details",
+    "eliminarTitle": "Delete Livestock Type",
+    "confirmarEliminar": "Are you sure?"
   },
   "lang": {
     "switchBtn": "Español",

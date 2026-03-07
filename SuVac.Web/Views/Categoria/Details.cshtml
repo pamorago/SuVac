@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h1>@ViewData["Title"]</h1>
+            <h1 data-i18n="categoria.detallesTitle">Detalles de la Categoría</h1>
             <div class="card">
                 <div class="card-body">
                     <div class="mb-3">
@@ -15,11 +15,11 @@
                         <p>@Model.CategoriaId</p>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><strong>Nombre:</strong></label>
+                        <label class="form-label"><strong data-i18n="comun.nombre">Nombre</strong>:</label>
                         <p>@Model.Nombre</p>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><strong>Descripción:</strong></label>
+                        <label class="form-label"><strong data-i18n="comun.descripcion">Descripción</strong>:</label>
                         <p>@Model.Descripcion</p>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
             @if (Model.Ganados != null && Model.Ganados.Any())
             {
                 <div class="mt-4">
-                    <h2>Ganados en esta Categoría</h2>
+                    <h2 data-i18n="categoria.ganadosEnCategoria">Ganados en esta Categoría</h2>
                     <div class="row g-4 mt-3">
                         @foreach (var ganado in Model.Ganados)
                         {
@@ -38,14 +38,13 @@
                                     <div class="position-relative bg-light" style="height: 200px; overflow: hidden;">
                                         @if (ganado.ImagenesGanado != null && ganado.ImagenesGanado.Any())
                                         {
-                                            <img src="@ganado.ImagenesGanado.First().UrlImagen" 
-                                                 alt="@ganado.Nombre" 
-                                                 class="w-100 h-100 object-fit-cover" 
-                                                 style="object-fit: cover;">
+                                            <img src="@ganado.ImagenesGanado.First().UrlImagen" alt="@ganado.Nombre"
+                                                 class="w-100 h-100 object-fit-cover" style="object-fit: cover;">
                                         }
                                         else
                                         {
-                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25">
+                                            <div
+                                                class="w-100 h-100 d-flex align-items-center justify-content-center bg-secondary bg-opacity-25">
                                                 <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                                             </div>
                                         }
@@ -68,7 +67,8 @@
                                             <strong>Raza:</strong> @ganado.NombreRaza
                                         </p>
                                         <p class="card-text small">
-                                            @(ganado.Descripcion?.Substring(0, Math.Min(80, ganado.Descripcion?.Length ?? 0)) ?? "...")
+                                            @(ganado.Descripcion?.Substring(0, Math.Min(80, ganado.Descripcion?.Length ?? 0)) ??
+                                            "...")
                                         </p>
                                     </div>
                                     <div class="card-footer bg-light">

@@ -24,6 +24,20 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SuVac.Web.styles.css" asp-append-version="true" />
 
+    <!-- I18N: ocultar body antes de renderizar para evitar flash de texto en español -->
+    <!-- Se ejecuta síncronamente: si el idioma guardado no es 'es', oculta hasta que
+         i18n.js termine de aplicar las traducciones y llame a showBody() -->
+    <script>
+        (function () {
+            try {
+                var lang = localStorage.getItem('suvac_lang');
+                if (lang && lang !== 'es') {
+                    document.documentElement.style.visibility = 'hidden';
+                }
+            } catch (e) { }
+        })();
+    </script>
+
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body">
     <!-- Accesibilidad: salto a contenido -->

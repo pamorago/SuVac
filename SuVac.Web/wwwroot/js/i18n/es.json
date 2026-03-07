@@ -92,7 +92,15 @@
     "verDetalle": "Ver detalle",
     "historialPujas": "Historial de pujas",
     "editar": "Editar",
-    "eliminar": "Eliminar"
+    "eliminar": "Eliminar",
+    "editarTitle": "Editar Subasta",
+    "eliminarTitle": "Eliminar Subasta",
+    "confirmarEliminar": "¿Estás seguro de que querés eliminar esta subasta? Esta acción no se puede deshacer.",
+    "ganadoId": "Ganado (ID)",
+    "estadoId": "Estado (ID)",
+    "fechaFin": "Fecha Fin",
+    "guardarCambios": "Guardar cambios",
+    "siEliminar": "Sí, eliminar"
   },
   "puja": {
     "title": "Pujas",
@@ -108,7 +116,19 @@
     "colUsuario": "Usuario",
     "colMonto": "Monto",
     "colFecha": "Fecha y Hora",
-    "colAcciones": "Acciones"
+    "colAcciones": "Acciones",
+    "detailTitle": "Detalle de Puja",
+    "detailSubtitulo": "Información completa de la puja seleccionada.",
+    "breadcrumb": "Detalle",
+    "montoOfertado": "Monto ofertado",
+    "regresarListado": "Regresar al listado",
+    "editTitle": "Editar Puja",
+    "editSubtitulo": "Modificar los datos de la puja seleccionada.",
+    "guardarCambios": "Guardar cambios",
+    "deleteTitle": "Eliminar Puja",
+    "deleteSubtitulo": "Confirmar la eliminación de la puja seleccionada.",
+    "confirmarEliminar": "¿Estás seguro de que querés eliminar esta puja? Esta acción no se puede deshacer.",
+    "siEliminar": "Sí, eliminar"
   },
   "pago": {
     "title": "Pagos",
@@ -143,7 +163,20 @@
     "colRol": "Rol",
     "colAcciones": "Acciones",
     "editar": "Editar",
-    "eliminar": "Eliminar"
+    "eliminar": "Eliminar",
+    "detallesTitle": "Perfil de Usuario",
+    "infoBasica": "Información Básica del Perfil",
+    "nombreCompleto": "Nombre Completo",
+    "email": "Email",
+    "rol": "Rol",
+    "estado": "Estado",
+    "fechaRegistro": "Fecha de Registro",
+    "historial": "Historial",
+    "subastasCreadas": "Subastas Creadas",
+    "comoVendedor": "como vendedor",
+    "pujasRealizadas": "Pujas Realizadas",
+    "participaciones": "participaciones en subastas",
+    "volverListado": "Volver al Listado"
   },
   "comun": {
     "verDetalles": "Ver Detalles",
@@ -155,7 +188,10 @@
     "acciones": "Acciones",
     "total": "Total:",
     "mostrando": "Mostrando",
-    "registros": "registro(s)"
+    "registros": "registro(s)",
+    "nombre": "Nombre",
+    "descripcion": "Descripción",
+    "crear": "Crear"
   },
   "detalle": {
     "infoGanado": "Información del Ganado",
@@ -240,6 +276,48 @@
     "volver": "Volver",
     "cancelar": "Cancelar",
     "guardar": "Guardar"
+  },
+  "rol": {
+    "title": "Roles",
+    "crearBtn": "Crear Nuevo",
+    "noHay": "No hay roles registrados.",
+    "crearTitle": "Crear Rol",
+    "editarTitle": "Editar Rol",
+    "detallesTitle": "Detalles",
+    "eliminarTitle": "Eliminar Rol",
+    "confirmarEliminar": "¿Está seguro?"
+  },
+  "categoria": {
+    "title": "Categorías",
+    "crearBtn": "Crear Nueva Categoría",
+    "noHay": "No hay categorías registradas.",
+    "crearTitle": "Crear Categoría",
+    "editarTitle": "Editar Categoría",
+    "detallesTitle": "Detalles de la Categoría",
+    "eliminarTitle": "Eliminar Categoría",
+    "confirmarEliminar": "¿Está seguro de que desea eliminar esta categoría?",
+    "ganadosEnCategoria": "Ganados en esta Categoría",
+    "crearBtnForm": "Crear"
+  },
+  "raza": {
+    "title": "Razas",
+    "crearBtn": "Crear Nueva Raza",
+    "noHay": "No hay razas registradas.",
+    "crearTitle": "Crear Raza",
+    "editarTitle": "Editar Raza",
+    "detallesTitle": "Detalles de la Raza",
+    "eliminarTitle": "Eliminar Raza",
+    "confirmarEliminar": "¿Está seguro de que desea eliminar esta raza?"
+  },
+  "tipoGanado": {
+    "title": "Tipos de Ganado",
+    "crearBtn": "Crear Nuevo",
+    "noHay": "No hay tipos de ganado registrados.",
+    "crearTitle": "Crear Tipo de Ganado",
+    "editarTitle": "Editar Tipo de Ganado",
+    "detallesTitle": "Detalles",
+    "eliminarTitle": "Eliminar Tipo de Ganado",
+    "confirmarEliminar": "¿Está seguro?"
   },
   "lang": {
     "switchBtn": "English",
