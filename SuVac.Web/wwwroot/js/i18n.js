@@ -18,6 +18,9 @@
     const STORAGE_KEY = 'suvac_lang';
     const DEFAULT_LANG = 'es';
     const SUPPORTED = ['es', 'en'];
+    // Incrementar este valor cada vez que se modifiquen los archivos JSON
+    // para forzar que los clientes re-descarguen las traducciones.
+    const CACHE_VERSION = '2';
 
     // ─── Detectar idioma guardado o usar español por defecto ─────────────────
     function getStoredLang() {
@@ -42,10 +45,28 @@
     }
 
     async function loadTranslation(lang) {
-        const url = `/js/i18n/${lang}.json?v=1`;
+        // Intentar leer desde caché en localStorage para evitar el fetch en cada carga
+        try {
+            const cachedVersion = localStorage.getItem('suvac_i18n_v');
+            if (cachedVersion === CACHE_VERSION) {
+                const cachedData = localStorage.getItem(`suvac_i18n_${lang}`);
+                if (cachedData) return JSON.parse(cachedData);
+            }
+        } catch { }
+
+        // Caché no disponible o desactualizada → fetch desde el servidor
+        const url = `/js/i18n/${lang}.json?v=${CACHE_VERSION}`;
         const resp = await fetch(url);
         if (!resp.ok) throw new Error(`No se pudo cargar: ${url}`);
-        return resp.json();
+        const data = await resp.json();
+
+        // Guardar en caché para próximas cargas
+        try {
+            localStorage.setItem(`suvac_i18n_${lang}`, JSON.stringify(data));
+            localStorage.setItem('suvac_i18n_v', CACHE_VERSION);
+        } catch { }
+
+        return data;
     }
 
     

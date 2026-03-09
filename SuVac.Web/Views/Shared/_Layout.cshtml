@@ -71,6 +71,83 @@
         </div>
     </footer>
 
+    <!-- I18N EARLY: traduce el DOM antes de cargar jQuery/Bootstrap/SweetAlert.
+         Al estar después de </footer>, todo el contenido de la página ya está en el DOM.
+         Usa únicamente localStorage (sin red), por lo que es instantáneo. -->
+    <script>
+        (function () {
+            var CACHE_VER = '2'; // ← mantener sincronizado con CACHE_VERSION en i18n.js
+            try {
+                var lang = localStorage.getItem('suvac_lang');
+
+                if (!lang || lang === 'es') {
+                    document.documentElement.style.visibility = '';
+                    return;
+                }
+
+                var ver = localStorage.getItem('suvac_i18n_v');
+                var raw = localStorage.getItem('suvac_i18n_' + lang);
+
+                if (ver !== CACHE_VER || !raw) {
+                    return; // i18n.js hará el fetch y llamará showBody()
+                }
+
+                var t = JSON.parse(raw);
+
+                function resolve(obj, key) {
+                    return key.split('.').reduce(function (o, k) {
+                        return (o && o[k] !== undefined ? o[k] : null);
+                    }, obj);
+                }
+
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    el.getAttribute('data-i18n').split(';').forEach(function (part) {
+                        part = part.trim();
+                        if (!part) return;
+                        var m = part.match(/^\[([^\]]+)\](.+)$/);
+                        if (m) {
+                            var v = resolve(t, m[2]);
+                            if (v !== null) el.setAttribute(m[1], v);
+                        } else {
+                            var v = resolve(t, part);
+                            if (v === null) return;
+                            if (el.children.length === 0) {
+                                el.textContent = v;
+                            } else {
+                                var sp = el.querySelector(':scope > .i18n-text');
+                                if (!sp) {
+                                    sp = document.createElement('span');
+                                    sp.className = 'i18n-text';
+                                    Array.from(el.childNodes)
+                                        .filter(function (n) { return n.nodeType === 3; })
+                                        .forEach(function (n) { n.textContent = ''; });
+                                    el.appendChild(sp);
+                                }
+                                sp.textContent = v;
+                            }
+                        }
+                    });
+                });
+
+                // Actualizar botón de idioma
+                var btn = document.getElementById('btn-lang-switch');
+                if (btn) {
+                    btn.setAttribute('data-lang-target', lang === 'en' ? 'es' : 'en');
+                    var ts = btn.querySelector('.lang-btn-text');
+                    var lbl = resolve(t, 'lang.switchBtn');
+                    if (ts && lbl) ts.textContent = lbl;
+                    var badge = document.getElementById('lang-current-badge');
+                    var cur = resolve(t, 'lang.currentLang');
+                    if (badge && cur) badge.textContent = cur;
+                }
+
+                document.documentElement.style.visibility = '';
+            } catch (e) {
+                document.documentElement.style.visibility = '';
+            }
+        })();
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"
             crossorigin="anonymous"></script>
 
@@ -97,7 +174,7 @@
     }
 
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <!-- I18N: cargado después de jQuery y Bootstrap -->
+    <!-- I18N: language switching, event handling, fetch on cache miss -->
     <script src="~/js/i18n.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
