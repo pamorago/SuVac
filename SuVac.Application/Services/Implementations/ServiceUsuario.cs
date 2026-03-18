@@ -66,6 +66,15 @@ public class ServiceUsuario : IServiceUsuario
     public async Task<bool> Update(UsuarioDTO dto)
     {
         var usuario = _mapper.Map<Usuario>(dto);
+
+        // Preserve existing password if the form left it blank
+        if (string.IsNullOrWhiteSpace(dto.Contrasena))
+        {
+            var existing = await _repository.GetById(dto.UsuarioId);
+            if (existing != null)
+                usuario.PasswordHash = existing.PasswordHash;
+        }
+
         return await _repository.Update(usuario);
     }
 

@@ -1,0 +1,87 @@
+@model SuVac.Application.DTOs.GanadoDTO
+
+@{
+    ViewData["Title"] = "Eliminar Ganado";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-danger">
+        <i class="bi bi-trash me-2"></i>Eliminar Ganado
+    </h1>
+
+    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+        <div>
+            <strong>¡Atención!</strong> Esta acción es irreversible. El registro del ganado será eliminado
+            permanentemente del sistema.
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Datos del Ganado a Eliminar</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">ID</dt>
+                <dd class="col-sm-9">@Model.GanadoId</dd>
+
+                <dt class="col-sm-3">Nombre</dt>
+                <dd class="col-sm-9">@Model.Nombre</dd>
+
+                <dt class="col-sm-3">Descripción</dt>
+                <dd class="col-sm-9">@Model.Descripcion</dd>
+
+                <dt class="col-sm-3">Tipo de Ganado</dt>
+                <dd class="col-sm-9">@(Model.NombreTipoGanado ?? "—")</dd>
+
+                <dt class="col-sm-3">Raza</dt>
+                <dd class="col-sm-9">@(Model.NombreRaza ?? "—")</dd>
+
+                <dt class="col-sm-3">Sexo</dt>
+                <dd class="col-sm-9">@(Model.NombreSexo ?? "—")</dd>
+
+                <dt class="col-sm-3">Peso (kg)</dt>
+                <dd class="col-sm-9">@Model.PesoKg</dd>
+
+                <dt class="col-sm-3">Fecha de Nacimiento</dt>
+                <dd class="col-sm-9">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @if (Model.NombreEstadoGanado != null)
+                    {
+                        <span class="badge @(Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary")">
+                            @Model.NombreEstadoGanado
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Vendedor</dt>
+                <dd class="col-sm-9">@(Model.NombreVendedor ?? "—")</dd>
+
+                @if (!string.IsNullOrEmpty(Model.CertificadoSalud))
+                {
+                    <dt class="col-sm-3">Certificado de Salud</dt>
+                    <dd class="col-sm-9">@Model.CertificadoSalud</dd>
+                }
+
+                <dt class="col-sm-3">Fecha de Registro</dt>
+                <dd class="col-sm-9">@Model.FechaRegistro.ToString("dd/MM/yyyy")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.GanadoId" method="post" class="d-flex gap-2">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i> Sí, eliminar
+        </button>
+        <a asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-outline-warning">
+            <i class="bi bi-pencil me-1"></i> Editar en su lugar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+    </form>
+</div>

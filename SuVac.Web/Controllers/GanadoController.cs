@@ -10,12 +10,15 @@ public class GanadoController : Controller
     private readonly IServiceGanado _service;
     private readonly IServiceTipoGanado _serviceTipoGanado;
     private readonly IServiceRaza _serviceRaza;
+    private readonly IServiceUsuario _serviceUsuario;
 
-    public GanadoController(IServiceGanado service, IServiceTipoGanado serviceTipoGanado, IServiceRaza serviceRaza)
+    public GanadoController(IServiceGanado service, IServiceTipoGanado serviceTipoGanado,
+        IServiceRaza serviceRaza, IServiceUsuario serviceUsuario)
     {
         _service = service;
         _serviceTipoGanado = serviceTipoGanado;
         _serviceRaza = serviceRaza;
+        _serviceUsuario = serviceUsuario;
     }
 
     // GET: GanadoController
@@ -149,15 +152,22 @@ public class GanadoController : Controller
     {
         var tiposGanado = await _serviceTipoGanado.GetAll();
         var razas = await _serviceRaza.GetAll();
+        var usuarios = await _serviceUsuario.GetAll();
 
         ViewBag.TiposGanado = new SelectList(tiposGanado, "TipoGanadoId", "Nombre");
         ViewBag.Razas = new SelectList(razas, "RazaId", "Nombre");
+        ViewBag.Usuarios = new SelectList(usuarios, "UsuarioId", "NombreCompleto");
 
-        // Para Sexo, usamos una lista hardcodeada (Macho/Hembra)
         ViewBag.Sexos = new SelectList(new[]
         {
             new { id = 1, nombre = "Macho" },
             new { id = 2, nombre = "Hembra" }
+        }, "id", "nombre");
+
+        ViewBag.EstadosGanado = new SelectList(new[]
+        {
+            new { id = 1, nombre = "Activo" },
+            new { id = 2, nombre = "Inactivo" }
         }, "id", "nombre");
     }
 }

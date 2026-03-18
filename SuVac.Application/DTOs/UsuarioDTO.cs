@@ -5,6 +5,7 @@ public class UsuarioDTO
     public int UsuarioId { get; set; }
     public string Correo { get; set; } = null!;
     public string NombreCompleto { get; set; } = null!;
+    public string? Contrasena { get; set; }
     public int RolId { get; set; }
     public string? NombreRol { get; set; }
     public int EstadoUsuarioId { get; set; }

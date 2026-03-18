@@ -1,0 +1,107 @@
+@model SuVac.Application.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1"><i class="bi bi-person-gear me-2"></i>Editar Usuario</h1>
+        <p class="text-muted mb-0">ID: <strong>#@Model.UsuarioId</strong> — @Model.Correo</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="UsuarioId" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NombreCompleto" class="form-label fw-semibold">Nombre Completo</label>
+                    <input asp-for="NombreCompleto" class="form-control" />
+                    <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Correo" class="form-label fw-semibold">Correo Electrónico</label>
+                    <input asp-for="Correo" class="form-control" type="email" />
+                    <span asp-validation-for="Correo" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Contrasena" class="form-label fw-semibold">
+                    Nueva Contraseña
+                    <small class="text-muted fw-normal">(dejar en blanco para conservar la actual)</small>
+                </label>
+                <div class="input-group">
+                    <input asp-for="Contrasena" class="form-control" type="password"
+                           id="inputContrasena" placeholder="Nueva contraseña (opcional)" />
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="iconPass"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Contrasena" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="RolId" class="form-label fw-semibold">Rol</label>
+                    <select asp-for="RolId" asp-items="ViewBag.Roles" class="form-select">
+                        <option value="">-- Seleccione un Rol --</option>
+                    </select>
+                    <span asp-validation-for="RolId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EstadoUsuarioId" class="form-label fw-semibold">Estado</label>
+                    <select asp-for="EstadoUsuarioId" asp-items="ViewBag.EstadosUsuario" class="form-select">
+                        <option value="">-- Seleccione un Estado --</option>
+                    </select>
+                    <span asp-validation-for="EstadoUsuarioId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-muted">Fecha de Registro</label>
+                <p class="form-control-plaintext ps-1">
+                    <i class="bi bi-calendar me-1 text-muted"></i>
+                    @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm:ss")
+                </p>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-save me-1"></i> Guardar Cambios
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.UsuarioId" class="btn btn-outline-primary">
+                    <i class="bi bi-eye me-1"></i> Ver Detalles
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('inputContrasena');
+            const icon = document.getElementById('iconPass');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+    </script>
+}

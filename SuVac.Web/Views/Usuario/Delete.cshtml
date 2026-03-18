@@ -1,0 +1,102 @@
+@model SuVac.Application.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1"><i class="bi bi-person-x me-2 text-danger"></i>Eliminar Usuario</h1>
+        <p class="text-muted mb-0">Confirma la eliminación del usuario del sistema</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+    </a>
+</div>
+
+<div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+    <div>
+        <strong>¡Atención!</strong> Esta acción es irreversible. El usuario será eliminado permanentemente del sistema.
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">
+            <i class="bi bi-person me-2"></i>@Model.NombreCompleto
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <dl>
+                    <dt class="text-muted small">ID</dt>
+                    <dd>#@Model.UsuarioId</dd>
+
+                    <dt class="text-muted small">Nombre Completo</dt>
+                    <dd>@Model.NombreCompleto</dd>
+
+                    <dt class="text-muted small">Correo Electrónico</dt>
+                    <dd>@Model.Correo</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl>
+                    <dt class="text-muted small">Rol</dt>
+                    <dd>
+                        @if (Model.NombreRol == "Admin")
+                        {
+                            <span class="badge bg-danger">@Model.NombreRol</span>
+                        }
+                        else if (Model.NombreRol == "Vendedor")
+                        {
+                            <span class="badge bg-warning text-dark">@Model.NombreRol</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark">@Model.NombreRol</span>
+                        }
+                    </dd>
+
+                    <dt class="text-muted small">Estado</dt>
+                    <dd>
+                        @if (Model.NombreEstado == "Activo")
+                        {
+                            <span class="badge bg-success">@Model.NombreEstado</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@Model.NombreEstado</span>
+                        }
+                    </dd>
+
+                    <dt class="text-muted small">Fecha de Registro</dt>
+                    <dd>@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (Model.CantidadSubastasCreadas > 0 || Model.CantidadPujasRealizadas > 0)
+        {
+            <div class="alert alert-warning mt-2 mb-0" role="alert">
+                <i class="bi bi-exclamation-circle me-1"></i>
+                Este usuario tiene <strong>@Model.CantidadSubastasCreadas subastas creadas</strong>
+                y <strong>@Model.CantidadPujasRealizadas pujas realizadas</strong> asociadas.
+            </div>
+        }
+    </div>
+</div>
+
+<form asp-action="DeleteConfirmed" asp-route-id="@Model.UsuarioId" method="post">
+    @Html.AntiForgeryToken()
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i> Sí, eliminar usuario
+        </button>
+        <a asp-action="Edit" asp-route-id="@Model.UsuarioId" class="btn btn-outline-warning">
+            <i class="bi bi-pencil me-1"></i> Editar en su lugar
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
