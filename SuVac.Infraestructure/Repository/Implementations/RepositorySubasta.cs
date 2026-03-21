@@ -129,4 +129,78 @@ public class RepositorySubasta : IRepositorySubasta
         return await _context.Pujas
             .CountAsync(p => p.SubastaId == subastaId);
     }
+
+    // ── Métodos administrativos ──────────────────────────────────────────────
+
+    public async Task<IEnumerable<Subasta>> GetAllAdmin()
+    {
+        return await _context.Subastas
+            .Include(s => s.IdEstadoSubastaNavigation)
+            .Include(s => s.IdGanadoNavigation)
+                .ThenInclude(g => g.ImagenesGanado)
+            .Include(s => s.IdUsuarioCreadorNavigation)
+            .OrderByDescending(s => s.SubastaId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Ganado>> GetGanadosActivos()
+    {
+        // Ganados "ocupados": con subasta en estado Activa, Programada o Borrador
+        var ganadosOcupados = await _context.Subastas
+            .Where(s => s.IdEstadoSubastaNavigation.Nombre == "Activa"
+                     || s.IdEstadoSubastaNavigation.Nombre == "Programada"
+                     || s.IdEstadoSubastaNavigation.Nombre == "Borrador")
+            .Select(s => s.GanadoId)
+            .Distinct()
+            .ToListAsync();
+
+        return await _context.Ganados
+            .Include(g => g.IdEstadoGanadoNavigation)
+            .Where(g => g.IdEstadoGanadoNavigation.Nombre == "Activo"
+                     && !ganadosOcupados.Contains(g.GanadoId))
+            .OrderBy(g => g.Nombre)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<bool> CambiarEstado(int subastaId, int nuevoEstadoId)
+    {
+        try
+        {
+            var subasta = await _context.Subastas.FindAsync(subastaId);
+            if (subasta == null) return false;
+
+            subasta.EstadoSubastaId = nuevoEstadoId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> TienePujas(int subastaId)
+    {
+        return await _context.Pujas.AnyAsync(p => p.SubastaId == subastaId);
+    }
+
+    public async Task<bool> GanadoTieneSubastaActiva(int ganadoId, int? excluirSubastaId = null)
+    {
+        return await _context.Subastas
+            .Where(s => s.GanadoId == ganadoId
+                     && (s.IdEstadoSubastaNavigation.Nombre == "Activa"
+                      || s.IdEstadoSubastaNavigation.Nombre == "Programada"
+                      || s.IdEstadoSubastaNavigation.Nombre == "Borrador")
+                     && (excluirSubastaId == null || s.SubastaId != excluirSubastaId.Value))
+            .AnyAsync();
+    }
+
+    public async Task<int?> GetEstadoIdByNombre(string nombre)
+    {
+        var estado = await _context.EstadosSubasta
+            .FirstOrDefaultAsync(e => e.Nombre == nombre);
+        return estado?.EstadoSubastaId;
+    }
 }

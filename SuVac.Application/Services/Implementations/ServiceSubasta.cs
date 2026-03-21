@@ -23,10 +23,17 @@ public class ServiceSubasta : IServiceSubasta
         return _mapper.Map<IEnumerable<SubastaDTO>>(subastas);
     }
 
-    public async Task<SubastaDTO> GetById(int id)
+    public async Task<SubastaDTO?> GetById(int id)
     {
-        var subasta = await _repository.GetById(id);
-        return _mapper.Map<SubastaDTO>(subasta);
+        // Usa GetByIdFull para cargar navegaciones y poder poblar campos de visualización
+        var subasta = await _repository.GetByIdFull(id);
+        if (subasta is null) return null;
+
+        var dto = _mapper.Map<SubastaDTO>(subasta);
+        dto.NombreGanado = subasta.IdGanadoNavigation?.Nombre;
+        dto.NombreCreador = subasta.IdUsuarioCreadorNavigation?.NombreCompleto;
+        dto.NombreEstadoSubasta = subasta.IdEstadoSubastaNavigation?.Nombre;
+        return dto;
     }
 
     public async Task<bool> Create(SubastaDTO dto)
@@ -53,7 +60,6 @@ public class ServiceSubasta : IServiceSubasta
 
         foreach (var s in subastas)
         {
-            // Campo calculado: cantidad de pujas mediante LINQ CountAsync
             var cantPujas = await _repository.CountPujasAsync(s.SubastaId);
             listado.Add(ToListadoDTO(s, cantPujas));
         }
@@ -68,7 +74,6 @@ public class ServiceSubasta : IServiceSubasta
 
         foreach (var s in subastas)
         {
-            // Campo calculado: cantidad de pujas mediante LINQ CountAsync
             var cantPujas = await _repository.CountPujasAsync(s.SubastaId);
             listado.Add(ToListadoDTO(s, cantPujas));
         }
@@ -81,7 +86,6 @@ public class ServiceSubasta : IServiceSubasta
         var s = await _repository.GetByIdFull(id);
         if (s is null) return null;
 
-        // Campo calculado: total de pujas mediante LINQ CountAsync (no almacenado en BD)
         var totalPujas = await _repository.CountPujasAsync(id);
 
         return new SubastaDetalleDTO
@@ -106,9 +110,136 @@ public class ServiceSubasta : IServiceSubasta
         };
     }
 
+    // ── Métodos administrativos ──────────────────────────────────────────────
+
+    public async Task<IEnumerable<SubastaListadoDTO>> GetAllAdmin()
+    {
+        var subastas = await _repository.GetAllAdmin();
+        var listado = new List<SubastaListadoDTO>();
+
+        foreach (var s in subastas)
+        {
+            var cantPujas = await _repository.CountPujasAsync(s.SubastaId);
+            listado.Add(ToListadoDTO(s, cantPujas));
+        }
+
+        return listado;
+    }
+
+    public async Task<IEnumerable<GanadoDTO>> GetGanadosActivos()
+    {
+        var ganados = await _repository.GetGanadosActivos();
+        return ganados.Select(g => new GanadoDTO
+        {
+            GanadoId = g.GanadoId,
+            Nombre = g.Nombre,
+            UsuarioVendedorId = g.UsuarioVendedorId
+        });
+    }
+
+    public async Task<(bool ok, string mensaje)> CreateValidado(SubastaDTO dto)
+    {
+        // Fecha cierre debe ser posterior a fecha inicio
+        if (dto.FechaFin <= dto.FechaInicio)
+            return (false, "La fecha de cierre debe ser posterior a la fecha de inicio.");
+
+        // Precio base > 0 (complementa DataAnnotations)
+        if (dto.PrecioBase <= 0)
+            return (false, "El precio base debe ser mayor a ₡0.");
+
+        if (dto.IncrementoMinimo <= 0)
+            return (false, "El incremento mínimo debe ser mayor a ₡0.");
+
+        // El ganado no puede tener otra subasta activa/programada/borrador
+        if (await _repository.GanadoTieneSubastaActiva(dto.GanadoId))
+            return (false, "El ganado seleccionado ya tiene una subasta activa o programada.");
+
+        // Estado inicial = Borrador
+        var estadoBorrador = await _repository.GetEstadoIdByNombre("Borrador");
+        if (estadoBorrador == null)
+            return (false, "Estado 'Borrador' no configurado en el sistema. Ejecute el script SQL.");
+
+        dto.EstadoSubastaId = estadoBorrador.Value;
+
+        var subasta = _mapper.Map<Subasta>(dto);
+        var ok = await _repository.Create(subasta);
+        return (ok, ok ? "Subasta creada correctamente como borrador." : "Error al guardar la subasta.");
+    }
+
+    public async Task<(bool ok, string mensaje)> UpdateValidado(SubastaDTO dto)
+    {
+        var subasta = await _repository.GetById(dto.SubastaId);
+        if (subasta == null)
+            return (false, "Subasta no encontrada.");
+
+        // No puede editarse si ya inició
+        if (subasta.FechaInicio <= DateTime.Now)
+            return (false, "No se puede editar: la subasta ya ha iniciado.");
+
+        // No puede editarse si ya tiene pujas
+        if (await _repository.TienePujas(dto.SubastaId))
+            return (false, "No se puede editar: la subasta ya tiene pujas registradas.");
+
+        // Fecha cierre > inicio
+        if (dto.FechaFin <= dto.FechaInicio)
+            return (false, "La fecha de cierre debe ser posterior a la fecha de inicio.");
+
+        if (dto.PrecioBase <= 0)
+            return (false, "El precio base debe ser mayor a ₡0.");
+
+        if (dto.IncrementoMinimo <= 0)
+            return (false, "El incremento mínimo debe ser mayor a ₡0.");
+
+        // Solo se actualizan los campos permitidos — GanadoId, UsuarioCreadorId, EstadoSubastaId NO cambian
+        subasta.FechaInicio = dto.FechaInicio;
+        subasta.FechaFin = dto.FechaFin;
+        subasta.PrecioBase = dto.PrecioBase;
+        subasta.IncrementoMinimo = dto.IncrementoMinimo;
+
+        var ok = await _repository.Update(subasta);
+        return (ok, ok ? "Subasta actualizada correctamente." : "Error al actualizar la subasta.");
+    }
+
+    public async Task<(bool ok, string mensaje)> Publicar(int subastaId)
+    {
+        var subasta = await _repository.GetById(subastaId);
+        if (subasta == null)
+            return (false, "Subasta no encontrada.");
+
+        var idBorrador = await _repository.GetEstadoIdByNombre("Borrador");
+        if (subasta.EstadoSubastaId != idBorrador)
+            return (false, "Solo se puede publicar una subasta que se encuentre en estado Borrador.");
+
+        var idProgramada = await _repository.GetEstadoIdByNombre("Programada");
+        if (idProgramada == null)
+            return (false, "Estado 'Programada' no configurado en el sistema.");
+
+        var ok = await _repository.CambiarEstado(subastaId, idProgramada.Value);
+        return (ok, ok ? "Subasta publicada correctamente. Ahora está Programada." : "Error al publicar la subasta.");
+    }
+
+    public async Task<(bool ok, string mensaje)> Cancelar(int subastaId)
+    {
+        var subasta = await _repository.GetById(subastaId);
+        if (subasta == null)
+            return (false, "Subasta no encontrada.");
+
+        var noHaIniciado = subasta.FechaInicio > DateTime.Now;
+        var sinPujas = !await _repository.TienePujas(subastaId);
+
+        if (!noHaIniciado && !sinPujas)
+            return (false, "No se puede cancelar: la subasta ya inició y tiene pujas registradas.");
+
+        var idCancelada = await _repository.GetEstadoIdByNombre("Cancelada");
+        if (idCancelada == null)
+            return (false, "Estado 'Cancelada' no configurado en el sistema.");
+
+        var ok = await _repository.CambiarEstado(subastaId, idCancelada.Value);
+        return (ok, ok ? "Subasta cancelada correctamente." : "Error al cancelar la subasta.");
+    }
+
     /// <summary>
-    /// Mapea una Subasta a SubastaListadoDTO. CantidadPujas se recibe como parámetro
-    /// ya que fue calculado mediante LINQ CountAsync.
+    /// Mapea una Subasta a SubastaListadoDTO.
     /// </summary>
     private static SubastaListadoDTO ToListadoDTO(Subasta s, int cantidadPujas) => new()
     {
@@ -120,6 +251,8 @@ public class ServiceSubasta : IServiceSubasta
         PrecioBase = s.PrecioBase,
         IncrementoMinimo = s.IncrementoMinimo,
         EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
-        CantidadPujas = cantidadPujas
+        CantidadPujas = cantidadPujas,
+        NombreCreador = s.IdUsuarioCreadorNavigation?.NombreCompleto ?? "-"
     };
 }
+

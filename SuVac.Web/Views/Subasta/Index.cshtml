@@ -1,0 +1,177 @@
+@model IEnumerable<SuVac.Application.DTOs.SubastaListadoDTO>
+
+@{
+    ViewData["Title"] = "Gestión de Subastas";
+    var total = Model?.Count() ?? 0;
+}
+
+<nav class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">Inicio</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Gestión de Subastas</li>
+    </ol>
+</nav>
+
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Subastas</h1>
+        <p class="text-muted mb-0">Gestión administrativa de todas las subastas. Total: <strong>@total</strong>.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nueva Subasta
+        </a>
+        <a asp-action="Activas" class="btn btn-outline-success">
+            <i class="bi bi-hammer me-1"></i> Vista Pública
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-body">
+        <span class="fw-semibold">Listado completo</span>
+    </div>
+
+    <div class="card-body p-0">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="p-4 text-center">
+                <div class="display-6 mb-2"><i class="bi bi-inbox"></i></div>
+                <h2 class="h5">No hay subastas registradas</h2>
+                <p class="text-muted mb-3">Crea la primera subasta para comenzar.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Crear subasta
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light position-sticky top-0" style="z-index:1;">
+                        <tr>
+                            <th class="ps-3" style="width:60px;">#</th>
+                            <th>Ganado</th>
+                            <th style="width:130px;">Estado</th>
+                            <th style="width:150px;">Creador</th>
+                            <th style="width:155px;">Fecha Inicio</th>
+                            <th style="width:155px;">Fecha Cierre</th>
+                            <th class="text-end" style="width:140px;">Precio Base</th>
+                            <th class="text-center" style="width:80px;">Pujas</th>
+                            <th class="text-end pe-3" style="width:260px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var badgeEstado = item.EstadoSubasta switch
+                            {
+                                "Borrador" => "text-bg-secondary",
+                                "Programada" => "text-bg-primary",
+                                "Activa" => "text-bg-success",
+                                "Cancelada" => "text-bg-danger",
+                                "Finalizada" => "text-bg-dark",
+                                _ => "text-bg-info"
+                            };
+
+                            var puedeEditar = (item.EstadoSubasta == "Borrador" || item.EstadoSubasta == "Programada")
+                                             && item.FechaInicio > DateTime.Now
+                                             && item.CantidadPujas == 0;
+
+                            var puedePublicar = item.EstadoSubasta == "Borrador";
+
+                            var puedeCancelar = item.EstadoSubasta != "Cancelada"
+                                             && item.EstadoSubasta != "Finalizada"
+                                             && (item.FechaInicio > DateTime.Now || item.CantidadPujas == 0);
+
+                            <tr>
+                                <td class="ps-3">
+                                    <span class="badge text-bg-light border">@item.SubastaId</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        @if (!string.IsNullOrEmpty(item.ImagenGanado))
+                                        {
+                                            <img src="@item.ImagenGanado"                     alt="@item.NombreGanado"                                 class="rounded"
+                                                 style="width:40px;height:40px;object-fit:cover;"
+                                                 onerror="this.src='/img/sin-imagen.png'" />
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded bg-body-secondary d-flex align-items-center justify-content-center"
+                                                 style="width:40px;height:40px;">
+                                                <i class="bi bi-image text-muted small"></i>
+                                            </div>
+                                        }
+                                        <span class="fw-semibold">@item.NombreGanado</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge @badgeEstado">@item.EstadoSubasta</span>
+                                </td>
+                                <td class="small text-muted">@item.NombreCreador</td>
+                                <td class="small">@item.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="small">@item.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-end">
+                                    <span class="fw-semibold">@item.PrecioBase.ToString("₡#,##0.00")</span>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.CantidadPujas > 0)
+                                    {
+                                        <span class="badge text-bg-primary">@item.CantidadPujas</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-light border text-muted">0</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-3">
+                                    <div class="d-flex gap-1 justify-content-end flex-wrap">
+                                        <a asp-action="Detalle" asp-route-id="@item.SubastaId"
+                                               class="btn btn-outline-secondary btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                            <span class="d-none d-xl-inline ms-1">Detalle</span>
+                                        </a>
+
+                                        @if (puedeEditar)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.SubastaId"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-pencil-square"></i>
+                                                <span class="d-none d-xl-inline ms-1">Editar</span>
+                                            </a>
+                                        }
+
+                                        @if (puedePublicar)
+                                        {
+                                            <form asp-action="Publicar" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.SubastaId" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-success btn-sm"
+                                                        title="Publicar subasta">
+                                                    <i class="bi bi-send"></i>
+                                                    <span class="d-none d-xl-inline ms-1">Publicar</span>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (puedeCancelar)
+                                        {
+                                            <a asp-action="Cancelar" asp-route-id="@item.SubastaId"
+                                                   class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-x-circle"></i>
+                                                <span class="d-none d-xl-inline ms-1">Cancelar</span>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

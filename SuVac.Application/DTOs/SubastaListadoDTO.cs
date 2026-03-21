@@ -36,4 +36,7 @@ public record SubastaListadoDTO
     /// <summary>Campo calculado mediante LINQ: cantidad de pujas registradas para la subasta.</summary>
     [Display(Name = "Cantidad de Pujas")]
     public int CantidadPujas { get; set; }
+
+    [Display(Name = "Creador")]
+    public string NombreCreador { get; set; } = string.Empty;
 }

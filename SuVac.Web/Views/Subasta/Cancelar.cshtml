@@ -1,0 +1,89 @@
+﻿@model SuVac.Application.DTOs.SubastaDetalleDTO
+@{
+    ViewData["Title"] = $"Cancelar Subasta #{Model.SubastaId}";
+}
+
+<nav class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">Inicio</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">Subastas</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-action="Detalle" asp-route-id="@Model.SubastaId" class="text-decoration-none">Detalle
+                #@Model.SubastaId</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Cancelar</li>
+        </ol>
+    </nav>
+
+    <header class="mb-3">
+        <h1 class="h3 mb-0">Cancelar Subasta <small class="text-muted fs-5">#@Model.SubastaId</small></h1>
+        <p class="text-muted mb-0">Confirme la cancelación de la subasta antes de continuar.</p>
+    </header>
+
+    <div class="alert alert-danger d-flex gap-2 align-items-start" role="alert">
+        <i class="bi bi-exclamation-octagon-fill fs-5 mt-1"></i>
+        <div>
+            <strong>¿Está seguro que desea cancelar esta subasta?</strong><br />
+            Esta acción cambiará el estado a <strong>Cancelada</strong> y no podrá revertirse.
+            Solo se puede cancelar si la subasta no ha iniciado o no tiene pujas registradas.
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-info-circle me-1"></i> Datos de la subasta a cancelar
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-12 col-md-4 text-muted">Ganado</dt>
+                <dd class="col-12 col-md-8 fw-semibold">@Model.NombreGanado</dd>
+
+                <dt class="col-12 col-md-4 text-muted">Estado actual</dt>
+                <dd class="col-12 col-md-8">
+                    @{
+                        var badgeClase = Model.EstadoSubasta switch
+                        {
+                            "Activa" => "text-bg-success",
+                            "Programada" => "text-bg-primary",
+                            "Borrador" => "text-bg-secondary",
+                            _ => "text-bg-info"
+                        };
+                    }
+                    <span class="badge @badgeClase">@Model.EstadoSubasta</span>
+                </dd>
+
+                <dt class="col-12 col-md-4 text-muted">Fecha de Inicio</dt>
+                <dd class="col-12 col-md-8">@Model.FechaInicio.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-12 col-md-4 text-muted">Fecha de Cierre</dt>
+                <dd class="col-12 col-md-8">@Model.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-12 col-md-4 text-muted">Precio Base</dt>
+                <dd class="col-12 col-md-8">&#8353;@Model.PrecioBase.ToString("N2")</dd>
+
+                <dt class="col-12 col-md-4 text-muted">Total de Pujas</dt>
+                <dd class="col-12 col-md-8">
+                    <span class="badge text-bg-primary">@Model.TotalPujas puja(s)</span>
+                </dd>
+
+                <dt class="col-12 col-md-4 text-muted">Vendedor / Creador</dt>
+                <dd class="col-12 col-md-8">@Model.NombreCreador</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <form asp-action="CancelarConfirmado" asp-route-id="@Model.SubastaId" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-x-circle me-1"></i> Confirmar cancelacion
+            </button>
+        </form>
+        <a asp-action="Detalle" asp-route-id="@Model.SubastaId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al detalle
+        </a>
+    </div>

@@ -1,80 +1,126 @@
-@model SuVac.Application.DTOs.SubastaDTO
-
+﻿@model SuVac.Application.DTOs.SubastaDTO
 @{
-    ViewData["Title"] = "Editar Subasta";
-    var from = ViewBag.From as string ?? "activas";
-    var volverAction = from == "finalizadas" ? "Finalizadas" : "Activas";
+    ViewData["Title"] = $"Editar Subasta #{Model.SubastaId}";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0"><span data-i18n="subasta.editarTitle">Editar Subasta</span> <small
-        class="text-muted fs-5">#@Model.SubastaId</small></h1>
-        <a asp-action="@volverAction" class="btn btn-secondary" data-i18n="comun.volver">
-            <i class="bi bi-arrow-left me-1"></i>Volver
+<nav class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none">Inicio</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-decoration-none">Subastas</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Editar #@Model.SubastaId</li>
+    </ol>
+</nav>
+
+<header class="mb-3">
+    <h1 class="h3 mb-0">Editar Subasta <small class="text-muted fs-5">#@Model.SubastaId</small></h1>
+    <p class="text-muted mb-0">Mantenimiento: actualización de la subasta</p>
+</header>
+
+<div class="alert alert-warning d-flex gap-2 align-items-start" role="alert">
+    <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+    <div>
+        <strong>Restricciones de edición:</strong> Solo puede modificar fechas y precios.
+        La subasta no puede haber iniciado ni tener pujas registradas.
+        El ganado y el vendedor no pueden cambiarse.
+    </div>
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.SubastaId" method="post" class="row g-3">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="col-12 text-danger"></div>
+
+    <!-- Campos ocultos necesarios para el POST -->
+    <input asp-for="SubastaId" type="hidden" />
+    <input asp-for="GanadoId" type="hidden" />
+    <input asp-for="UsuarioCreadorId" type="hidden" />
+    <input asp-for="EstadoSubastaId" type="hidden" />
+
+    <!-- Sección: Datos no editables -->
+    <div class="col-12">
+        <h5 class="fw-semibold border-bottom pb-2 mb-2">
+            <i class="bi bi-lock me-1"></i> Datos fijos (no editables)
+        </h5>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Ganado</label>
+        <input type="text" class="form-control" value="@Model.NombreGanado" disabled />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Estado</label>
+        <input type="text" class="form-control" value="@Model.NombreEstadoSubasta" disabled />
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Vendedor / Creador</label>
+        <input type="text" class="form-control" value="@Model.NombreCreador" disabled />
+    </div>
+
+    <!-- Sección: Fechas -->
+    <div class="col-12">
+        <h5 class="fw-semibold border-bottom pb-2 mb-2 mt-2">
+            <i class="bi bi-calendar-range me-1"></i> Fechas de la Subasta
+        </h5>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="FechaInicio" class="form-label"></label>
+        <input asp-for="FechaInicio" class="form-control" type="datetime-local"
+               value="@Model.FechaInicio.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="FechaFin" class="form-label"></label>
+        <input asp-for="FechaFin" class="form-control" type="datetime-local"
+               value="@Model.FechaFin.ToString("yyyy-MM-ddTHH:mm")" />
+        <span asp-validation-for="FechaFin" class="text-danger"></span>
+    </div>
+
+    <!-- Sección: Condiciones económicas -->
+    <div class="col-12">
+        <h5 class="fw-semibold border-bottom pb-2 mb-2 mt-2">
+            <i class="bi bi-currency-dollar me-1"></i> Condiciones Económicas
+        </h5>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="PrecioBase" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">₡</span>
+            <input asp-for="PrecioBase" class="form-control" inputmode="decimal" />
+        </div>
+        <span asp-validation-for="PrecioBase" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="IncrementoMinimo" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">₡</span>
+            <input asp-for="IncrementoMinimo" class="form-control" inputmode="decimal" />
+        </div>
+        <span asp-validation-for="IncrementoMinimo" class="text-danger"></span>
+    </div>
+
+    <!-- Botones -->
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-warning">
+            <i class="bi bi-save2 me-1"></i> Guardar cambios
+        </button>
+        <a asp-action="Detalle" asp-route-id="@Model.SubastaId" class="btn btn-outline-secondary">
+            Volver al detalle
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Volver al listado
         </a>
     </div>
+</form>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                <input type="hidden" asp-for="SubastaId" />
-                <input type="hidden" name="from" value="@from" />
-
-                <div class="mb-3">
-                    <label asp-for="GanadoId" class="form-label"></label>
-                    <input asp-for="GanadoId" class="form-control" />
-                    <span asp-validation-for="GanadoId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="PrecioBase" class="form-label"></label>
-                    <input asp-for="PrecioBase" class="form-control" />
-                    <span asp-validation-for="PrecioBase" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="IncrementoMinimo" class="form-label"></label>
-                    <input asp-for="IncrementoMinimo" class="form-control" />
-                    <span asp-validation-for="IncrementoMinimo" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="EstadoSubastaId" class="form-label"></label>
-                    <input asp-for="EstadoSubastaId" class="form-control" />
-                    <span asp-validation-for="EstadoSubastaId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="UsuarioCreadorId" class="form-label"></label>
-                    <input asp-for="UsuarioCreadorId" class="form-control" />
-                    <span asp-validation-for="UsuarioCreadorId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="FechaInicio" class="form-label"></label>
-                    <input asp-for="FechaInicio" class="form-control" type="datetime-local" />
-                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="FechaFin" class="form-label"></label>
-                    <input asp-for="FechaFin" class="form-control" type="datetime-local" />
-                    <span asp-validation-for="FechaFin" class="text-danger"></span>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-warning" data-i18n="subasta.guardarCambios">
-                        <i class="bi bi-save me-1"></i>Guardar cambios
-                    </button>
-                    <a asp-action="@volverAction" class="btn btn-secondary" data-i18n="comun.cancelar">Cancelar</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
-    }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
