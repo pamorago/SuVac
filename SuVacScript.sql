@@ -152,7 +152,7 @@ CREATE TABLE Ganado (
 CREATE TABLE ImagenGanado (
     ImagenId INT IDENTITY PRIMARY KEY,
     GanadoId INT NOT NULL,
-    UrlImagen NVARCHAR(300) NOT NULL,
+    UrlImagen NVARCHAR(2000) NOT NULL,
 
     CONSTRAINT FK_Imagen_Ganado
         FOREIGN KEY (GanadoId)
@@ -573,4 +573,31 @@ BEGIN
     (14, 7, 200000.00, '2026-02-27 09:00'),
     (14, 5, 205000.00, '2026-02-27 12:30'),
     (14, 6, 210000.00, '2026-02-28 08:00');
+END
+
+-- =========================
+-- RESULTADO SUBASTA (solo subastas FINALIZADAS: 7, 8, 9, 10, 13)
+-- Ganadores: 5=Ana, 6=Luis, 7=Maria
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM ResultadoSubasta WHERE SubastaId = 7)
+BEGIN
+    INSERT INTO ResultadoSubasta (SubastaId, UsuarioGanadorId, MontoFinal, FechaCierre) VALUES
+    (7,  6, 475000.00, '2026-02-22 18:00'),   -- Vaca Brahman 002 → Luis
+    (8,  5, 330000.00, '2026-02-05 18:00'),   -- Vaca Jersey 001 → Ana
+    (9,  5, 570000.00, '2026-02-15 18:00'),   -- Toro Charolais 001 → Ana
+    (10, 5, 398000.00, '2026-02-20 18:00'),   -- Vaca Simmental 001 → Ana
+    (13, 7, 312000.00, '2026-02-18 18:00');   -- Vaca Brangus 001 → Maria
+END
+
+-- =========================
+-- PAGOS (uno por subasta finalizada)
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM Pago WHERE SubastaId = 7)
+BEGIN
+    INSERT INTO Pago (SubastaId, UsuarioId, Monto, EstadoPagoId, FechaPago) VALUES
+    (7,  6, 475000.00, 2, '2026-02-23 10:00'),   -- Confirmado
+    (8,  5, 330000.00, 2, '2026-02-06 09:00'),   -- Confirmado
+    (9,  5, 570000.00, 1, NULL),                  -- Pendiente
+    (10, 5, 398000.00, 2, '2026-02-21 14:00'),   -- Confirmado
+    (13, 7, 312000.00, 1, NULL);                  -- Pendiente
 END

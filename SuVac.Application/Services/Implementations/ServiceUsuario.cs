@@ -78,6 +78,12 @@ public class ServiceUsuario : IServiceUsuario
         return await _repository.Update(usuario);
     }
 
+    public async Task<bool> UpdatePerfil(int id, string nombreCompleto, string correo)
+        => await _repository.UpdatePerfil(id, nombreCompleto, correo);
+
+    public async Task<bool> ToggleEstado(int id)
+        => await _repository.ToggleEstado(id);
+
     public async Task<bool> Delete(int id)
     {
         return await _repository.Delete(id);

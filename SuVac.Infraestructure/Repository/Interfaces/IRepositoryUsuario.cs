@@ -17,5 +17,9 @@ public interface IRepositoryUsuario
 
     Task<bool> Create(Usuario entity);
     Task<bool> Update(Usuario entity);
+    /// <summary>Actualiza únicamente NombreCompleto y Correo sin tocar otros campos.</summary>
+    Task<bool> UpdatePerfil(int id, string nombreCompleto, string correo);
+    /// <summary>Alterna estado Activo(1) ↔ Bloqueado(2).</summary>
+    Task<bool> ToggleEstado(int id);
     Task<bool> Delete(int id);
 }

@@ -90,4 +90,61 @@ public class RepositoryGanado : IRepositoryGanado
             return false;
         }
     }
+
+    public async Task<bool> UpdateFull(Ganado entity, List<int> categoriasIds, List<string> imagenesUrls)
+    {
+        try
+        {
+            var tracked = await _context.Ganados.FindAsync(entity.GanadoId);
+            if (tracked == null) return false;
+
+            tracked.Nombre = entity.Nombre;
+            tracked.Descripcion = entity.Descripcion;
+            tracked.TipoGanadoId = entity.TipoGanadoId;
+            tracked.RazaId = entity.RazaId;
+            tracked.SexoId = entity.SexoId;
+            tracked.FechaNacimiento = entity.FechaNacimiento;
+            tracked.PesoKg = entity.PesoKg;
+            tracked.CertificadoSalud = entity.CertificadoSalud;
+            tracked.EstadoGanadoId = entity.EstadoGanadoId;
+            // UsuarioVendedorId no se modifica (no editable)
+
+            // Reemplazar imágenes
+            var existingImages = await _context.ImagenesGanado
+                .Where(i => i.GanadoId == entity.GanadoId).ToListAsync();
+            _context.ImagenesGanado.RemoveRange(existingImages);
+            foreach (var url in imagenesUrls.Where(u => !string.IsNullOrWhiteSpace(u)))
+                _context.ImagenesGanado.Add(new ImagenGanado { GanadoId = entity.GanadoId, UrlImagen = url });
+
+            // Reemplazar categorías
+            var existingCats = await _context.GanadosCategorias
+                .Where(gc => gc.GanadoId == entity.GanadoId).ToListAsync();
+            _context.GanadosCategorias.RemoveRange(existingCats);
+            foreach (var catId in categoriasIds)
+                _context.GanadosCategorias.Add(new GanadoCategoria { GanadoId = entity.GanadoId, CategoriaId = catId });
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> ToggleEstado(int id, int estadoId)
+    {
+        try
+        {
+            var ganado = await _context.Ganados.FindAsync(id);
+            if (ganado == null) return false;
+            ganado.EstadoGanadoId = estadoId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

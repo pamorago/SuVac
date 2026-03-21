@@ -1,20 +1,22 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Json;
 
 namespace SuVac.Web.Controllers;
 
 public class UsuarioController : Controller
 {
     private readonly IServiceUsuario _service;
-    private readonly IServiceRol _serviceRol;
 
-    public UsuarioController(IServiceUsuario service, IServiceRol serviceRol)
+    public UsuarioController(IServiceUsuario service)
     {
         _service = service;
-        _serviceRol = serviceRol;
     }
+
+    // ─── Utilidad de notificaciones via TempData + SweetAlert ───────────────
+    private void Notify(string title, string text, string icon = "success") =>
+        TempData["Notificacion"] = JsonSerializer.Serialize(new { title, text, icon });
 
     // GET: Usuario
     public async Task<IActionResult> Index()
@@ -32,70 +34,8 @@ public class UsuarioController : Controller
         return View(usuario);
     }
 
-    // GET: Usuario/Create
-    public async Task<IActionResult> Create()
-    {
-        await CargarListas();
-        return View();
-    }
-
-    // POST: Usuario/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(UsuarioDTO dto)
-    {
-        try
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _service.Create(dto);
-                if (result) return RedirectToAction(nameof(Index));
-            }
-            await CargarListas();
-            return View(dto);
-        }
-        catch
-        {
-            await CargarListas();
-            return View(dto);
-        }
-    }
-
-    // GET: Usuario/Edit/5
+    // GET: Usuario/Edit/5  —  solo permite editar Nombre y Correo
     public async Task<IActionResult> Edit(int id)
-    {
-        if (id <= 0) return NotFound();
-        var usuario = await _service.GetById(id);
-        if (usuario == null) return NotFound();
-        await CargarListas();
-        return View(usuario);
-    }
-
-    // POST: Usuario/Edit/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, UsuarioDTO dto)
-    {
-        if (id != dto.UsuarioId) return NotFound();
-        try
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _service.Update(dto);
-                if (result) return RedirectToAction(nameof(Index));
-            }
-            await CargarListas();
-            return View(dto);
-        }
-        catch
-        {
-            await CargarListas();
-            return View(dto);
-        }
-    }
-
-    // GET: Usuario/Delete/5
-    public async Task<IActionResult> Delete(int id)
     {
         if (id <= 0) return NotFound();
         var usuario = await _service.GetByIdConDetalle(id);
@@ -103,31 +43,68 @@ public class UsuarioController : Controller
         return View(usuario);
     }
 
-    // POST: Usuario/Delete/5
+    // POST: Usuario/Edit/5  —  solo persiste NombreCompleto y Correo
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> Edit(int id, UsuarioDTO dto)
     {
-        try
+        if (id != dto.UsuarioId) return NotFound();
+
+        // Solo validar los campos editables; ignorar el resto
+        ModelState.Remove(nameof(dto.Contrasena));
+        ModelState.Remove(nameof(dto.RolId));
+        ModelState.Remove(nameof(dto.EstadoUsuarioId));
+
+        if (!ModelState.IsValid)
         {
-            var result = await _service.Delete(id);
-            if (result) return RedirectToAction(nameof(Index));
-            return NotFound();
+            // Reload full data for read-only fields in view
+            var full = await _service.GetByIdConDetalle(id);
+            if (full != null)
+            {
+                dto.NombreRol = full.NombreRol;
+                dto.NombreEstado = full.NombreEstado;
+                dto.FechaRegistro = full.FechaRegistro;
+                dto.CantidadSubastasCreadas = full.CantidadSubastasCreadas;
+                dto.CantidadPujasRealizadas = full.CantidadPujasRealizadas;
+            }
+            return View(dto);
         }
-        catch
+
+        var result = await _service.UpdatePerfil(id, dto.NombreCompleto, dto.Correo);
+        if (result)
         {
-            return BadRequest();
+            Notify("Perfil actualizado", $"Los datos de {dto.NombreCompleto} fueron guardados exitosamente.");
+            return RedirectToAction(nameof(Index));
         }
+
+        ModelState.AddModelError("", "No se pudo actualizar el perfil. Verifique que el correo no esté en uso.");
+        return View(dto);
     }
 
-    private async Task CargarListas()
+    // POST: Usuario/ToggleEstado/5  —  Bloquear ↔ Activar (cambio lógico de estado)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleEstado(int id)
     {
-        var roles = await _serviceRol.GetAll();
-        ViewBag.Roles = new SelectList(roles, "RolId", "Nombre");
-        ViewBag.EstadosUsuario = new SelectList(new[]
+        var usuario = await _service.GetByIdConDetalle(id);
+        if (usuario == null) return NotFound();
+
+        var esActivo = usuario.NombreEstado == "Activo";
+        var result = await _service.ToggleEstado(id);
+
+        if (result)
         {
-            new { id = 1, nombre = "Activo" },
-            new { id = 2, nombre = "Bloqueado" }
-        }, "id", "nombre");
+            var nuevoEstado = esActivo ? "bloqueado" : "activado";
+            Notify(
+                esActivo ? "Usuario bloqueado" : "Usuario activado",
+                $"{usuario.NombreCompleto} fue {nuevoEstado} exitosamente.",
+                esActivo ? "warning" : "success");
+        }
+        else
+        {
+            Notify("Error", "No se pudo cambiar el estado del usuario.", "error");
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }

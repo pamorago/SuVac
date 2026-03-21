@@ -1,87 +1,127 @@
 @model SuVac.Application.DTOs.GanadoDTO
 
 @{
-    ViewData["Title"] = "Eliminar Ganado";
+    ViewData["Title"] = "Desactivar Ganado";
+    bool puedeEliminar = ViewBag.PuedeEliminar == true;
+    bool enSubastaActiva = ViewBag.EnSubastaActiva == true;
+    bool fueSubastado = ViewBag.FueSubastado == true;
 }
 
-<div class="container mt-5">
-    <h1 class="mb-4 text-danger">
-        <i class="bi bi-trash me-2"></i>Eliminar Ganado
-    </h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1 text-danger"><i class="bi bi-slash-circle me-2"></i>Desactivar Ganado</h1>
+        <p class="text-muted mb-0">Eliminación lógica — el registro permanece en la base de datos</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+    </a>
+</div>
 
-    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+@if (!puedeEliminar)
+{
+    <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" role="alert">
+        <i class="bi bi-x-octagon-fill fs-5 mt-1"></i>
         <div>
-            <strong>¡Atención!</strong> Esta acción es irreversible. El registro del ganado será eliminado
-            permanentemente del sistema.
+            <strong>No se puede desactivar este ganado.</strong>
+            <ul class="mb-0 mt-1">
+                @if (enSubastaActiva)
+                {
+                    <li>Pertenece a una <strong>subasta activa</strong> en este momento.</li>
+                }
+                @if (fueSubastado)
+                {
+                    <li>Ya participó en una o más <strong>subastas anteriores</strong>.</li>
+                }
+            </ul>
+            <a asp-action="Index" class="btn btn-secondary btn-sm mt-2">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
         </div>
     </div>
-
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h5 class="mb-0">Datos del Ganado a Eliminar</h5>
+}
+else
+{
+    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+        <div>
+            <strong>¿Desactivar este ganado?</strong> El objeto será marcado como <strong>Inactivo</strong>
+            y no aparecerá disponible para subastas. Esta acción se puede revertir desde el listado.
         </div>
-        <div class="card-body">
-            <dl class="row mb-0">
-                <dt class="col-sm-3">ID</dt>
-                <dd class="col-sm-9">@Model.GanadoId</dd>
+    </div>
+}
 
-                <dt class="col-sm-3">Nombre</dt>
-                <dd class="col-sm-9">@Model.Nombre</dd>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>@Model.Nombre</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3 text-muted small">ID</dt>
+            <dd class="col-sm-9">#@Model.GanadoId</dd>
 
-                <dt class="col-sm-3">Descripción</dt>
-                <dd class="col-sm-9">@Model.Descripcion</dd>
+            <dt class="col-sm-3 text-muted small">Nombre</dt>
+            <dd class="col-sm-9">@Model.Nombre</dd>
 
-                <dt class="col-sm-3">Tipo de Ganado</dt>
-                <dd class="col-sm-9">@(Model.NombreTipoGanado ?? "—")</dd>
+            <dt class="col-sm-3 text-muted small">Descripción</dt>
+            <dd class="col-sm-9">@Model.Descripcion</dd>
 
-                <dt class="col-sm-3">Raza</dt>
-                <dd class="col-sm-9">@(Model.NombreRaza ?? "—")</dd>
+            <dt class="col-sm-3 text-muted small">Tipo</dt>
+            <dd class="col-sm-9">@(Model.NombreTipoGanado ?? "—")</dd>
 
-                <dt class="col-sm-3">Sexo</dt>
-                <dd class="col-sm-9">@(Model.NombreSexo ?? "—")</dd>
+            <dt class="col-sm-3 text-muted small">Raza</dt>
+            <dd class="col-sm-9">@(Model.NombreRaza ?? "—")</dd>
 
-                <dt class="col-sm-3">Peso (kg)</dt>
-                <dd class="col-sm-9">@Model.PesoKg</dd>
+            <dt class="col-sm-3 text-muted small">Sexo</dt>
+            <dd class="col-sm-9">@(Model.NombreSexo ?? "—")</dd>
 
-                <dt class="col-sm-3">Fecha de Nacimiento</dt>
-                <dd class="col-sm-9">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</dd>
+            <dt class="col-sm-3 text-muted small">Peso (kg)</dt>
+            <dd class="col-sm-9">@Model.PesoKg</dd>
 
-                <dt class="col-sm-3">Estado</dt>
-                <dd class="col-sm-9">
-                    @if (Model.NombreEstadoGanado != null)
+            <dt class="col-sm-3 text-muted small">Estado actual</dt>
+            <dd class="col-sm-9">
+                <span class="badge @(Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary")">
+                    @(Model.NombreEstadoGanado ?? "—")
+                </span>
+            </dd>
+
+            <dt class="col-sm-3 text-muted small">Vendedor</dt>
+            <dd class="col-sm-9">@(Model.NombreVendedor ?? "—")</dd>
+
+            <dt class="col-sm-3 text-muted small">Subastas</dt>
+            <dd class="col-sm-9">
+                @if (fueSubastado)
+                {
+                    <span class="badge bg-danger">Ha participado en @(Model.SubastasParticipacion?.Count ?? 0)
+                        subasta(s)</span>
+                    }
+                else
                     {
-                        <span class="badge @(Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary")">
-                            @Model.NombreEstadoGanado
-                        </span>
+                        <span class="badge bg-success">Nunca subastado</span>
                     }
                 </dd>
-
-                <dt class="col-sm-3">Vendedor</dt>
-                <dd class="col-sm-9">@(Model.NombreVendedor ?? "—")</dd>
-
-                @if (!string.IsNullOrEmpty(Model.CertificadoSalud))
-                {
-                    <dt class="col-sm-3">Certificado de Salud</dt>
-                    <dd class="col-sm-9">@Model.CertificadoSalud</dd>
-                }
-
-                <dt class="col-sm-3">Fecha de Registro</dt>
-                <dd class="col-sm-9">@Model.FechaRegistro.ToString("dd/MM/yyyy")</dd>
             </dl>
         </div>
     </div>
 
-    <form asp-action="DeleteConfirmed" asp-route-id="@Model.GanadoId" method="post" class="d-flex gap-2">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger">
-            <i class="bi bi-trash me-1"></i> Sí, eliminar
-        </button>
-        <a asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-outline-warning">
-            <i class="bi bi-pencil me-1"></i> Editar en su lugar
-        </a>
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="bi bi-x-circle me-1"></i> Cancelar
-        </a>
-    </form>
-</div>
+    @if (puedeEliminar)
+    {
+        <form asp-action="DeleteConfirmed" asp-route-id="@Model.GanadoId" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-slash-circle me-1"></i> Sí, desactivar
+            </button>
+            <a asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-outline-warning">
+                <i class="bi bi-pencil me-1"></i> Editar en su lugar
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    }
+    else
+    {
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-outline-warning">
+                <i class="bi bi-pencil me-1"></i> Editar
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+        </div>
+    }

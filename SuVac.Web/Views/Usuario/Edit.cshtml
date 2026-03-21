@@ -1,13 +1,13 @@
 @model SuVac.Application.DTOs.UsuarioDTO
 
 @{
-    ViewData["Title"] = "Editar Usuario";
+    ViewData["Title"] = "Editar Perfil de Usuario";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h1 class="h3 mb-1"><i class="bi bi-person-gear me-2"></i>Editar Usuario</h1>
-        <p class="text-muted mb-0">ID: <strong>#@Model.UsuarioId</strong> — @Model.Correo</p>
+        <h1 class="h3 mb-1"><i class="bi bi-person-gear me-2"></i>Editar Perfil</h1>
+        <p class="text-muted mb-0">ID: <strong>#@Model.UsuarioId</strong></p>
     </div>
     <a asp-action="Index" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-1"></i> Volver al Listado
@@ -21,56 +21,63 @@
             <input type="hidden" asp-for="UsuarioId" />
             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
+            <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <div>Solo se puede modificar el <strong>Nombre Completo</strong> y el <strong>Correo Electrónico</strong>.
+                El Rol y la Fecha de Registro no son editables.</div>
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="NombreCompleto" class="form-label fw-semibold">Nombre Completo</label>
-                    <input asp-for="NombreCompleto" class="form-control" />
+                    <input asp-for="NombreCompleto" class="form-control" placeholder="Nombre completo del usuario" />
                     <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="Correo" class="form-label fw-semibold">Correo Electrónico</label>
-                    <input asp-for="Correo" class="form-control" type="email" />
+                    <input asp-for="Correo" class="form-control" type="email" placeholder="correo@ejemplo.com" />
                     <span asp-validation-for="Correo" class="text-danger small"></span>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Contrasena" class="form-label fw-semibold">
-                    Nueva Contraseña
-                    <small class="text-muted fw-normal">(dejar en blanco para conservar la actual)</small>
-                </label>
-                <div class="input-group">
-                    <input asp-for="Contrasena" class="form-control" type="password"
-                           id="inputContrasena" placeholder="Nueva contraseña (opcional)" />
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                        <i class="bi bi-eye" id="iconPass"></i>
-                    </button>
-                </div>
-                <span asp-validation-for="Contrasena" class="text-danger small"></span>
-            </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="RolId" class="form-label fw-semibold">Rol</label>
-                    <select asp-for="RolId" asp-items="ViewBag.Roles" class="form-select">
-                        <option value="">-- Seleccione un Rol --</option>
-                    </select>
-                    <span asp-validation-for="RolId" class="text-danger small"></span>
+                    <label class="form-label fw-semibold text-muted">Rol <span class="text-danger small">(no editable)</span></label>
+                    <p class="form-control-plaintext ps-1">
+                        @if (Model.NombreRol == "Admin")
+                        {
+                            <span class="badge bg-danger">@Model.NombreRol</span>
+                        }
+                        else if (Model.NombreRol == "Vendedor")
+                        {
+                            <span class="badge bg-warning text-dark">@Model.NombreRol</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark">@(Model.NombreRol ?? "—")</span>
+                        }
+                    </p>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="EstadoUsuarioId" class="form-label fw-semibold">Estado</label>
-                    <select asp-for="EstadoUsuarioId" asp-items="ViewBag.EstadosUsuario" class="form-select">
-                        <option value="">-- Seleccione un Estado --</option>
-                    </select>
-                    <span asp-validation-for="EstadoUsuarioId" class="text-danger small"></span>
+                    <label class="form-label fw-semibold text-muted">Fecha de Registro <span class="text-danger small">(no editable)</span></label>
+                    <p class="form-control-plaintext ps-1">
+                        <i class="bi bi-calendar me-1 text-muted"></i>
+                        @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm:ss")
+                    </p>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-semibold text-muted">Fecha de Registro</label>
+                <label class="form-label fw-semibold text-muted">Estado actual <span class="text-danger small">(use Bloquear/Activar desde el listado)</span></label>
                 <p class="form-control-plaintext ps-1">
-                    <i class="bi bi-calendar me-1 text-muted"></i>
-                    @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm:ss")
+                    @if (Model.NombreEstado == "Activo")
+                    {
+                        <span class="badge bg-success">@Model.NombreEstado</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@(Model.NombreEstado ?? "—")</span>
+                    }
                 </p>
             </div>
 
@@ -91,17 +98,4 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script>
-        function togglePassword() {
-            const input = document.getElementById('inputContrasena');
-            const icon = document.getElementById('iconPass');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('bi-eye', 'bi-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('bi-eye-slash', 'bi-eye');
-            }
-        }
-    </script>
 }

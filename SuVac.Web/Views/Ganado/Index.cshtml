@@ -7,22 +7,19 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1" data-i18n="ganado.title">Catálogo de Ganado</h1>
-        <p class="text-muted mb-0"><span data-i18n="ganado.subtitulo">Explora el catálogo disponible. Total:</span> <strong>@total</strong>.</p>
+        <h1 class="h3 mb-1"><i class="bi bi-collection me-2"></i>Catálogo de Ganado</h1>
+        <p class="text-muted mb-0">Total de objetos registrados: <strong>@total</strong></p>
     </div>
-
-    <div class="d-flex gap-2">
-        <a asp-controller="Ganado" asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i> <span data-i18n="ganado.agregarBtn">Agregar Ganado</span>
-        </a>
-    </div>
+    <a asp-controller="Ganado" asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Agregar Ganado
+    </a>
 </div>
 
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-info d-flex align-items-center" role="alert">
         <i class="bi bi-info-circle me-2"></i>
-        <div data-i18n="ganado.noHay">No hay ganado disponible en este momento.</div>
+        <div>No hay ganado disponible en este momento.</div>
     </div>
 }
 else
@@ -32,12 +29,11 @@ else
         {
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card shadow-sm h-100 border-0 overflow-hidden">
-                    <!-- Imagen del Ganado -->
                     <div class="position-relative bg-light" style="height: 200px; overflow: hidden;">
                         @if (item.ImagenesGanado != null && item.ImagenesGanado.Any())
                         {
-                            <img src="@item.ImagenesGanado.First().UrlImagen"                    alt="@item.Nombre"
-                                 class="w-100 h-100 object-fit-cover"   style="object-fit: cover;">
+                            <img src="@item.ImagenesGanado.First().UrlImagen" alt="@item.Nombre"
+                                 class="w-100 h-100" style="object-fit: cover;">
                         }
                         else
                         {
@@ -46,26 +42,26 @@ else
                             </div>
                         }
                     </div>
-
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">@item.Nombre</h5>
+                        <span class="badge @(item.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-secondary") border border-white border-opacity-50">
+                            @(item.NombreEstadoGanado ?? "—")
+                        </span>
                     </div>
                     <div class="card-body">
-                        <!-- Campo: Condición (Certificado de Salud) -->
                         <p class="mb-2">
-                            <strong data-i18n="ganado.condicion">Condición:</strong>
+                            <strong>Condición:</strong>
                             @if (!string.IsNullOrEmpty(item.CertificadoSalud))
                             {
-                                <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i><span data-i18n="ganado.certificado">Certificado</span></span>
+                                <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Certificado</span>
                             }
                             else
                             {
-                                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i><span data-i18n="ganado.sinCertificacion">Sin certificación</span></span>
+                                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Sin certificación</span>
                             }
                         </p>
-                        <!-- Campo: Categorías -->
                         <p class="mb-2">
-                            <strong data-i18n="ganado.categorias">Categorías:</strong>
+                            <strong>Categorías:</strong>
                             @if (item.Categorias != null && item.Categorias.Any())
                             {
                                 @foreach (var cat in item.Categorias)
@@ -75,31 +71,49 @@ else
                             }
                             else
                             {
-                                <span class="text-muted small" data-i18n="ganado.sinCategorias">Sin categorías</span>
+                                <span class="text-muted small">Sin categorías</span>
                             }
                         </p>
-
+                        <p class="mb-1 small text-muted">
+                            <i class="bi bi-tag me-1"></i><strong>Tipo / Raza:</strong> @(item.NombreTipoGanado ?? "—") / @(item.NombreRaza ?? "—")
+                        </p>
+                        <p class="mb-0 small text-muted">
+                            <i class="bi bi-person me-1"></i><strong>Vendedor:</strong> @(item.NombreVendedor ?? "—")
+                        </p>
                     </div>
                     <div class="card-footer bg-body border-0 pt-0 pb-3">
                         <div class="d-grid gap-2 px-2">
                             <a asp-controller="Ganado" asp-action="Details" asp-route-id="@item.GanadoId"
                                class="btn btn-secondary">
-                                <i class="bi bi-eye me-1"></i> <span data-i18n="ganado.verDetalles">Ver Detalles</span>
+                                <i class="bi bi-eye me-1"></i> Ver Detalles
                             </a>
                             <div class="d-flex gap-2">
                                 <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@item.GanadoId"
                                    class="btn btn-outline-warning flex-fill">
-                                    <i class="bi bi-pencil me-1"></i> <span data-i18n="ganado.editar">Editar</span>
+                                    <i class="bi bi-pencil me-1"></i> Editar
                                 </a>
-                                <form asp-controller="Ganado" asp-action="DeleteConfirmed" asp-route-id="@item.GanadoId"
-                                      method="post" class="delete-form flex-fill">
+                                <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@item.GanadoId"
+                                      method="post" class="toggle-form flex-fill">
                                     @Html.AntiForgeryToken()
-                                    <button type="button" class="btn btn-outline-danger w-100 btn-delete"
-                                            data-nombre="@item.Nombre">
-                                        <i class="bi bi-trash me-1"></i> <span data-i18n="ganado.eliminar">Eliminar</span>
+                                    <button type="button"
+                                            class="btn w-100 btn-toggle-ganado @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
+                                            data-nombre="@item.Nombre"
+                                            data-estado="@item.NombreEstadoGanado">
+                                        @if (item.NombreEstadoGanado == "Activo")
+                                        {
+                                            <i class="bi bi-pause-circle me-1"></i><span>Desactivar</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-play-circle me-1"></i><span>Activar</span>
+                                        }
                                     </button>
                                 </form>
                             </div>
+                            <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@item.GanadoId"
+                               class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -113,27 +127,29 @@ else
         .card:hover { transform: translateY(-3px); transition: transform .18s ease; }
     </style>
     <script>
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const nombre = this.dataset.nombre;
-                    const form = this.closest('form');
-                    const lang = window.SuVacI18n ? window.SuVacI18n.current() : 'es';
-                    const isEn = lang === 'en';
-                    Swal.fire({
-                        title: isEn ? 'Delete livestock?' : '¿Eliminar ganado?',
-                        html: isEn
-                            ? `Are you sure you want to delete <strong>${nombre}</strong>? This action cannot be undone.`
-                            : `¿Estás seguro de que deseas eliminar <strong>${nombre}</strong>? Esta acción no se puede deshacer.`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: isEn ? '<i class="bi bi-trash me-1"></i>Yes, delete' : '<i class="bi bi-trash me-1"></i>Sí, eliminar',
-                        cancelButtonText: isEn ? 'Cancel' : 'Cancelar'
-                    }).then(result => {
-                        if (result.isConfirmed) form.submit();
-                    });
+        document.querySelectorAll('.btn-toggle-ganado').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const nombre = this.dataset.nombre;
+                const estado = this.dataset.estado;
+                const form = this.closest('form');
+                const esActivo = estado === 'Activo';
+                Swal.fire({
+                    title: esActivo ? '¿Desactivar ganado?' : '¿Activar ganado?',
+                    html: esActivo
+                        ? `¿Deseas desactivar <strong>${nombre}</strong>? No estará disponible para subastas.`
+                        : `¿Deseas activar <strong>${nombre}</strong>? Quedará disponible para subastas.`,
+                    icon: esActivo ? 'warning' : 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: esActivo ? '#fd7e14' : '#198754',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: esActivo
+                        ? '<i class="bi bi-pause-circle me-1"></i>Sí, desactivar'
+                        : '<i class="bi bi-play-circle me-1"></i>Sí, activar',
+                    cancelButtonText: 'Cancelar'
+                }).then(result => {
+                    if (result.isConfirmed) form.submit();
                 });
             });
+        });
     </script>
 }

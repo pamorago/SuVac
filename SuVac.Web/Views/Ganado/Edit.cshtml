@@ -1,129 +1,220 @@
 @model SuVac.Application.DTOs.GanadoDTO
+@using SuVac.Application.DTOs
 
 @{
     ViewData["Title"] = "Editar Ganado";
+    var categorias = ViewBag.Categorias as ICollection<CategoriaDTO> ?? new List<CategoriaDTO>();
+    var categoriasSeleccionadas = ViewBag.CategoriasSeleccionadas as List<int> ?? new List<int>();
+    var imagenes = Model.ImagenesGanado?.ToList() ?? new List<ImagenGanadoDTO>();
 }
 
-<div class="container mt-5">
-    <h1 class="mb-4">
-        <i class="bi bi-pencil-square me-2"></i>Editar Ganado
-    </h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1"><i class="bi bi-pencil-square me-2"></i>Editar Ganado</h1>
+        <p class="text-muted mb-0">ID: <strong>#@Model.GanadoId</strong> — @Model.Nombre</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+    </a>
+</div>
 
-    <form asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" method="post" class="card p-4">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="GanadoId" />
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="GanadoId" />
+            <input type="hidden" asp-for="UsuarioVendedorId" />
+            <input type="hidden" asp-for="FechaRegistro" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-        @if (ViewData.ModelState.ErrorCount > 0)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error de validación</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-                <ul class="mb-0">
-                    @foreach (var modelState in ViewData.ModelState.Values)
-                    {
-                        @foreach (var error in modelState.Errors)
+            <h5 class="text-secondary mb-3 border-bottom pb-2">Información General</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PesoKg" class="form-label fw-semibold">Peso (kg) <span class="text-danger">*</span></label>
+                    <input asp-for="PesoKg" class="form-control" type="number" step="0.01" min="1" max="9999" />
+                    <span asp-validation-for="PesoKg" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label fw-semibold">Descripción <span class="text-danger">*</span> <small class="text-muted">(mínimo 20 caracteres)</small></label>
+                <textarea asp-for="Descripcion" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger small"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="TipoGanadoId" class="form-label fw-semibold">Tipo de Ganado <span class="text-danger">*</span></label>
+                    <select asp-for="TipoGanadoId" asp-items="@ViewBag.TiposGanado" class="form-select">
+                        <option value="">-- Seleccionar Tipo --</option>
+                    </select>
+                    <span asp-validation-for="TipoGanadoId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="RazaId" class="form-label fw-semibold">Raza <span class="text-danger">*</span></label>
+                    <select asp-for="RazaId" asp-items="@ViewBag.Razas" class="form-select">
+                        <option value="">-- Seleccionar Raza --</option>
+                    </select>
+                    <span asp-validation-for="RazaId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="SexoId" class="form-label fw-semibold">Sexo <span class="text-danger">*</span></label>
+                    <select asp-for="SexoId" asp-items="@ViewBag.Sexos" class="form-select">
+                        <option value="">-- Seleccionar Sexo --</option>
+                    </select>
+                    <span asp-validation-for="SexoId" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaNacimiento" class="form-label fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                    <input asp-for="FechaNacimiento" class="form-control" type="date" />
+                    <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CertificadoSalud" class="form-label fw-semibold">Condición / Certificado de Salud</label>
+                    <input asp-for="CertificadoSalud" class="form-control" />
+                    <span asp-validation-for="CertificadoSalud" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EstadoGanadoId" class="form-label fw-semibold">Estado</label>
+                    <select asp-for="EstadoGanadoId" asp-items="@ViewBag.EstadosGanado" class="form-select">
+                        <option value="">-- Seleccionar Estado --</option>
+                    </select>
+                    <span asp-validation-for="EstadoGanadoId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold text-muted">Fecha de Registro <small class="text-danger">(no editable)</small></label>
+                    <p class="form-control-plaintext ps-1">
+                        <i class="bi bi-calendar me-1 text-muted"></i>@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+                </div>
+            </div>
+
+            
+            <div class="mb-4 p-3 bg-light rounded border">
+                <label class="form-label fw-semibold mb-1">Usuario Vendedor <span class="text-danger small">(no editable)</span></label>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-person-check-fill text-primary fs-5"></i>
+                    <span class="fw-semibold">@(Model.NombreVendedor ?? $"ID: {Model.UsuarioVendedorId}")</span>
+                    <small class="text-muted">— asignado al crear el objeto</small>
+                </div>
+            </div>
+
+            
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Categorías <span class="text-danger">*</span> <small class="text-muted">(seleccione al menos una)</small></label>
+                <span asp-validation-for="CategoriasIds" class="text-danger small d-block mb-1"></span>
+                @if (!categorias.Any())
+                {
+                    <div class="alert alert-warning py-2">No hay categorías disponibles.</div>
+                }
+                else
+                {
+                    <div class="row g-2">
+                        @foreach (var cat in categorias)
                         {
-                            <li>@error.ErrorMessage</li>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="CategoriasIds" value="@cat.CategoriaId"
+                                           id="cat_@cat.CategoriaId"
+                                           @(categoriasSeleccionadas.Contains(cat.CategoriaId) ? "checked" : "") />
+                                    <label class="form-check-label" for="cat_@cat.CategoriaId">
+                                        @cat.Nombre
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Imágenes <span class="text-danger">*</span> <small class="text-muted">(modifique o agregue URLs)</small></label>
+                <span class="text-danger small d-block mb-1">
+                    @(ViewData.ModelState["ImagenesGanado"]?.Errors.FirstOrDefault()?.ErrorMessage)
+                </span>
+                <div id="imagenes-container">
+                    @if (imagenes.Any())
+                    {
+                        @for (int i = 0; i < imagenes.Count; i++)
+                        {
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control imagen-url-input"
+                                       name="ImagenesGanado[@i].UrlImagen"
+                                       value="@imagenes[i].UrlImagen"
+                                       placeholder="https://ejemplo.com/imagen.jpg" />
+                                <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         }
                     }
-                </ul>
+                    else
+                    {
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control imagen-url-input"
+                                   name="ImagenesGanado[0].UrlImagen"
+                                   placeholder="https://ejemplo.com/imagen.jpg" />
+                            <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+                <button class="btn btn-outline-secondary btn-sm mt-1" type="button" onclick="addImagen()">
+                    <i class="bi bi-plus-circle me-1"></i> Agregar otra imagen
+                </button>
             </div>
-        }
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label asp-for="Nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" asp-for="Nombre" required />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+            <hr class="my-3" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-floppy me-1"></i> Guardar Cambios
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.GanadoId" class="btn btn-outline-primary">
+                    <i class="bi bi-eye me-1"></i> Ver Detalles
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
             </div>
-            <div class="col-md-6 mb-3">
-                <label asp-for="PesoKg" class="form-label">Peso (kg)</label>
-                <input type="number" class="form-control" asp-for="PesoKg" step="0.01" required />
-                <span asp-validation-for="PesoKg" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Descripcion" class="form-label">Descripción</label>
-            <textarea class="form-control" asp-for="Descripcion" rows="4" required></textarea>
-            <span asp-validation-for="Descripcion" class="text-danger"></span>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label asp-for="TipoGanadoId" class="form-label">Tipo de Ganado</label>
-                <select class="form-select" asp-for="TipoGanadoId" asp-items="@ViewBag.TiposGanado" required>
-                    <option value="">-- Seleccionar Tipo --</option>
-                </select>
-                <span asp-validation-for="TipoGanadoId" class="text-danger"></span>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label asp-for="RazaId" class="form-label">Raza</label>
-                <select class="form-select" asp-for="RazaId" asp-items="@ViewBag.Razas" required>
-                    <option value="">-- Seleccionar Raza --</option>
-                </select>
-                <span asp-validation-for="RazaId" class="text-danger"></span>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label asp-for="SexoId" class="form-label">Sexo</label>
-                <select class="form-select" asp-for="SexoId" asp-items="@ViewBag.Sexos" required>
-                    <option value="">-- Seleccionar Sexo --</option>
-                </select>
-                <span asp-validation-for="SexoId" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label asp-for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" asp-for="FechaNacimiento" required />
-                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label asp-for="CertificadoSalud" class="form-label">Certificado de Salud</label>
-                <input type="text" class="form-control" asp-for="CertificadoSalud" />
-                <span asp-validation-for="CertificadoSalud" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label asp-for="UsuarioVendedorId" class="form-label">Vendedor</label>
-                <select class="form-select" asp-for="UsuarioVendedorId" asp-items="@ViewBag.Usuarios" required>
-                    <option value="">-- Seleccionar Vendedor --</option>
-                </select>
-                <span asp-validation-for="UsuarioVendedorId" class="text-danger"></span>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label asp-for="EstadoGanadoId" class="form-label">Estado</label>
-                <select class="form-select" asp-for="EstadoGanadoId" asp-items="@ViewBag.EstadosGanado" required>
-                    <option value="">-- Seleccionar Estado --</option>
-                </select>
-                <span asp-validation-for="EstadoGanadoId" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label class="form-label">Fecha de Registro</label>
-            <input type="text" class="form-control" value="@Model.FechaRegistro.ToString("dd/MM/yyyy")" readonly />
-        </div>
-
-        <div class="d-flex gap-2 mt-2">
-            <button type="submit" class="btn btn-warning">
-                <i class="bi bi-floppy me-1"></i> Guardar Cambios
-            </button>
-            <a asp-action="Details" asp-route-id="@Model.GanadoId" class="btn btn-outline-info">
-                <i class="bi bi-eye me-1"></i> Ver Detalles
-            </a>
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="bi bi-x-circle me-1"></i> Cancelar
-            </a>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        let imgCount = document.querySelectorAll('.imagen-url-input').length;
+
+        function addImagen() {
+            const container = document.getElementById('imagenes-container');
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `<input type="text" class="form-control imagen-url-input"
+                name="ImagenesGanado[${imgCount}].UrlImagen"
+                placeholder="https://ejemplo.com/imagen.jpg" />
+                <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
+                    <i class="bi bi-trash"></i>
+                </button>`;
+            container.appendChild(div);
+            imgCount++;
+        }
+
+        function removeImagen(btn) {
+            const group = btn.closest('.input-group');
+            const container = document.getElementById('imagenes-container');
+            if (container.querySelectorAll('.input-group').length > 1) {
+                group.remove();
+            } else {
+                Swal.fire({ title: 'Mínimo requerido', text: 'Debe tener al menos una imagen.', icon: 'warning' });
+            }
+        }
+    </script>
 }

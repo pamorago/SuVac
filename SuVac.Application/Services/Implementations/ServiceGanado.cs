@@ -49,17 +49,34 @@ public class ServiceGanado : IServiceGanado
     public async Task<bool> Create(GanadoDTO dto)
     {
         var ganado = _mapper.Map<Ganado>(dto);
+        ganado.FechaRegistro = DateTime.Now;
+        ganado.EstadoGanadoId = 1; // Activo por defecto al crear
+
+        // Agregar imágenes
+        foreach (var imgDto in dto.ImagenesGanado?.Where(i => !string.IsNullOrWhiteSpace(i.UrlImagen)) ?? [])
+            ganado.ImagenesGanado.Add(new ImagenGanado { UrlImagen = imgDto.UrlImagen });
+
+        // Agregar categorías
+        foreach (var catId in dto.CategoriasIds ?? [])
+            ganado.GanadoCategorias.Add(new GanadoCategoria { CategoriaId = catId });
+
         return await _repository.Create(ganado);
     }
 
     public async Task<bool> Update(GanadoDTO dto)
     {
         var ganado = _mapper.Map<Ganado>(dto);
-        return await _repository.Update(ganado);
+        var imagenesUrls = dto.ImagenesGanado
+            ?.Select(i => i.UrlImagen)
+            .Where(u => !string.IsNullOrWhiteSpace(u))
+            .ToList() ?? [];
+        return await _repository.UpdateFull(ganado, dto.CategoriasIds ?? [], imagenesUrls);
     }
 
+    /// <summary>Eliminación lógica: establece EstadoGanadoId = 2 (Inactivo).</summary>
     public async Task<bool> Delete(int id)
-    {
-        return await _repository.Delete(id);
-    }
+        => await _repository.ToggleEstado(id, 2);
+
+    public async Task<bool> ToggleEstado(int id, int estadoId)
+        => await _repository.ToggleEstado(id, estadoId);
 }

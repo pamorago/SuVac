@@ -10,9 +10,6 @@
         <h1 class="h3 mb-1"><i class="bi bi-people me-2"></i><span data-i18n="usuario.title">Usuarios del Sistema</span></h1>
         <p class="text-muted mb-0">Total de usuarios registrados: <strong>@total</strong></p>
     </div>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
-    </a>
 </div>
 
 @if (!Model.Any())
@@ -76,16 +73,33 @@ else
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a asp-action="Edit" asp-route-id="@usuario.UsuarioId"
-                                   class="btn btn-sm btn-outline-warning me-1" title="Editar">
+                                   class="btn btn-sm btn-outline-warning me-1" title="Editar perfil">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <button type="button" class="btn btn-sm btn-outline-danger btn-delete-usuario"
-                                        data-id="@usuario.UsuarioId" data-nombre="@usuario.NombreCompleto"
-                                        title="Eliminar">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <form asp-action="DeleteConfirmed" asp-route-id="@usuario.UsuarioId"
-                                      method="post" id="form-delete-@usuario.UsuarioId" class="d-none">
+                                @if (usuario.NombreEstado == "Activo")
+                                {
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary btn-toggle-estado"
+                                            data-id="@usuario.UsuarioId"
+                                            data-nombre="@usuario.NombreCompleto"
+                                            data-accion="bloquear"
+                                            title="Bloquear usuario">
+                                        <i class="bi bi-lock"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-success btn-toggle-estado"
+                                            data-id="@usuario.UsuarioId"
+                                            data-nombre="@usuario.NombreCompleto"
+                                            data-accion="activar"
+                                            title="Activar usuario">
+                                        <i class="bi bi-unlock"></i>
+                                    </button>
+                                }
+                                <form asp-action="ToggleEstado" asp-route-id="@usuario.UsuarioId"
+                                      method="post" id="form-toggle-@usuario.UsuarioId" class="d-none">
                                     @Html.AntiForgeryToken()
                                 </form>
                             </td>
@@ -99,22 +113,28 @@ else
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.btn-delete-usuario').forEach(btn => {
+        document.querySelectorAll('.btn-toggle-estado').forEach(btn => {
             btn.addEventListener('click', function () {
                 const id = this.dataset.id;
                 const nombre = this.dataset.nombre;
+                const accion = this.dataset.accion;
+                const esBloquear = accion === 'bloquear';
                 Swal.fire({
-                    title: '¿Eliminar usuario?',
-                    html: `¿Estás seguro de que deseas eliminar a <strong>${nombre}</strong>? Esta acción no se puede deshacer.`,
-                    icon: 'warning',
+                    title: esBloquear ? '¿Bloquear usuario?' : '¿Activar usuario?',
+                    html: esBloquear
+                        ? `¿Deseas bloquear a <strong>${nombre}</strong>? No podrá acceder al sistema.`
+                        : `¿Deseas activar a <strong>${nombre}</strong>? Recuperará acceso al sistema.`,
+                    icon: esBloquear ? 'warning' : 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#dc3545',
+                    confirmButtonColor: esBloquear ? '#fd7e14' : '#198754',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: '<i class="bi bi-trash me-1"></i>Sí, eliminar',
+                    confirmButtonText: esBloquear
+                        ? '<i class="bi bi-lock me-1"></i>Sí, bloquear'
+                        : '<i class="bi bi-unlock me-1"></i>Sí, activar',
                     cancelButtonText: 'Cancelar'
                 }).then(result => {
                     if (result.isConfirmed) {
-                        document.getElementById('form-delete-' + id).submit();
+                        document.getElementById('form-toggle-' + id).submit();
                     }
                 });
             });

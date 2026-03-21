@@ -108,4 +108,37 @@ public class RepositoryUsuario : IRepositoryUsuario
             return false;
         }
     }
+
+    public async Task<bool> UpdatePerfil(int id, string nombreCompleto, string correo)
+    {
+        try
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return false;
+            usuario.NombreCompleto = nombreCompleto;
+            usuario.Correo = correo;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> ToggleEstado(int id)
+    {
+        try
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null) return false;
+            usuario.EstadoUsuarioId = usuario.EstadoUsuarioId == 1 ? 2 : 1;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

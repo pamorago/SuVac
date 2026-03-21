@@ -225,9 +225,25 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 justify-content-start">
+                    <div class="d-flex gap-2 justify-content-start flex-wrap">
                         <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
                             <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
+                        </a>
+                        <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@Model.GanadoId" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")">
+                                @if (Model.NombreEstadoGanado == "Activo")
+                                {
+                                    <i class="bi bi-pause-circle me-1"></i><text>Desactivar</text>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-play-circle me-1"></i><text>Activar</text>
+                                }
+                            </button>
+                        </form>
+                        <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@Model.GanadoId" class="btn btn-outline-danger">
+                            <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
                         </a>
                         <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
                             <i class="bi bi-arrow-left me-2"></i><span data-i18n="ganadoDetalle.volverCatalogo">Volver al Catálogo</span>
