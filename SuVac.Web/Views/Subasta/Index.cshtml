@@ -23,9 +23,6 @@
         <a asp-action="Create" class="btn btn-primary">
             <i class="bi bi-plus-lg me-1"></i> Nueva Subasta
         </a>
-        <a asp-action="Activas" class="btn btn-outline-success">
-            <i class="bi bi-hammer me-1"></i> Vista Pública
-        </a>
     </div>
 </div>
 
@@ -94,7 +91,7 @@
                                     <div class="d-flex align-items-center gap-2">
                                         @if (!string.IsNullOrEmpty(item.ImagenGanado))
                                         {
-                                            <img src="@item.ImagenGanado"                     alt="@item.NombreGanado"                                 class="rounded"
+                                            <img src="@item.ImagenGanado" alt="@item.NombreGanado" class="rounded"
                                                  style="width:40px;height:40px;object-fit:cover;"
                                                  onerror="this.src='/img/sin-imagen.png'" />
                                         }
@@ -138,7 +135,7 @@
                                         @if (puedeEditar)
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.SubastaId"
-                                                   class="btn btn-outline-primary btn-sm">
+                                                   class="btn btn-outline-warning btn-sm">
                                                 <i class="bi bi-pencil-square"></i>
                                                 <span class="d-none d-xl-inline ms-1">Editar</span>
                                             </a>

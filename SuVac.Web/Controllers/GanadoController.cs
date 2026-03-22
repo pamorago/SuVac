@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Hosting;
 using System.Text.Json;
+using SuVac.Web.Util;
 
 namespace SuVac.Web.Controllers;
 
@@ -52,7 +53,10 @@ public class GanadoController : Controller
     public async Task<IActionResult> Create()
     {
         await CargarListas();
-        return View();
+        return View(new GanadoDTO
+        {
+            UsuarioVendedorId = UsuarioSimulado.UsuarioActualId
+        });
     }
 
     // POST: Ganado/Create
@@ -61,9 +65,7 @@ public class GanadoController : Controller
     public async Task<IActionResult> Create(GanadoDTO dto, List<IFormFile>? imagenesArchivos)
     {
         dto.EstadoGanadoId = 1; // Activo al crear
-
-        if (dto.UsuarioVendedorId <= 0)
-            ModelState.AddModelError("UsuarioVendedorId", "Debe seleccionar un usuario vendedor.");
+        dto.UsuarioVendedorId = UsuarioSimulado.UsuarioActualId;
 
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
             ModelState.AddModelError("CategoriasIds", "Debe seleccionar al menos una categoría.");
@@ -226,7 +228,17 @@ public class GanadoController : Controller
         var ganado = await _service.GetById(id);
         if (ganado == null) return NotFound();
 
+        // Regla: no desactivar si está en subasta activa
         int nuevoEstadoId = ganado.NombreEstadoGanado == "Activo" ? 2 : 1;
+        if (nuevoEstadoId == 2 && ganado.SubastasParticipacion != null &&
+            ganado.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa"))
+        {
+            Notify("Desactivación no permitida",
+                $"\"{ganado.Nombre}\" pertenece a una subasta activa y no puede ser desactivado.",
+                "warning");
+            return RedirectToAction(nameof(Index));
+        }
+
         var result = await _service.ToggleEstado(id, nuevoEstadoId);
 
         if (result)
@@ -271,15 +283,13 @@ public class GanadoController : Controller
     {
         var tiposGanado = await _serviceTipoGanado.GetAll();
         var razas = await _serviceRaza.GetAll();
-        // Solo mostrar usuarios con rol Vendedor (RolId = 2)
-        var todosUsuarios = await _serviceUsuario.GetAllConDetalle();
-        var vendedores = todosUsuarios.Where(u => u.NombreRol == "Vendedor");
         var categorias = await _serviceCategoria.ListAsync();
+        var usuarioActual = await _serviceUsuario.GetByIdConDetalle(UsuarioSimulado.UsuarioActualId);
 
         ViewBag.TiposGanado = new SelectList(tiposGanado, "TipoGanadoId", "Nombre");
         ViewBag.Razas = new SelectList(razas, "RazaId", "Nombre");
-        ViewBag.Vendedores = new SelectList(vendedores, "UsuarioId", "NombreCompleto");
         ViewBag.Categorias = categorias; // ICollection<CategoriaDTO> para checkboxes
+        ViewBag.UsuarioActualNombre = usuarioActual?.NombreCompleto ?? $"Usuario #{UsuarioSimulado.UsuarioActualId}";
 
         ViewBag.Sexos = new SelectList(new[]
         {

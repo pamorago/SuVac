@@ -226,29 +226,40 @@
                     </div>
 
                     <div class="d-flex gap-2 justify-content-start flex-wrap">
-                        <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning">
+                        <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning action-btn-consistent">
                             <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
                         </a>
                         <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@Model.GanadoId" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")">
+                            <button type="submit" class="btn action-btn-consistent @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")">
                                 @if (Model.NombreEstadoGanado == "Activo")
                                 {
-                                    <i class="bi bi-pause-circle me-1"></i><text>Desactivar</text>
+                                    <i class="bi bi-pause-circle me-1"></i><span class="toggle-label">Desactivar</span>
                                 }
                                 else
                                 {
-                                    <i class="bi bi-play-circle me-1"></i><text>Activar</text>
+                                    <i class="bi bi-play-circle me-1"></i><span class="toggle-label">Activar</span>
                                 }
                             </button>
                         </form>
-                        <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@Model.GanadoId" class="btn btn-outline-danger">
+                        <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@Model.GanadoId" class="btn btn-outline-danger action-btn-consistent">
                             <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
                         </a>
-                        <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary">
+                        <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary action-btn-consistent">
                             <i class="bi bi-arrow-left me-2"></i><span data-i18n="ganadoDetalle.volverCatalogo">Volver al Catálogo</span>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <style>
+            .action-btn-consistent {
+                min-width: 11.5rem;
+                min-height: 2.75rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .toggle-label { display: inline-block; min-width: 5rem; text-align: left; }
+        </style>

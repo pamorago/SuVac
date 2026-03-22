@@ -20,7 +20,28 @@ public class ServiceGanado : IServiceGanado
     public async Task<IEnumerable<GanadoDTO>> GetAll()
     {
         var ganados = await _repository.GetAll();
-        return _mapper.Map<IEnumerable<GanadoDTO>>(ganados);
+        var dtos = _mapper.Map<IEnumerable<GanadoDTO>>(ganados).ToList();
+
+        // Poblar historial de subastas para poder condicionar acciones en el listado
+        var ganadosList = ganados.ToList();
+        for (int i = 0; i < dtos.Count; i++)
+        {
+            var subastas = ganadosList[i].Subastas;
+            if (subastas != null)
+            {
+                dtos[i].SubastasParticipacion = subastas
+                    .OrderByDescending(s => s.FechaInicio)
+                    .Select(s => new SubastaResumenDTO
+                    {
+                        SubastaId = s.SubastaId,
+                        FechaInicio = s.FechaInicio,
+                        FechaFin = s.FechaFin,
+                        EstadoSubasta = s.IdEstadoSubastaNavigation?.Nombre ?? "-"
+                    })
+                    .ToList();
+            }
+        }
+        return dtos;
     }
 
     public async Task<GanadoDTO> GetById(int id)

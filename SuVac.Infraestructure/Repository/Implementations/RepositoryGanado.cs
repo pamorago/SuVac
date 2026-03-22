@@ -25,6 +25,8 @@ public class RepositoryGanado : IRepositoryGanado
             .Include(g => g.ImagenesGanado)
             .Include(g => g.GanadoCategorias)
                 .ThenInclude(gc => gc.IdCategoriaNavigation)
+            .Include(g => g.Subastas)
+                .ThenInclude(s => s.IdEstadoSubastaNavigation)
             .AsNoTracking()
             .ToListAsync();
     }

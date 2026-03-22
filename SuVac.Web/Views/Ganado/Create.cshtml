@@ -89,11 +89,10 @@
             
             <div class="mb-3 p-3 bg-light rounded border">
                 <label asp-for="UsuarioVendedorId" class="form-label fw-semibold">Usuario Vendedor <span class="text-danger">*</span></label>
-                <select asp-for="UsuarioVendedorId" asp-items="@ViewBag.Vendedores" class="form-select">
-                    <option value="">-- Seleccionar Vendedor --</option>
-                </select>
+                <input type="hidden" asp-for="UsuarioVendedorId" />
+                <input type="text" class="form-control" value="@ViewBag.UsuarioActualNombre" disabled />
                 <span asp-validation-for="UsuarioVendedorId" class="text-danger small"></span>
-                <div class="form-text text-muted"><i class="bi bi-info-circle me-1"></i>Se asigna el usuario vendedor responsable del objeto.</div>
+                <div class="form-text text-muted"><i class="bi bi-info-circle me-1"></i>Asignado automáticamente por la variable lógica del sistema.</div>
             </div>
 
             
@@ -143,11 +142,11 @@
             </div>
 
             <hr class="my-3" />
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-success">
+            <div class="d-flex gap-2 flex-wrap align-items-stretch">
+                <button type="submit" class="btn btn-success action-btn-fixed">
                     <i class="bi bi-check-circle me-1"></i> Registrar Ganado
                 </button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                <a asp-action="Index" class="btn btn-outline-secondary action-btn-fixed">Cancelar</a>
             </div>
         </form>
     </div>
@@ -173,4 +172,13 @@
             });
         });
     </script>
+    <style>
+        .action-btn-fixed {
+            min-width: 12rem;
+            min-height: 2.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 }

@@ -87,33 +87,48 @@ else
                                class="btn btn-secondary">
                                 <i class="bi bi-eye me-1"></i> Ver Detalles
                             </a>
-                            <div class="d-flex gap-2">
+                                                        <div class="d-flex gap-2 align-items-stretch">
                                 <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@item.GanadoId"
-                                   class="btn btn-outline-warning flex-fill">
+                                                                     class="btn btn-outline-warning flex-fill d-inline-flex align-items-center justify-content-center action-btn-uniform">
                                     <i class="bi bi-pencil me-1"></i> Editar
                                 </a>
                                 <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@item.GanadoId"
                                       method="post" class="toggle-form flex-fill">
                                     @Html.AntiForgeryToken()
                                     <button type="button"
-                                            class="btn w-100 btn-toggle-ganado @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
+                                                                                        class="btn w-100 btn-toggle-ganado action-btn-uniform @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
                                             data-nombre="@item.Nombre"
                                             data-estado="@item.NombreEstadoGanado">
                                         @if (item.NombreEstadoGanado == "Activo")
                                         {
-                                            <i class="bi bi-pause-circle me-1"></i><span>Desactivar</span>
+                                            <i class="bi bi-pause-circle me-1"></i><span class="toggle-label">Desactivar</span>
                                         }
                                         else
                                         {
-                                            <i class="bi bi-play-circle me-1"></i><span>Activar</span>
+                                            <i class="bi bi-play-circle me-1"></i><span class="toggle-label">Activar</span>
                                         }
                                     </button>
                                 </form>
                             </div>
-                            <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@item.GanadoId"
-                               class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
-                            </a>
+                            @{
+                                bool fueSubastado = item.SubastasParticipacion != null && item.SubastasParticipacion.Any();
+                                bool enSubastaActiva = item.SubastasParticipacion != null &&
+                                    item.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa");
+                                bool puedeEliminar = !fueSubastado && !enSubastaActiva;
+                            }
+                            @if (puedeEliminar)
+                            {
+                                <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@item.GanadoId"
+                                   class="btn btn-outline-danger action-btn-uniform d-inline-flex align-items-center justify-content-center">
+                                    <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-danger action-btn-uniform d-inline-flex align-items-center justify-content-center" disabled title="No se puede eliminar: el ganado ha participado en subastas">
+                                    <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -125,6 +140,8 @@ else
 @section Scripts {
     <style>
         .card:hover { transform: translateY(-3px); transition: transform .18s ease; }
+        .action-btn-uniform { min-height: 2.5rem; }
+        .toggle-label { display: inline-block; min-width: 4.8rem; text-align: left; }
     </style>
     <script>
         document.querySelectorAll('.btn-toggle-ganado').forEach(btn => {
