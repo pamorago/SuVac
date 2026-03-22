@@ -2,6 +2,7 @@ using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Hosting;
 using System.Text.Json;
 
 namespace SuVac.Web.Controllers;
@@ -13,15 +14,18 @@ public class GanadoController : Controller
     private readonly IServiceRaza _serviceRaza;
     private readonly IServiceUsuario _serviceUsuario;
     private readonly IServiceCategoria _serviceCategoria;
+    private readonly IWebHostEnvironment _env;
 
     public GanadoController(IServiceGanado service, IServiceTipoGanado serviceTipoGanado,
-        IServiceRaza serviceRaza, IServiceUsuario serviceUsuario, IServiceCategoria serviceCategoria)
+        IServiceRaza serviceRaza, IServiceUsuario serviceUsuario, IServiceCategoria serviceCategoria,
+        IWebHostEnvironment env)
     {
         _service = service;
         _serviceTipoGanado = serviceTipoGanado;
         _serviceRaza = serviceRaza;
         _serviceUsuario = serviceUsuario;
         _serviceCategoria = serviceCategoria;
+        _env = env;
     }
 
     // ─── Utilidad de notificaciones via TempData + SweetAlert ───────────────
@@ -54,32 +58,35 @@ public class GanadoController : Controller
     // POST: Ganado/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(GanadoDTO dto)
+    public async Task<IActionResult> Create(GanadoDTO dto, List<IFormFile>? imagenesArchivos)
     {
         dto.EstadoGanadoId = 1; // Activo al crear
 
-        // Validar vendedor seleccionado
         if (dto.UsuarioVendedorId <= 0)
             ModelState.AddModelError("UsuarioVendedorId", "Debe seleccionar un usuario vendedor.");
 
-        // Validar categorías (mínimo 1)
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
             ModelState.AddModelError("CategoriasIds", "Debe seleccionar al menos una categoría.");
 
-        // Validar imágenes (mínimo 1 URL no vacía)
-        var urlsValidas = dto.ImagenesGanado?
-            .Where(i => !string.IsNullOrWhiteSpace(i.UrlImagen))
-            .ToList();
-        if (urlsValidas == null || urlsValidas.Count == 0)
-            ModelState.AddModelError("ImagenesGanado", "Debe agregar al menos una imagen.");
-        else
-            dto.ImagenesGanado = urlsValidas;
+        var archivosValidos = imagenesArchivos?.Where(f => f != null && f.Length > 0).ToList() ?? [];
+        if (archivosValidos.Count == 0)
+            ModelState.AddModelError("imagenesArchivos", "Debe agregar al menos una imagen.");
 
         if (!ModelState.IsValid)
         {
             await CargarListas();
             return View(dto);
         }
+
+        var rutas = await GuardarImagenes(archivosValidos);
+        if (rutas.Count == 0)
+        {
+            ModelState.AddModelError("imagenesArchivos", "No se pudo guardar la imagen. Use JPG, PNG, GIF o WEBP (máx. 5 MB).");
+            await CargarListas();
+            return View(dto);
+        }
+
+        dto.ImagenesGanado = rutas.Select(r => new ImagenGanadoDTO { UrlImagen = r }).ToList();
 
         var result = await _service.Create(dto);
         if (result)
@@ -118,28 +125,30 @@ public class GanadoController : Controller
     // POST: Ganado/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, GanadoDTO dto)
+    public async Task<IActionResult> Edit(int id, GanadoDTO dto,
+        List<string>? imagenesExistentes, List<IFormFile>? imagenesNuevas)
     {
         if (id != dto.GanadoId) return NotFound();
 
-        // Validar categorías (mínimo 1)
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
             ModelState.AddModelError("CategoriasIds", "Debe seleccionar al menos una categoría.");
 
-        // Validar imágenes (mínimo 1 URL válida)
-        var urlsValidas = dto.ImagenesGanado?
-            .Where(i => !string.IsNullOrWhiteSpace(i.UrlImagen))
-            .ToList();
-        if (urlsValidas == null || urlsValidas.Count == 0)
-            ModelState.AddModelError("ImagenesGanado", "Debe agregar al menos una imagen.");
-        else
-            dto.ImagenesGanado = urlsValidas;
+        var existentes = imagenesExistentes?.Where(u => !string.IsNullOrWhiteSpace(u)).ToList() ?? [];
+        var nuevas = imagenesNuevas?.Where(f => f != null && f.Length > 0).ToList() ?? [];
+        if (existentes.Count == 0 && nuevas.Count == 0)
+            ModelState.AddModelError("imagenesNuevas", "Debe mantener o agregar al menos una imagen.");
 
         if (!ModelState.IsValid)
         {
             await CargarListas(dto.CategoriasIds);
             return View(dto);
         }
+
+        var rutasNuevas = await GuardarImagenes(nuevas);
+        dto.ImagenesGanado = existentes
+            .Select(u => new ImagenGanadoDTO { UrlImagen = u })
+            .Concat(rutasNuevas.Select(r => new ImagenGanadoDTO { UrlImagen = r }))
+            .ToList();
 
         // Preservar UsuarioVendedorId y FechaRegistro del registro original (no editables)
         var original = await _service.GetById(id);
@@ -232,6 +241,30 @@ public class GanadoController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // ─── Guardar archivos subidos a wwwroot/images/ganado/ ─────────────────
+    private async Task<List<string>> GuardarImagenes(List<IFormFile> archivos)
+    {
+        var rutas = new List<string>();
+        var ext_permitidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var carpeta = Path.Combine(_env.WebRootPath, "images", "ganado");
+        Directory.CreateDirectory(carpeta);
+
+        foreach (var archivo in archivos)
+        {
+            if (archivo.Length > 5 * 1024 * 1024) continue; // max 5 MB
+            var ext = Path.GetExtension(archivo.FileName);
+            if (!ext_permitidas.Contains(ext)) continue;
+
+            var nombreArchivo = $"{Guid.NewGuid()}{ext}";
+            var rutaFisica = Path.Combine(carpeta, nombreArchivo);
+            await using var stream = new FileStream(rutaFisica, FileMode.Create);
+            await archivo.CopyToAsync(stream);
+            rutas.Add($"/images/ganado/{nombreArchivo}");
+        }
+        return rutas;
     }
 
     private async Task CargarListas(List<int>? categoriasSeleccionadas = null)
