@@ -1,6 +1,7 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 
 namespace SuVac.Web.Controllers;
@@ -8,10 +9,23 @@ namespace SuVac.Web.Controllers;
 public class UsuarioController : Controller
 {
     private readonly IServiceUsuario _service;
+    private readonly IServiceRol _serviceRol;
 
-    public UsuarioController(IServiceUsuario service)
+    public UsuarioController(IServiceUsuario service, IServiceRol serviceRol)
     {
         _service = service;
+        _serviceRol = serviceRol;
+    }
+
+    private async Task CargarRoles()
+    {
+        var roles = await _serviceRol.GetAll();
+        ViewBag.Roles = new SelectList(roles, "RolId", "Nombre");
+        ViewBag.EstadosUsuario = new SelectList(new[]
+        {
+            new { id = 1, nombre = "Activo" },
+            new { id = 2, nombre = "Bloqueado" }
+        }, "id", "nombre");
     }
 
     // ─── Utilidad de notificaciones via TempData + SweetAlert ───────────────
@@ -23,6 +37,50 @@ public class UsuarioController : Controller
     {
         var usuarios = await _service.GetAllConDetalle();
         return View(usuarios);
+    }
+
+    // GET: Usuario/Create
+    public async Task<IActionResult> Create()
+    {
+        await CargarRoles();
+        return View();
+    }
+
+    // POST: Usuario/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(UsuarioDTO dto)
+    {
+        // Validaciones manuales de campos no cubiertos por anotaciones
+        if (string.IsNullOrWhiteSpace(dto.Contrasena))
+            ModelState.AddModelError(nameof(dto.Contrasena), "La contraseña es obligatoria.");
+        else if (dto.Contrasena.Length < 6)
+            ModelState.AddModelError(nameof(dto.Contrasena), "La contraseña debe tener al menos 6 caracteres.");
+
+        if (dto.RolId <= 0)
+            ModelState.AddModelError(nameof(dto.RolId), "Debe seleccionar un rol.");
+
+        if (dto.EstadoUsuarioId <= 0)
+            ModelState.AddModelError(nameof(dto.EstadoUsuarioId), "Debe seleccionar un estado.");
+
+        if (!ModelState.IsValid)
+        {
+            await CargarRoles();
+            return View(dto);
+        }
+
+        dto.FechaRegistro = DateTime.Now;
+
+        var result = await _service.Create(dto);
+        if (result)
+        {
+            Notify("Usuario registrado", $"{dto.NombreCompleto} fue creado exitosamente.");
+            return RedirectToAction(nameof(Index));
+        }
+
+        ModelState.AddModelError("", "No se pudo registrar el usuario. Verifique que el correo no esté en uso.");
+        await CargarRoles();
+        return View(dto);
     }
 
     // GET: Usuario/Details/5

@@ -20,7 +20,7 @@
 
 <div class="card shadow-sm border-0">
     <div class="card-body p-4">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="GanadoId" />
             <input type="hidden" asp-for="UsuarioVendedorId" />
@@ -137,41 +137,39 @@
 
             
             <div class="mb-3">
-                <label class="form-label fw-semibold">Imágenes <span class="text-danger">*</span> <small class="text-muted">(modifique o agregue URLs)</small></label>
+                <label class="form-label fw-semibold">Imágenes <span class="text-danger">*</span></label>
                 <span class="text-danger small d-block mb-1">
-                    @(ViewData.ModelState["ImagenesGanado"]?.Errors.FirstOrDefault()?.ErrorMessage)
+                    @(ViewData.ModelState["imagenesNuevas"]?.Errors.FirstOrDefault()?.ErrorMessage)
                 </span>
-                <div id="imagenes-container">
-                    @if (imagenes.Any())
-                    {
-                        @for (int i = 0; i < imagenes.Count; i++)
+
+                @if (imagenes.Any())
+                {
+                    <p class="text-muted small mb-2">Imágenes actuales (haga clic en × para eliminar):</p>
+                    <div id="existentes-container" class="d-flex flex-wrap gap-3 mb-3">
+                        @foreach (var img in imagenes)
                         {
-                            <div class="input-group mb-2">
-                                <input type="text" class="form-control imagen-url-input"
-                                       name="ImagenesGanado[@i].UrlImagen"
-                                       value="@imagenes[i].UrlImagen"
-                                       placeholder="https://ejemplo.com/imagen.jpg" />
-                                <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
-                                    <i class="bi bi-trash"></i>
+                            <div class="position-relative imagen-existente">
+                                <img src="@img.UrlImagen" alt="Imagen"
+                                     class="rounded border" style="width:100px;height:80px;object-fit:cover;">
+                                <input type="hidden" name="imagenesExistentes" value="@img.UrlImagen" />
+                                <button type="button"
+                                        class="btn btn-danger position-absolute top-0 end-0 p-0 lh-1"
+                                        style="width:20px;height:20px;font-size:11px;"
+                                        onclick="removeExistente(this)" title="Eliminar imagen">
+                                    <i class="bi bi-x"></i>
                                 </button>
                             </div>
                         }
-                    }
-                    else
-                    {
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control imagen-url-input"
-                                   name="ImagenesGanado[0].UrlImagen"
-                                   placeholder="https://ejemplo.com/imagen.jpg" />
-                            <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    }
+                    </div>
+                }
+
+                <label class="form-label small fw-semibold text-muted">Agregar nuevas imágenes desde su equipo:</label>
+                <input type="file" class="form-control" name="imagenesNuevas" id="imagenesNuevas"
+                       multiple accept="image/jpeg,image/png,image/gif,image/webp" />
+                <div class="form-text text-muted">
+                    <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, GIF, WEBP. Máximo 5 MB por imagen.
                 </div>
-                <button class="btn btn-outline-secondary btn-sm mt-1" type="button" onclick="addImagen()">
-                    <i class="bi bi-plus-circle me-1"></i> Agregar otra imagen
-                </button>
+                <div id="preview-nuevas" class="d-flex flex-wrap gap-2 mt-2"></div>
             </div>
 
             <hr class="my-3" />
@@ -191,30 +189,26 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
-        let imgCount = document.querySelectorAll('.imagen-url-input').length;
+        // Preview nuevas imágenes
+        document.getElementById('imagenesNuevas').addEventListener('change', function () {
+            const preview = document.getElementById('preview-nuevas');
+            preview.innerHTML = '';
+            Array.from(this.files).forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<img src="${e.target.result}" class="rounded border"
+                        style="width:100px;height:80px;object-fit:cover;" title="${file.name}">`;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
 
-        function addImagen() {
-            const container = document.getElementById('imagenes-container');
-            const div = document.createElement('div');
-            div.className = 'input-group mb-2';
-            div.innerHTML = `<input type="text" class="form-control imagen-url-input"
-                name="ImagenesGanado[${imgCount}].UrlImagen"
-                placeholder="https://ejemplo.com/imagen.jpg" />
-                <button class="btn btn-outline-danger" type="button" onclick="removeImagen(this)">
-                    <i class="bi bi-trash"></i>
-                </button>`;
-            container.appendChild(div);
-            imgCount++;
-        }
-
-        function removeImagen(btn) {
-            const group = btn.closest('.input-group');
-            const container = document.getElementById('imagenes-container');
-            if (container.querySelectorAll('.input-group').length > 1) {
-                group.remove();
-            } else {
-                Swal.fire({ title: 'Mínimo requerido', text: 'Debe tener al menos una imagen.', icon: 'warning' });
-            }
+        // Eliminar imagen existente (quita el hidden input y el thumb)
+        function removeExistente(btn) {
+            btn.closest('.imagen-existente').remove();
         }
     </script>
 }
