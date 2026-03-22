@@ -86,7 +86,7 @@
         <a asp-action="Detalle" asp-route-id="@Model.SubastaId" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i> Volver al detalle
         </a>
-        <a asp-action="Index" class="btn btn-outline-secondary">
+        <a href="javascript:history.go(-2)" class="btn btn-outline-secondary">
             <i class="bi bi-list me-1"></i> Volver al listado
         </a>
     </div>

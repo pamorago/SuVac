@@ -43,8 +43,8 @@
                             : ViewBag.From == "finalizadas" ? "Volver a Finalizadas"
                             : "Volver al listado";
         }
-        <a asp-action="@volverAction" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> @volverTexto
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
         </a>
     </div>
 </div>
@@ -189,7 +189,7 @@
 
                 <!-- Acciones -->
                 <div class="d-flex flex-column flex-sm-row flex-wrap gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left me-1"></i> Volver al listado
                     </a>
 
