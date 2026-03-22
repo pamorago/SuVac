@@ -125,9 +125,9 @@
                                     }
                                 </td>
                                 <td class="text-end pe-3">
-                                    <div class="d-flex gap-1 justify-content-end flex-wrap">
+                                    <div class="d-flex gap-1 justify-content-end">
                                         <a asp-action="Detalle" asp-route-id="@item.SubastaId"
-                                               class="btn btn-outline-secondary btn-sm">
+                                           class="btn btn-outline-secondary btn-sm subasta-action-btn" title="Ver detalle">
                                             <i class="bi bi-eye"></i>
                                             <span class="d-none d-xl-inline ms-1">Detalle</span>
                                         </a>
@@ -135,32 +135,52 @@
                                         @if (puedeEditar)
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.SubastaId"
-                                                   class="btn btn-outline-warning btn-sm">
+                                               class="btn btn-outline-warning btn-sm subasta-action-btn" title="Editar subasta">
                                                 <i class="bi bi-pencil-square"></i>
                                                 <span class="d-none d-xl-inline ms-1">Editar</span>
                                             </a>
                                         }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-warning btn-sm subasta-action-btn" disabled title="No se puede editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                                <span class="d-none d-xl-inline ms-1">Editar</span>
+                                            </button>
+                                        }
 
                                         @if (puedePublicar)
                                         {
-                                            <form asp-action="Publicar" method="post" class="d-inline">
+                                            <form asp-action="Publicar" method="post" class="d-contents">
                                                 <input type="hidden" name="id" value="@item.SubastaId" />
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-outline-success btn-sm"
-                                                        title="Publicar subasta">
+                                                <button type="submit" class="btn btn-outline-success btn-sm subasta-action-btn" title="Publicar subasta">
                                                     <i class="bi bi-send"></i>
                                                     <span class="d-none d-xl-inline ms-1">Publicar</span>
                                                 </button>
                                             </form>
                                         }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-success btn-sm subasta-action-btn" disabled title="No se puede publicar">
+                                                <i class="bi bi-send"></i>
+                                                <span class="d-none d-xl-inline ms-1">Publicar</span>
+                                            </button>
+                                        }
 
                                         @if (puedeCancelar)
                                         {
                                             <a asp-action="Cancelar" asp-route-id="@item.SubastaId"
-                                                   class="btn btn-outline-danger btn-sm">
+                                               class="btn btn-outline-danger btn-sm subasta-action-btn" title="Cancelar subasta">
                                                 <i class="bi bi-x-circle"></i>
                                                 <span class="d-none d-xl-inline ms-1">Cancelar</span>
                                             </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-danger btn-sm subasta-action-btn" disabled title="No se puede cancelar">
+                                                <i class="bi bi-x-circle"></i>
+                                                <span class="d-none d-xl-inline ms-1">Cancelar</span>
+                                            </button>
                                         }
                                     </div>
                                 </td>
@@ -172,3 +192,16 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        .subasta-action-btn {
+            min-width: 2.2rem;
+            min-height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .d-contents { display: contents; }
+    </style>
+}

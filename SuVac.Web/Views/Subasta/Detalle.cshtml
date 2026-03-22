@@ -35,8 +35,16 @@
         <p class="text-muted mb-0">Subasta #@Model.SubastaId &mdash; @Model.NombreGanado</p>
     </div>
     <div class="d-flex gap-2">
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i> Volver al listado
+        @{
+            var volverAction = ViewBag.From == "activas" ? "Activas"
+                             : ViewBag.From == "finalizadas" ? "Finalizadas"
+                             : "Index";
+            var volverTexto = ViewBag.From == "activas" ? "Volver a Activas"
+                            : ViewBag.From == "finalizadas" ? "Volver a Finalizadas"
+                            : "Volver al listado";
+        }
+        <a asp-action="@volverAction" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> @volverTexto
         </a>
     </div>
 </div>
@@ -54,8 +62,8 @@
                         @for (int i = 0; i < Model.ImagenesGanado.Count; i++)
                         {
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Model.ImagenesGanado[i]"       class="d-block w-100"
-                                     alt="Imagen @(i + 1) de @Model.NombreGanado"                      style="height: 300px; object-fit: cover;"
+                                <img src="@Model.ImagenesGanado[i]" class="d-block w-100"
+                                     alt="Imagen @(i + 1) de @Model.NombreGanado" style="height: 300px; object-fit: cover;"
                                      onerror="this.src='/img/sin-imagen.png'" />
                             </div>
                         }

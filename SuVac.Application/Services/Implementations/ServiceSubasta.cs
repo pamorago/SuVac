@@ -150,6 +150,11 @@ public class ServiceSubasta : IServiceSubasta
         if (dto.IncrementoMinimo <= 0)
             return (false, "El incremento mínimo debe ser mayor a ₡0.");
 
+        // El ganado debe estar en estado Activo
+        var ganadoActivo = await _repository.GanadoEstaActivo(dto.GanadoId);
+        if (!ganadoActivo)
+            return (false, "El ganado seleccionado no está activo y no puede ser subastado.");
+
         // El ganado no puede tener otra subasta activa/programada/borrador
         if (await _repository.GanadoTieneSubastaActiva(dto.GanadoId))
             return (false, "El ganado seleccionado ya tiene una subasta activa o programada.");

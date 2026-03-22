@@ -299,6 +299,9 @@ IF NOT EXISTS (SELECT 1 FROM TipoGanado WHERE Nombre = 'Carne')
 IF NOT EXISTS (SELECT 1 FROM EstadoSubasta WHERE Nombre = 'Programada')
     INSERT INTO EstadoSubasta (Nombre) VALUES ('Programada'), ('Activa'), ('Finalizada'), ('Cancelada');
 
+IF NOT EXISTS (SELECT 1 FROM EstadoSubasta WHERE Nombre = 'Borrador')
+    INSERT INTO EstadoSubasta (Nombre) VALUES ('Borrador');
+
 IF NOT EXISTS (SELECT 1 FROM EstadoPago WHERE Nombre = 'Pendiente')
     INSERT INTO EstadoPago (Nombre) VALUES ('Pendiente'), ('Confirmado');
 
@@ -600,4 +603,70 @@ BEGIN
     (9,  5, 570000.00, 1, NULL),                  -- Pendiente
     (10, 5, 398000.00, 2, '2026-02-21 14:00'),   -- Confirmado
     (13, 7, 312000.00, 1, NULL);                  -- Pendiente
+END
+
+-- =========================
+-- SUBASTAS EXTRA PARA PRUEBAS DE REGLAS DE NEGOCIO
+-- Sub 15: Activa con pujas y FechaInicio pasada → NO se puede cancelar ni editar
+--         (puedeCancelar: FechaInicio > Now = false, TotalPujas == 0 = false → bloqueado)
+-- Sub 16: Borrador sin pujas  → SE puede publicar, editar y cancelar
+-- =========================
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 12 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa'))
+BEGIN
+    -- Sub 15: Vaca Nelore 001 — Activa, inicio en pasado, fin futuro, CON pujas
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 12, '2026-03-01 08:00', '2026-04-20 18:00', 310000.00, 9000.00, EstadoSubastaId, 3
+    FROM EstadoSubasta WHERE Nombre = 'Activa';
+
+    -- Pujas en Sub 15 (bloquean cancelar y editar)
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
+    SELECT TOP 1 SubastaId, 5, 310000.00, '2026-03-05 10:00'
+    FROM Subasta WHERE GanadoId = 12 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa');
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
+    SELECT TOP 1 SubastaId, 6, 319000.00, '2026-03-10 14:30'
+    FROM Subasta WHERE GanadoId = 12 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa');
+
+    -- Sub 16: Vaca Holstein 002 — Borrador, fecha futura, SIN pujas
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 14, '2026-04-05 09:00', '2026-04-25 18:00', 420000.00, 12000.00, EstadoSubastaId, 2
+    FROM EstadoSubasta WHERE Nombre = 'Borrador';
+END
+
+-- Sub 17: Toro Brahman 003 — Programada, fecha futura, SIN pujas → SE puede editar y cancelar
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 15)
+BEGIN
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 15, '2026-04-10 08:00', '2026-04-30 18:00', 380000.00, 11000.00, EstadoSubastaId, 2
+    FROM EstadoSubasta WHERE Nombre = 'Programada';
+END
+
+-- Activa, sin pujas, inicio pasado → no editable (estado Activa), SÍ cancelable (sin pujas)
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 5 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa'))
+BEGIN
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 5, '2026-03-10 08:00', '2026-04-15 18:00', 480000.00, 15000.00, EstadoSubastaId, 3
+    FROM EstadoSubasta WHERE Nombre = 'Activa';
+END
+
+-- Programada, con pujas, fecha futura → no editable (tiene pujas), SÍ cancelable (futura)
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada'))
+BEGIN
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 6, '2026-04-08 09:00', '2026-04-28 18:00', 350000.00, 12000.00, EstadoSubastaId, 2
+    FROM EstadoSubasta WHERE Nombre = 'Programada';
+
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
+    SELECT TOP 1 SubastaId, 5, 350000.00, '2026-03-18 10:00'
+    FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada');
+    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
+    SELECT TOP 1 SubastaId, 7, 362000.00, '2026-03-19 14:00'
+    FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada');
+END
+
+-- Cancelada extra para historial
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 4 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Cancelada'))
+BEGIN
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 4, '2026-02-15 08:00', '2026-03-05 18:00', 305000.00, 10000.00, EstadoSubastaId, 2
+    FROM EstadoSubasta WHERE Nombre = 'Cancelada';
 END

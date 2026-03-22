@@ -10,7 +10,8 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h1 class="h3 mb-1">@Model.Nombre</h1>
-                    <p class="text-muted mb-0" data-i18n="ganadoDetalle.detallesCompletos">Detalles completos del ganado</p>
+                    <p class="text-muted mb-0" data-i18n="ganadoDetalle.detallesCompletos">Detalles completos del ganado
+                    </p>
                 </div>
                 @{
                     var headerBadgeClass = Model.NombreEstadoGanado == "Activo" ? "bg-success" : "bg-danger";
@@ -33,7 +34,8 @@
                             <p class="h6 text-success">@Model.PesoKg kg</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted" data-i18n="ganadoDetalle.tipoGanado">Tipo de Ganado:</strong></p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.tipoGanado">Tipo de Ganado:</strong>
+                            </p>
                             <p class="h6">@Model.NombreTipoGanado</p>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -45,221 +47,263 @@
                             <p class="h6">@Model.NombreSexo</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaNacimiento">Fecha de Nacimiento:</strong></p>
-                            <p class="h6">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
+                            <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaNacimiento">Fecha de
+                                Nacimiento:</strong></p>
+                                <p class="h6">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0" data-i18n="ganadoDetalle.descripcionSection">Descripción</h5>
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0" data-i18n="ganadoDetalle.descripcionSection">Descripción</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">@Model.Descripcion</p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="lead">@Model.Descripcion</p>
-                </div>
-            </div>
 
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0" data-i18n="ganadoDetalle.categoriasSection">Categorías Asociadas</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.Categorias != null && Model.Categorias.Any())
-                    {
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach (var cat in Model.Categorias)
-                            {
-                                <span class="badge bg-info text-dark fs-6 px-3 py-2">@cat</span>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0" data-i18n="ganadoDetalle.sinCategoriasDetalle">No hay categorías asignadas a este ganado.</p>
-                    }
-                </div>
-            </div>
-
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0" data-i18n="ganadoDetalle.imagenesSection">Imágenes del Ganado</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.ImagenesGanado != null && Model.ImagenesGanado.Any())
-                    {
-                        <div class="row g-3">
-                            @foreach (var imagen in Model.ImagenesGanado)
-                            {
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="border rounded bg-light d-flex align-items-center justify-content-center"
-                                         style="height: 280px;">
-                                        <img src="@imagen.UrlImagen" alt="Imagen del ganado @Model.Nombre"
-                                             style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-warning" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            <span data-i18n="ganadoDetalle.noImagenes">No hay imágenes disponibles para este ganado.</span>
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0" data-i18n="ganadoDetalle.infoRegistro">Información de Registro</h5>
-                </div>
-                <div class="card-body text-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <p><strong class="text-muted">Condición (Certificado de Salud):</strong></p>
-                            <p class="h6">
-                                @if (!string.IsNullOrEmpty(Model.CertificadoSalud))
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0" data-i18n="ganadoDetalle.categoriasSection">Categorías Asociadas</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Categorias != null && Model.Categorias.Any())
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var cat in Model.Categorias)
                                 {
-                                    <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Certificado y
-                                        apto</span>
-                                        <br />
-
-                                        <small class="text-muted mt-1 d-inline-block">@Model.CertificadoSalud</small>
-                                    }
-                                else
-                                    {
-                                        <span class="badge bg-warning text-dark"><i
-                                            class="bi bi-exclamation-triangle me-1"></i>Sin certificación</span>
-                                        }
-                                    </p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <p><strong class="text-muted" data-i18n="ganadoDetalle.estado">Estado:</strong></p>
-                                    <p class="h6">
-                                        @if (Model.NombreEstadoGanado == "Activo")
-                                        {
-                                            <span class="badge bg-success">@Model.NombreEstadoGanado</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger">@(Model.NombreEstadoGanado ?? "No definido")</span>
-                                        }
-                                    </p>
-                                </div>
-                                <div class="col-md-6">
-                                <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaRegistro">Fecha de Registro:</strong></p>
-                                <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
-                                </div>
-                                <div class="col-md-6">
-                                <p><strong class="text-muted" data-i18n="ganadoDetalle.vendedor">Nombre Vendedor:</strong></p>
-                                <p class="h6">@Model.NombreVendedor</p>
-                                </div>
+                                    <span class="badge bg-info text-dark fs-6 px-3 py-2">@cat</span>
+                                }
                             </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0" data-i18n="ganadoDetalle.sinCategoriasDetalle">No hay categorías
+                                asignadas a este ganado.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0" data-i18n="ganadoDetalle.imagenesSection">Imágenes del Ganado</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.ImagenesGanado != null && Model.ImagenesGanado.Any())
+                            {
+                                <div class="row g-3">
+                                    @foreach (var imagen in Model.ImagenesGanado)
+                                    {
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="border rounded bg-light d-flex align-items-center justify-content-center"
+                                                 style="height: 280px;">
+                                                <img src="@imagen.UrlImagen" alt="Imagen del ganado @Model.Nombre"
+                                                     style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <span data-i18n="ganadoDetalle.noImagenes">No hay imágenes disponibles para este ganado.</span>
+                                </div>
+                            }
                         </div>
                     </div>
 
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0"><i class="bi bi-gavel me-1"></i> <span data-i18n="ganadoDetalle.historialSubastas">Historial de Subastas</span></h5>
+                            <h5 class="mb-0" data-i18n="ganadoDetalle.infoRegistro">Información de Registro</h5>
                         </div>
-                        <div class="card-body p-0">
-                            @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
-                            {
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th data-i18n="ganadoDetalle.colIdSubasta">ID Subasta</th>
-                                                <th data-i18n="ganadoDetalle.colFechaInicio">Fecha de Inicio</th>
-                                                <th data-i18n="ganadoDetalle.colFechaCierre">Fecha de Cierre</th>
-                                                <th data-i18n="ganadoDetalle.colEstado">Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var sub in Model.SubastasParticipacion)
+                        <div class="card-body text-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <p><strong class="text-muted">Condición (Certificado de Salud):</strong></p>
+                                    <p class="h6">
+                                        @if (!string.IsNullOrEmpty(Model.CertificadoSalud))
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Certificado y
+                                                apto</span>
+                                                <br />
+
+                                                <small class="text-muted mt-1 d-inline-block">@Model.CertificadoSalud</small>
+                                            }
+                                else
                                             {
-                                                <tr>
-                                                    <td>
-                                                        @if (sub.EstadoSubasta == "Activa" || sub.EstadoSubasta == "Programada" ||
-                                                                                                                                                                                                                sub.EstadoSubasta == "Finalizada")
+                                                <span class="badge bg-warning text-dark"><i
+                                                    class="bi bi-exclamation-triangle me-1"></i>Sin certificación</span>
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p><strong class="text-muted" data-i18n="ganadoDetalle.estado">Estado:</strong></p>
+                                            <p class="h6">
+                                                @if (Model.NombreEstadoGanado == "Activo")
+                                                {
+                                                    <span class="badge bg-success">@Model.NombreEstadoGanado</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">@(Model.NombreEstadoGanado ?? "No definido")</span>
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong class="text-muted" data-i18n="ganadoDetalle.fechaRegistro">Fecha de
+                                                Registro:</strong></p>
+                                                <p class="h6">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong class="text-muted" data-i18n="ganadoDetalle.vendedor">Nombre Vendedor:</strong>
+                                                </p>
+                                                <p class="h6">@Model.NombreVendedor</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card shadow-sm border-0 mb-4">
+                                    <div class="card-header bg-dark text-white">
+                                        <h5 class="mb-0"><i class="bi bi-gavel me-1"></i> <span
+                                            data-i18n="ganadoDetalle.historialSubastas">Historial de Subastas</span></h5>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
+                                            {
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover align-middle mb-0">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th data-i18n="ganadoDetalle.colIdSubasta">ID Subasta</th>
+                                                                <th data-i18n="ganadoDetalle.colFechaInicio">Fecha de Inicio</th>
+                                                                <th data-i18n="ganadoDetalle.colFechaCierre">Fecha de Cierre</th>
+                                                                <th data-i18n="ganadoDetalle.colEstado">Estado</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var sub in Model.SubastasParticipacion)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        @if (sub.EstadoSubasta == "Activa" || sub.EstadoSubasta == "Programada" ||
+                                                                                                                sub.EstadoSubasta == "Finalizada")
+                                                                        {
+                                                                            <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@sub.SubastaId"
+                                                                                   asp-route-from="ganado" class="text-decoration-none">
+                                                                                <span class="badge bg-secondary">#@sub.SubastaId</span>
+                                                                                <i class="bi bi-box-arrow-up-right small"></i>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span class="badge bg-secondary">#@sub.SubastaId</span>
+                                                                        }
+                                                                    </td>
+                                                                    <td>@sub.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                                                    <td>@sub.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                                                    <td>
+                                                                        @{
+                                                                            var estadoBadge = sub.EstadoSubasta switch
+                                                                            {
+                                                                                "Activa" => "bg-success",
+                                                                                "Finalizada" => "bg-secondary",
+                                                                                "Cancelada" => "bg-danger",
+                                                                                "Programada" => "bg-warning text-dark",
+                                                                                _ => "bg-info"
+                                                                            };
+                                                                        }
+                                                                        <span class="badge @estadoBadge">@sub.EstadoSubasta</span>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted mb-0 p-3" data-i18n="ganadoDetalle.noSubastas">Este ganado no ha participado en
+                                                    ninguna subasta.</p>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex gap-2 justify-content-start flex-wrap">
+                                            <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId"
+                                                   class="btn btn-warning action-btn-consistent">
+                                                <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
+                                            </a>
+                                            @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
+                                            {
+                                                <button
+                                                    class="btn action-btn-consistent @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
+                                                    disabled title="Este ganado ya participó en una subasta y no puede cambiar de estado">
+                                                    @if (Model.NombreEstadoGanado == "Activo")
+                                                    {
+                                                        <i class="bi bi-pause-circle me-1"></i>
+                    
+                                                        <span class="toggle-label">Desactivar</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-play-circle me-1"></i>
+                    
+                                                        <span class="toggle-label">Activar</span>
+                                                    }
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@Model.GanadoId" method="post"
+                                                      class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit"
+                                                            class="btn action-btn-consistent @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")">
+                                                        @if (Model.NombreEstadoGanado == "Activo")
                                                         {
-                                                            <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@sub.SubastaId"
-                                                                   asp-route-from="ganado" class="text-decoration-none">
-                                                                <span class="badge bg-secondary">#@sub.SubastaId</span>
-                                                                <i class="bi bi-box-arrow-up-right small"></i>
-                                                            </a>
+                                                            <i class="bi bi-pause-circle me-1"></i>
+                        
+                                                            <span class="toggle-label">Desactivar</span>
                                                         }
                                                         else
                                                         {
-                                                            <span class="badge bg-secondary">#@sub.SubastaId</span>
+                                                            <i class="bi bi-play-circle me-1"></i>
+                        
+                                                            <span class="toggle-label">Activar</span>
                                                         }
-                                                    </td>
-                                                    <td>@sub.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
-                                                    <td>@sub.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
-                                                    <td>
-                                                        @{
-                                                            var estadoBadge = sub.EstadoSubasta switch
-                                                            {
-                                                                "Activa" => "bg-success",
-                                                                "Finalizada" => "bg-secondary",
-                                                                "Cancelada" => "bg-danger",
-                                                                "Programada" => "bg-warning text-dark",
-                                                                _ => "bg-info"
-                                                            };
-                                                        }
-                                                        <span class="badge @estadoBadge">@sub.EstadoSubasta</span>
-                                                    </td>
-                                                </tr>
+                                                    </button>
+                                                </form>
                                             }
-                                        </tbody>
-                                    </table>
+                                            <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@Model.GanadoId"
+                                                   class="btn btn-outline-danger action-btn-consistent">
+                                                <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
+                                            </a>
+                                            <a asp-controller="Ganado" asp-action="Index" class="btn btn-outline-secondary action-btn-consistent">
+                                                <i class="bi bi-arrow-left me-2"></i><span data-i18n="ganadoDetalle.volverCatalogo">Volver al
+                                                Catálogo</span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            }
-                            else
-                            {
-                                <p class="text-muted mb-0 p-3" data-i18n="ganadoDetalle.noSubastas">Este ganado no ha participado en ninguna subasta.</p>
-                            }
-                        </div>
-                    </div>
+                            </div>
 
-                    <div class="d-flex gap-2 justify-content-start flex-wrap">
-                        <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId" class="btn btn-warning action-btn-consistent">
-                            <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
-                        </a>
-                        <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@Model.GanadoId" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn action-btn-consistent @(Model.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")">
-                                @if (Model.NombreEstadoGanado == "Activo")
-                                {
-                                    <i class="bi bi-pause-circle me-1"></i><span class="toggle-label">Desactivar</span>
+                            <style>
+                                .action-btn-consistent {
+                                    min-width: 11.5rem;
+                                    min-height: 2.75rem;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
                                 }
-                                else
-                                {
-                                    <i class="bi bi-play-circle me-1"></i><span class="toggle-label">Activar</span>
-                                }
-                            </button>
-                        </form>
-                        <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@Model.GanadoId" class="btn btn-outline-danger action-btn-consistent">
-                            <i class="bi bi-slash-circle me-1"></i> Eliminación lógica
-                        </a>
-                        <a asp-controller="Ganado" asp-action="Index" class="btn btn-secondary action-btn-consistent">
-                            <i class="bi bi-arrow-left me-2"></i><span data-i18n="ganadoDetalle.volverCatalogo">Volver al Catálogo</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <style>
-            .action-btn-consistent {
-                min-width: 11.5rem;
-                min-height: 2.75rem;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .toggle-label { display: inline-block; min-width: 5rem; text-align: left; }
-        </style>
+                                .toggle-label {
+                                    display: inline-block;
+                                    min-width: 5rem;
+                                    text-align: left;
+                                }
+                            </style>

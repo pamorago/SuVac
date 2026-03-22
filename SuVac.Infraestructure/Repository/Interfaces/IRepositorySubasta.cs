@@ -34,6 +34,9 @@ public interface IRepositorySubasta
     /// <summary>Verifica si el ganado ya tiene una subasta en estado activa/programada/borrador.</summary>
     Task<bool> GanadoTieneSubastaActiva(int ganadoId, int? excluirSubastaId = null);
 
+    /// <summary>Verifica si el ganado está en estado Activo.</summary>
+    Task<bool> GanadoEstaActivo(int ganadoId);
+
     /// <summary>Obtiene el EstadoSubastaId por nombre.</summary>
     Task<int?> GetEstadoIdByNombre(string nombre);
 }

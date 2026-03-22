@@ -84,21 +84,24 @@ else
                     <div class="card-footer bg-body border-0 pt-0 pb-3">
                         <div class="d-grid gap-2 px-2">
                             <a asp-controller="Ganado" asp-action="Details" asp-route-id="@item.GanadoId"
-                               class="btn btn-secondary">
+                               class="btn btn-outline-secondary">
                                 <i class="bi bi-eye me-1"></i> Ver Detalles
                             </a>
-                                                        <div class="d-flex gap-2 align-items-stretch">
+                            @{
+                                bool fueSubastado = item.SubastasParticipacion != null && item.SubastasParticipacion.Any();
+                                bool enSubastaActiva = item.SubastasParticipacion != null &&
+                                    item.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa");
+                                bool puedeEliminar = !fueSubastado && !enSubastaActiva;
+                            }
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                                 <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@item.GanadoId"
-                                                                     class="btn btn-outline-warning flex-fill d-inline-flex align-items-center justify-content-center action-btn-uniform">
+                                   class="btn btn-outline-warning d-flex align-items-center justify-content-center action-btn-uniform">
                                     <i class="bi bi-pencil me-1"></i> Editar
                                 </a>
-                                <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@item.GanadoId"
-                                      method="post" class="toggle-form flex-fill">
-                                    @Html.AntiForgeryToken()
-                                    <button type="button"
-                                                                                        class="btn w-100 btn-toggle-ganado action-btn-uniform @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
-                                            data-nombre="@item.Nombre"
-                                            data-estado="@item.NombreEstadoGanado">
+                                @if (fueSubastado)
+                                {
+                                    <button class="btn w-100 h-100 action-btn-uniform @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")" disabled
+                                            title="Este ganado ya participó en una subasta y no puede cambiar de estado">
                                         @if (item.NombreEstadoGanado == "Activo")
                                         {
                                             <i class="bi bi-pause-circle me-1"></i><span class="toggle-label">Desactivar</span>
@@ -108,14 +111,28 @@ else
                                             <i class="bi bi-play-circle me-1"></i><span class="toggle-label">Activar</span>
                                         }
                                     </button>
-                                </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Ganado" asp-action="ToggleEstado" asp-route-id="@item.GanadoId"
+                                          method="post" class="toggle-form">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button"
+                                                class="btn w-100 h-100 btn-toggle-ganado action-btn-uniform @(item.NombreEstadoGanado == "Activo" ? "btn-outline-secondary" : "btn-outline-success")"
+                                                data-nombre="@item.Nombre"
+                                                data-estado="@item.NombreEstadoGanado">
+                                            @if (item.NombreEstadoGanado == "Activo")
+                                            {
+                                                <i class="bi bi-pause-circle me-1"></i><span class="toggle-label">Desactivar</span>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-play-circle me-1"></i><span class="toggle-label">Activar</span>
+                                            }
+                                        </button>
+                                    </form>
+                                }
                             </div>
-                            @{
-                                bool fueSubastado = item.SubastasParticipacion != null && item.SubastasParticipacion.Any();
-                                bool enSubastaActiva = item.SubastasParticipacion != null &&
-                                    item.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa");
-                                bool puedeEliminar = !fueSubastado && !enSubastaActiva;
-                            }
                             @if (puedeEliminar)
                             {
                                 <a asp-controller="Ganado" asp-action="Delete" asp-route-id="@item.GanadoId"

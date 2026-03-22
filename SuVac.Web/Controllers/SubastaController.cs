@@ -78,7 +78,7 @@ public class SubastaController : Controller
     }
 
     // ─── DETALLE ─────────────────────────────────────────────────────────────
-    public async Task<IActionResult> Detalle(int? id)
+    public async Task<IActionResult> Detalle(int? id, string? from = null)
     {
         if (id is null or <= 0)
         {
@@ -100,6 +100,7 @@ public class SubastaController : Controller
             $"Mostrando información de la subasta #{subasta.SubastaId}: {subasta.NombreGanado}",
             SweetAlertMessageType.info
         );
+        ViewBag.From = from;
 
         return View(subasta);
     }

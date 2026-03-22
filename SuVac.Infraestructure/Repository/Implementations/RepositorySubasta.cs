@@ -197,6 +197,14 @@ public class RepositorySubasta : IRepositorySubasta
             .AnyAsync();
     }
 
+    public async Task<bool> GanadoEstaActivo(int ganadoId)
+    {
+        return await _context.Ganados
+            .Where(g => g.GanadoId == ganadoId
+                     && g.IdEstadoGanadoNavigation.Nombre == "Activo")
+            .AnyAsync();
+    }
+
     public async Task<int?> GetEstadoIdByNombre(string nombre)
     {
         var estado = await _context.EstadosSubasta

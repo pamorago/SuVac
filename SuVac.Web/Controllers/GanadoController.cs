@@ -228,16 +228,16 @@ public class GanadoController : Controller
         var ganado = await _service.GetById(id);
         if (ganado == null) return NotFound();
 
-        // Regla: no desactivar si está en subasta activa
-        int nuevoEstadoId = ganado.NombreEstadoGanado == "Activo" ? 2 : 1;
-        if (nuevoEstadoId == 2 && ganado.SubastasParticipacion != null &&
-            ganado.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa"))
+        // Regla: si el ganado alguna vez participó en una subasta, su estado es inmutable
+        if (ganado.SubastasParticipacion != null && ganado.SubastasParticipacion.Any())
         {
-            Notify("Desactivación no permitida",
-                $"\"{ganado.Nombre}\" pertenece a una subasta activa y no puede ser desactivado.",
+            Notify("Operación no permitida",
+                $"\"{ganado.Nombre}\" ya participó en al menos una subasta. Su estado no puede modificarse.",
                 "warning");
             return RedirectToAction(nameof(Index));
         }
+
+        int nuevoEstadoId = ganado.NombreEstadoGanado == "Activo" ? 2 : 1;
 
         var result = await _service.ToggleEstado(id, nuevoEstadoId);
 
