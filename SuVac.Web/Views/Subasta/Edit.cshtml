@@ -24,7 +24,7 @@
 <div class="alert alert-warning" role="alert">
     <div>
         <strong>Restricciones de edición:</strong> Solo puede modificar fechas y precios.
-        La subasta no puede haber iniciado ni tener pujas registradas.
+        La subasta no puede haber iniciado o tener pujas registradas.
         El ganado y el vendedor no pueden cambiarse.
     </div>
 </div>
@@ -94,7 +94,7 @@
         <div class="input-group">
             <span class="input-group-text">₡</span>
             <input asp-for="PrecioBase" class="form-control" type="number" min="0.01" step="0.01" inputmode="decimal"
-                   placeholder="Ej: 125000.00"     value="@Model.PrecioBase.ToString("0.00", CultureInfo.InvariantCulture)" />
+                   placeholder="Ej: 125000.00" value="@Model.PrecioBase.ToString("0.00", CultureInfo.InvariantCulture)" />
         </div>
         <div class="form-text">Ejemplo de formato: 125000.00</div>
         <span asp-validation-for="PrecioBase" class="text-danger"></span>
@@ -105,7 +105,7 @@
         <div class="input-group">
             <span class="input-group-text">₡</span>
             <input asp-for="IncrementoMinimo" class="form-control" type="number" min="0.01" step="0.01"
-                   inputmode="decimal"              placeholder="Ej: 5000.00"
+                   inputmode="decimal" placeholder="Ej: 5000.00"
                    value="@Model.IncrementoMinimo.ToString("0.00", CultureInfo.InvariantCulture)" />
         </div>
         <div class="form-text">Ejemplo de formato: 5000.00</div>
@@ -129,12 +129,12 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <style>
-            .action-btn-fixed {
-                min-width: 13rem;
-                min-height: 2.75rem;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
+                .action-btn-fixed {
+                    min-width: 13rem;
+                    min-height: 2.75rem;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                }
     </style>
 }
