@@ -357,6 +357,22 @@ IF NOT EXISTS (SELECT 1 FROM Ganado WHERE Nombre = 'Toro Brahman 001')
     ('Vaca Holstein 002',   'Vaca Holstein multimpara con 3 partos. Produccion de 28 litros diarios promedio. Libre de mastitis.',                2,3,2,'2018-12-08',710.90,'CERT-2025-002',2,GETDATE(),3),
     ('Toro Brahman 003',    'Toro Brahman joven, listo para servicio. Pruebas de progenie sobresalientes y aplomos correctos.',                   3,1,1,'2023-09-02',420.75,'CERT-2025-003',1,GETDATE(),2);
 
+IF NOT EXISTS (SELECT 1 FROM Ganado WHERE Nombre = 'Vaca Angus 002')
+    INSERT INTO Ganado (Nombre, Descripcion, TipoGanadoId, RazaId, SexoId, FechaNacimiento, PesoKg, CertificadoSalud, EstadoGanadoId, FechaRegistro, UsuarioVendedorId)
+    VALUES
+    ('Vaca Angus 002',      'Vaca Angus de 4 anos, buen historial productivo. Actualmente fuera de servicio por tratamiento veterinario.',        1,2,2,'2022-05-10',560.00,'CERT-2025-004',2,GETDATE(),2),
+    ('Toro Hereford 002',   'Toro Hereford adulto, retirado temporalmente por revision genetica. Aplomos y condicion corporal optima.',           1,7,1,'2020-08-18',710.00, NULL,          2,GETDATE(),3),
+    ('Ternero Gyr 001',     'Ternero Gyr macho, en periodo de cuarentena post-traslado. Pendiente de habilitacion sanitaria.',                   3,9,1,'2025-01-15',195.50,'CERT-2025-005',2,GETDATE(),4),
+    ('Vaca Charolais 002',  'Vaca Charolais con historial de alta produccion carnica. Inactiva por proceso de destete y recuperacion.',           1,5,2,'2019-11-03',690.20, NULL,          2,GETDATE(),2),
+    ('Toro Simmental 002',  'Toro Simmental de proposito dual, suspendido temporalmente por auditoria de registros genealogicos.',                3,6,1,'2021-03-27',730.00,'CERT-2025-006',2,GETDATE(),3);
+
+-- Ganados extra para escenarios de prueba (Activos, sin subastas previas)
+IF NOT EXISTS (SELECT 1 FROM Ganado WHERE Nombre = 'Ternero Nelore 001')
+    INSERT INTO Ganado (Nombre, Descripcion, TipoGanadoId, RazaId, SexoId, FechaNacimiento, PesoKg, CertificadoSalud, EstadoGanadoId, FechaRegistro, UsuarioVendedorId)
+    VALUES
+    ('Ternero Nelore 001',  'Ternero Nelore macho, 14 meses, excelente condicion corporal. Apto para subasta.',   3,10,1,'2024-09-10',220.00,'CERT-2026-001',1,GETDATE(),2),
+    ('Vaca Gyr 002',        'Vaca Gyr de 3 anos, alta produccion lechera. Libre de brucelosis. Lista para subasta.', 2, 9,2,'2022-11-20',490.00,'CERT-2026-002',1,GETDATE(),3);
+
 -- =========================
 -- CATEGORIAS
 -- =========================
@@ -397,7 +413,14 @@ INSERT INTO ImagenGanado (GanadoId, UrlImagen) VALUES
     (14, '/img/Holstein.jpg'),
     (14, '/img/Simmental.jpg'),
     (15, '/img/Brahman.jpg'),
-    (15, '/img/Droughmaster.jpg');
+    (15, '/img/Droughmaster.jpg'),
+    (16, '/img/Angus.jpg'),
+    (17, '/img/Hereford.jpg'),
+    (18, '/img/Gyr.jpg'),
+    (19, '/img/Charolais.jpeg'),
+    (20, '/img/Simmental.jpg'),
+    (21, '/img/Nelore.jpeg'),      
+    (22, '/img/Gyr.jpg');       
 
 -- =========================
 -- GANADO - CATEGORIAS
@@ -418,7 +441,12 @@ IF NOT EXISTS (SELECT 1 FROM GanadoCategoria WHERE GanadoId = 1)
     (12, 4), (12, 5),        -- Nelore 001: Engorde, Criollo
     (13, 3), (13, 6),        -- Ternero Angus 002: Reproductor, Joven
     (14, 1), (14, 2),        -- Holstein 002: Premium, Lechero
-    (15, 3), (15, 6);        -- Brahman 003: Reproductor, Joven
+    (15, 3), (15, 6),        -- Brahman 003: Reproductor, Joven
+    (16, 1), (16, 4),        -- Angus 002: Premium, Engorde
+    (17, 4), (17, 5),        -- Hereford 002: Engorde, Criollo
+    (18, 3), (18, 6),        -- Ternero Gyr 001: Reproductor, Joven
+    (19, 1), (19, 4),        -- Charolais 002: Premium, Engorde
+    (20, 3);                  -- Simmental 002: Reproductor
 
 -- =========================
 -- SUBASTAS (14 subastas)
@@ -626,10 +654,11 @@ BEGIN
     SELECT TOP 1 SubastaId, 6, 319000.00, '2026-03-10 14:30'
     FROM Subasta WHERE GanadoId = 12 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa');
 
-    -- Sub 16: Vaca Holstein 002 — Borrador, fecha futura, SIN pujas
+    -- Sub 16: Ternero Nelore 001 (GanadoId dinámico) — Borrador, fecha futura, SIN pujas → SE puede publicar, editar y cancelar
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 14, '2026-04-05 09:00', '2026-04-25 18:00', 420000.00, 12000.00, EstadoSubastaId, 2
-    FROM EstadoSubasta WHERE Nombre = 'Borrador';
+    SELECT g.GanadoId, '2026-04-05 09:00', '2026-04-25 18:00', 420000.00, 12000.00, e.EstadoSubastaId, 2
+    FROM Ganado g CROSS JOIN EstadoSubasta e
+    WHERE g.Nombre = 'Ternero Nelore 001' AND e.Nombre = 'Borrador';
 END
 
 -- Sub 17: Toro Brahman 003 — Programada, fecha futura, SIN pujas → SE puede editar y cancelar
@@ -640,33 +669,11 @@ BEGIN
     FROM EstadoSubasta WHERE Nombre = 'Programada';
 END
 
--- Activa, sin pujas, inicio pasado → no editable (estado Activa), SÍ cancelable (sin pujas)
-IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 5 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa'))
+-- Sub: Vaca Gyr 002 — Activa, SIN pujas, inicio pasado → no editable (Activa), SÍ cancelable (sin pujas)
+IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = (SELECT GanadoId FROM Ganado WHERE Nombre = 'Vaca Gyr 002'))
 BEGIN
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 5, '2026-03-10 08:00', '2026-04-15 18:00', 480000.00, 15000.00, EstadoSubastaId, 3
-    FROM EstadoSubasta WHERE Nombre = 'Activa';
-END
-
--- Programada, con pujas, fecha futura → no editable (tiene pujas), SÍ cancelable (futura)
-IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada'))
-BEGIN
-    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 6, '2026-04-08 09:00', '2026-04-28 18:00', 350000.00, 12000.00, EstadoSubastaId, 2
-    FROM EstadoSubasta WHERE Nombre = 'Programada';
-
-    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
-    SELECT TOP 1 SubastaId, 5, 350000.00, '2026-03-18 10:00'
-    FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada');
-    INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora)
-    SELECT TOP 1 SubastaId, 7, 362000.00, '2026-03-19 14:00'
-    FROM Subasta WHERE GanadoId = 6 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Programada');
-END
-
--- Cancelada extra para historial
-IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 4 AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Cancelada'))
-BEGIN
-    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 4, '2026-02-15 08:00', '2026-03-05 18:00', 305000.00, 10000.00, EstadoSubastaId, 2
-    FROM EstadoSubasta WHERE Nombre = 'Cancelada';
+    SELECT g.GanadoId, '2026-03-10 08:00', '2026-04-15 18:00', 480000.00, 15000.00, e.EstadoSubastaId, 3
+    FROM Ganado g CROSS JOIN EstadoSubasta e
+    WHERE g.Nombre = 'Vaca Gyr 002' AND e.Nombre = 'Activa';
 END

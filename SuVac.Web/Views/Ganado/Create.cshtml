@@ -67,7 +67,10 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="FechaNacimiento" class="form-label fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
-                    <input asp-for="FechaNacimiento" class="form-control" type="date" />
+                    <input asp-for="FechaNacimiento" class="form-control" type="date"
+                           min="@DateTime.Today.AddYears(-50).ToString("yyyy-MM-dd")"
+                           max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           value="2000-01-01" />
                     <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -129,16 +132,19 @@
 
             
             <div class="mb-3">
-                <label class="form-label fw-semibold">Imágenes <span class="text-danger">*</span> <small class="text-muted">(seleccione al menos una imagen desde su equipo)</small></label>
+                <label class="form-label fw-semibold">Imágenes <span class="text-danger">*</span> <small class="text-muted">(al menos una)</small></label>
                 <span class="text-danger small d-block mb-1">
                     @(ViewData.ModelState["imagenesArchivos"]?.Errors.FirstOrDefault()?.ErrorMessage)
                 </span>
-                <input type="file" class="form-control" name="imagenesArchivos" id="imagenesArchivos"
-                       multiple accept="image/jpeg,image/png,image/gif,image/webp" />
-                <div class="form-text text-muted">
-                    <i class="bi bi-info-circle me-1"></i>Formatos permitidos: JPG, PNG, GIF, WEBP. Máximo 5 MB por imagen.
+                <div class="border rounded p-3 bg-light">
+                    <div id="preview-container" class="d-flex flex-wrap gap-2 mb-3" style="min-height: 1rem;"></div>
+                    <label class="btn btn-outline-secondary mb-0" for="imagenesArchivos">
+                        <i class="bi bi-image me-1"></i> Agregar imágenes
+                        <input type="file" id="imagenesArchivos" name="imagenesArchivos" multiple
+                               accept="image/jpeg,image/png,image/gif,image/webp" class="d-none" />
+                    </label>
+                    <small class="text-muted ms-2">JPG, PNG, GIF, WEBP · máx. 5 MB c/u · podés agregar varias a la vez o de a una</small>
                 </div>
-                <div id="preview-container" class="d-flex flex-wrap gap-2 mt-3"></div>
             </div>
 
             <hr class="my-3" />
@@ -155,22 +161,52 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
-        document.getElementById('imagenesArchivos').addEventListener('change', function () {
+        (() => {
+            const input = document.getElementById('imagenesArchivos');
             const preview = document.getElementById('preview-container');
-            preview.innerHTML = '';
-            Array.from(this.files).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const div = document.createElement('div');
-                    div.className = 'position-relative';
-                    div.innerHTML = `<img src="${e.target.result}" class="rounded border"
-                        style="width:100px;height:80px;object-fit:cover;" title="${file.name}">`;
-                    preview.appendChild(div);
-                };
-                reader.readAsDataURL(file);
+            let allFiles = new DataTransfer();
+
+            input.addEventListener('change', function () {
+                Array.from(this.files).forEach(file => {
+                    if (!file.type.startsWith('image/')) return;
+                    allFiles.items.add(file);
+                });
+                renderPreviews();
+                // NO limpiar input.value — borra input.files en Chrome
             });
-        });
+
+            // Re-asignar los archivos acumulados justo antes de enviar el form
+            document.querySelector('form[action*="Create"]')?.addEventListener('submit', function () {
+                input.files = allFiles.files;
+            });
+
+            function renderPreviews() {
+                preview.innerHTML = '';
+                Array.from(allFiles.files).forEach((file, idx) => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        const div = document.createElement('div');
+                        div.className = 'position-relative';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="rounded border"
+                                style="width:100px;height:80px;object-fit:cover;" title="${file.name}">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0 lh-1"
+                                style="width:1.2rem;height:1.2rem;font-size:.7rem;" data-idx="${idx}" title="Quitar">
+                                &times;
+                            </button>`;
+                        div.querySelector('button').addEventListener('click', function () {
+                            const i = parseInt(this.dataset.idx);
+                            const dt = new DataTransfer();
+                            Array.from(allFiles.files).forEach((f, j) => { if (j !== i) dt.items.add(f); });
+                            allFiles = dt;
+                            renderPreviews();
+                        });
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        })();
     </script>
     <style>
         .action-btn-fixed {

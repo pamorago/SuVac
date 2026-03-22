@@ -110,13 +110,14 @@ public class GanadoController : Controller
         var ganado = await _service.GetById(id);
         if (ganado == null) return NotFound();
 
-        // Regla: no editar si está en subasta activa (EstadoSubastaId = 2)
-        if (ganado.SubastasParticipacion != null &&
-            ganado.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa"))
+        // Regla: no editar si participó en alguna subasta (activa o finalizada)
+        if (ganado.SubastasParticipacion != null && ganado.SubastasParticipacion.Any())
         {
-            Notify("Edición no permitida",
-                $"\"{ganado.Nombre}\" pertenece a una subasta activa y no puede ser editado.",
-                "warning");
+            var estadoActiva = ganado.SubastasParticipacion.Any(s => s.EstadoSubasta == "Activa");
+            var mensaje = estadoActiva
+                ? $"\"{ganado.Nombre}\" pertenece a una subasta activa y no puede ser editado."
+                : $"\"{ganado.Nombre}\" ya participó en una subasta finalizada y no puede ser editado.";
+            Notify("Edición no permitida", mensaje, "warning");
             return RedirectToAction(nameof(Index));
         }
 
@@ -131,6 +132,15 @@ public class GanadoController : Controller
         List<string>? imagenesExistentes, List<IFormFile>? imagenesNuevas)
     {
         if (id != dto.GanadoId) return NotFound();
+
+        // Protección POST: verificar regla de negocio también en el POST
+        var ganadoActual = await _service.GetById(id);
+        if (ganadoActual?.SubastasParticipacion != null && ganadoActual.SubastasParticipacion.Any())
+        {
+            Notify("Edición no permitida",
+                $"\"{ganadoActual.Nombre}\" ya participó en una subasta y no puede ser editado.", "warning");
+            return RedirectToAction(nameof(Index));
+        }
 
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
             ModelState.AddModelError("CategoriasIds", "Debe seleccionar al menos una categoría.");

@@ -137,38 +137,38 @@ public class ServiceSubasta : IServiceSubasta
         });
     }
 
-    public async Task<(bool ok, string mensaje)> CreateValidado(SubastaDTO dto)
+    public async Task<(bool ok, string mensaje, int subastaId)> CreateValidado(SubastaDTO dto)
     {
         // Fecha cierre debe ser posterior a fecha inicio
         if (dto.FechaFin <= dto.FechaInicio)
-            return (false, "La fecha de cierre debe ser posterior a la fecha de inicio.");
+            return (false, "La fecha de cierre debe ser posterior a la fecha de inicio.", 0);
 
         // Precio base > 0 (complementa DataAnnotations)
         if (dto.PrecioBase <= 0)
-            return (false, "El precio base debe ser mayor a ₡0.");
+            return (false, "El precio base debe ser mayor a ₡0.", 0);
 
         if (dto.IncrementoMinimo <= 0)
-            return (false, "El incremento mínimo debe ser mayor a ₡0.");
+            return (false, "El incremento mínimo debe ser mayor a ₡0.", 0);
 
         // El ganado debe estar en estado Activo
         var ganadoActivo = await _repository.GanadoEstaActivo(dto.GanadoId);
         if (!ganadoActivo)
-            return (false, "El ganado seleccionado no está activo y no puede ser subastado.");
+            return (false, "El ganado seleccionado no está activo y no puede ser subastado.", 0);
 
         // El ganado no puede tener otra subasta activa/programada/borrador
         if (await _repository.GanadoTieneSubastaActiva(dto.GanadoId))
-            return (false, "El ganado seleccionado ya tiene una subasta activa o programada.");
+            return (false, "El ganado seleccionado ya tiene una subasta activa o programada.", 0);
 
         // Estado inicial = Borrador
         var estadoBorrador = await _repository.GetEstadoIdByNombre("Borrador");
         if (estadoBorrador == null)
-            return (false, "Estado 'Borrador' no configurado en el sistema. Ejecute el script SQL.");
+            return (false, "Estado 'Borrador' no configurado en el sistema. Ejecute el script SQL.", 0);
 
         dto.EstadoSubastaId = estadoBorrador.Value;
 
         var subasta = _mapper.Map<Subasta>(dto);
         var ok = await _repository.Create(subasta);
-        return (ok, ok ? "Subasta creada correctamente como borrador." : "Error al guardar la subasta.");
+        return (ok, ok ? "Subasta creada correctamente como borrador." : "Error al guardar la subasta.", subasta.SubastaId);
     }
 
     public async Task<(bool ok, string mensaje)> UpdateValidado(SubastaDTO dto)
@@ -177,13 +177,15 @@ public class ServiceSubasta : IServiceSubasta
         if (subasta == null)
             return (false, "Subasta no encontrada.");
 
-        // No puede editarse si ya inició
-        if (subasta.FechaInicio <= DateTime.Now)
-            return (false, "No se puede editar: la subasta ya ha iniciado.");
-
         // No puede editarse si ya tiene pujas
         if (await _repository.TienePujas(dto.SubastaId))
             return (false, "No se puede editar: la subasta ya tiene pujas registradas.");
+
+        // No puede editarse si está Finalizada o Cancelada
+        var idFinalizada = await _repository.GetEstadoIdByNombre("Finalizada");
+        var idCancelada = await _repository.GetEstadoIdByNombre("Cancelada");
+        if (subasta.EstadoSubastaId == idFinalizada || subasta.EstadoSubastaId == idCancelada)
+            return (false, "No se puede editar una subasta Finalizada o Cancelada.");
 
         // Fecha cierre > inicio
         if (dto.FechaFin <= dto.FechaInicio)
@@ -215,6 +217,12 @@ public class ServiceSubasta : IServiceSubasta
         if (subasta.EstadoSubastaId != idBorrador)
             return (false, "Solo se puede publicar una subasta que se encuentre en estado Borrador.");
 
+        if (subasta.FechaInicio <= DateTime.Now)
+            return (false, "No se puede publicar: la fecha de inicio debe ser posterior a la fecha y hora actual.");
+
+        if (subasta.FechaFin <= DateTime.Now)
+            return (false, "No se puede publicar: la fecha de cierre debe ser posterior a la fecha y hora actual.");
+
         var idProgramada = await _repository.GetEstadoIdByNombre("Programada");
         if (idProgramada == null)
             return (false, "Estado 'Programada' no configurado en el sistema.");
@@ -229,17 +237,24 @@ public class ServiceSubasta : IServiceSubasta
         if (subasta == null)
             return (false, "Subasta no encontrada.");
 
-        var noHaIniciado = subasta.FechaInicio > DateTime.Now;
-        var sinPujas = !await _repository.TienePujas(subastaId);
-
-        if (!noHaIniciado && !sinPujas)
-            return (false, "No se puede cancelar: la subasta ya inició y tiene pujas registradas.");
-
+        // No se puede cancelar si ya está Finalizada o Cancelada
+        var idFinalizada = await _repository.GetEstadoIdByNombre("Finalizada");
         var idCancelada = await _repository.GetEstadoIdByNombre("Cancelada");
-        if (idCancelada == null)
+
+        if (subasta.EstadoSubastaId == idFinalizada)
+            return (false, "No se puede cancelar: la subasta ya está Finalizada.");
+        if (subasta.EstadoSubastaId == idCancelada)
+            return (false, "La subasta ya está Cancelada.");
+
+        // No se puede cancelar si tiene pujas (sin importar el estado)
+        if (await _repository.TienePujas(subastaId))
+            return (false, "No se puede cancelar: la subasta ya tiene pujas registradas.");
+
+        var idCanceladaDestino = await _repository.GetEstadoIdByNombre("Cancelada");
+        if (idCanceladaDestino == null)
             return (false, "Estado 'Cancelada' no configurado en el sistema.");
 
-        var ok = await _repository.CambiarEstado(subastaId, idCancelada.Value);
+        var ok = await _repository.CambiarEstado(subastaId, idCanceladaDestino.Value);
         return (ok, ok ? "Subasta cancelada correctamente." : "Error al cancelar la subasta.");
     }
 
@@ -259,5 +274,10 @@ public class ServiceSubasta : IServiceSubasta
         CantidadPujas = cantidadPujas,
         NombreCreador = s.IdUsuarioCreadorNavigation?.NombreCompleto ?? "-"
     };
+
+    public async Task ActualizarEstadosAsync()
+    {
+        await _repository.ActualizarEstadosAsync();
+    }
 }
 

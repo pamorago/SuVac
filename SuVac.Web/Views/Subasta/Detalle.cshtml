@@ -10,11 +10,11 @@
         "Borrador" => "text-bg-secondary",
         _ => "text-bg-info"
     };
-    var puedeEditar = (Model.EstadoSubasta == "Borrador" || Model.EstadoSubasta == "Programada")
-                      && Model.FechaInicio > DateTime.Now && Model.TotalPujas == 0;
+    var puedeEditar = Model.EstadoSubasta != "Finalizada" && Model.EstadoSubasta != "Cancelada" && Model.TotalPujas == 0;
     var puedePublicar = Model.EstadoSubasta == "Borrador";
-    var puedeCancelar = Model.EstadoSubasta != "Cancelada" && Model.EstadoSubasta != "Finalizada"
-                         && (Model.FechaInicio > DateTime.Now || Model.TotalPujas == 0);
+    var puedeCancelar = Model.EstadoSubasta != "Cancelada"
+                         && Model.EstadoSubasta != "Finalizada"
+                         && Model.TotalPujas == 0;
 }
 
 <nav class="mb-3">

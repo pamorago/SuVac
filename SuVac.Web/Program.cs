@@ -6,6 +6,7 @@ using SuVac.Infraestructure.Data;
 using SuVac.Infraestructure.Repository.Implementations;
 using SuVac.Infraestructure.Repository.Interfaces;
 using SuVac.Web.Middleware;
+using SuVac.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -103,6 +104,7 @@ builder.Services.AddTransient<IServiceRaza, ServiceRaza>();
 builder.Services.AddTransient<IServiceTipoGanado, ServiceTipoGanado>();
 builder.Services.AddTransient<IServiceRol, ServiceRol>();
 builder.Services.AddTransient<IServiceResultadoSubasta, ServiceResultadoSubasta>();
+builder.Services.AddHostedService<SubastaTransicionService>();
 
 // =======================
 // Configurar AutoMapper

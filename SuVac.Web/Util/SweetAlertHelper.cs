@@ -9,7 +9,7 @@ namespace SuVac.Web.Util
             var config = new
             {
                 title = titulo,
-                text = mensaje,
+                html = mensaje,
                 icon = tipo.ToString()
             };
 

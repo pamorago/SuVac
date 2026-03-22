@@ -23,7 +23,7 @@ public interface IServiceSubasta
     Task<IEnumerable<GanadoDTO>> GetGanadosActivos();
 
     /// <summary>Crea una subasta con validaciones de negocio. Estado inicial: Borrador.</summary>
-    Task<(bool ok, string mensaje)> CreateValidado(SubastaDTO dto);
+    Task<(bool ok, string mensaje, int subastaId)> CreateValidado(SubastaDTO dto);
 
     /// <summary>Edita fechas y precios si no ha iniciado y no tiene pujas.</summary>
     Task<(bool ok, string mensaje)> UpdateValidado(SubastaDTO dto);
@@ -33,4 +33,7 @@ public interface IServiceSubasta
 
     /// <summary>Cambia estado a Cancelada si no ha iniciado o no tiene pujas.</summary>
     Task<(bool ok, string mensaje)> Cancelar(int subastaId);
+
+    /// <summary>Actualiza automáticamente estados: Programada→Activa y Activa→Finalizada según fechas.</summary>
+    Task ActualizarEstadosAsync();
 }

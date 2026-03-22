@@ -73,15 +73,13 @@
                                 _ => "text-bg-info"
                             };
 
-                            var puedeEditar = (item.EstadoSubasta == "Borrador" || item.EstadoSubasta == "Programada")
-                                             && item.FechaInicio > DateTime.Now
-                                             && item.CantidadPujas == 0;
+                            var puedeEditar = item.EstadoSubasta != "Finalizada" && item.EstadoSubasta != "Cancelada" && item.CantidadPujas == 0;
 
                             var puedePublicar = item.EstadoSubasta == "Borrador";
 
                             var puedeCancelar = item.EstadoSubasta != "Cancelada"
                                              && item.EstadoSubasta != "Finalizada"
-                                             && (item.FechaInicio > DateTime.Now || item.CantidadPujas == 0);
+                                             && item.CantidadPujas == 0;
 
                             <tr>
                                 <td class="ps-3">

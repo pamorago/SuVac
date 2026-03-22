@@ -39,4 +39,7 @@ public interface IRepositorySubasta
 
     /// <summary>Obtiene el EstadoSubastaId por nombre.</summary>
     Task<int?> GetEstadoIdByNombre(string nombre);
+
+    /// <summary>Actualiza estados: Programada→Activa cuando FechaInicio≤now, Activa→Finalizada cuando FechaFin≤now.</summary>
+    Task ActualizarEstadosAsync();
 }

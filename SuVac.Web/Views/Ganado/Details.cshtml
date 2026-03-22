@@ -191,7 +191,7 @@
                                                                 <tr>
                                                                     <td>
                                                                         @if (sub.EstadoSubasta == "Activa" || sub.EstadoSubasta == "Programada" ||
-                                                                                                                sub.EstadoSubasta == "Finalizada")
+                                                                                                                                                                                        sub.EstadoSubasta == "Finalizada")
                                                                         {
                                                                             <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@sub.SubastaId"
                                                                                    asp-route-from="ganado" class="text-decoration-none">
@@ -234,10 +234,20 @@
                                         </div>
 
                                         <div class="d-flex gap-2 justify-content-start flex-wrap">
-                                            <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId"
-                                                   class="btn btn-warning action-btn-consistent">
-                                                <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
-                                            </a>
+                                            @if (Model.SubastasParticipacion == null || !Model.SubastasParticipacion.Any())
+                                            {
+                                                <a asp-controller="Ganado" asp-action="Edit" asp-route-id="@Model.GanadoId"
+                                                       class="btn btn-warning action-btn-consistent">
+                                                    <i class="bi bi-pencil me-2"></i><span data-i18n="ganadoDetalle.editarBtn">Editar</span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-warning action-btn-consistent" disabled
+                                                        title="Este ganado ya participó en una subasta y no puede ser editado">
+                                                    <i class="bi bi-pencil me-2"></i>Editar
+                                                </button>
+                                            }
                                             @if (Model.SubastasParticipacion != null && Model.SubastasParticipacion.Any())
                                             {
                                                 <button
@@ -246,13 +256,13 @@
                                                     @if (Model.NombreEstadoGanado == "Activo")
                                                     {
                                                         <i class="bi bi-pause-circle me-1"></i>
-                    
+
                                                         <span class="toggle-label">Desactivar</span>
                                                     }
                                                     else
                                                     {
                                                         <i class="bi bi-play-circle me-1"></i>
-                    
+
                                                         <span class="toggle-label">Activar</span>
                                                     }
                                                 </button>
@@ -267,13 +277,13 @@
                                                         @if (Model.NombreEstadoGanado == "Activo")
                                                         {
                                                             <i class="bi bi-pause-circle me-1"></i>
-                        
+
                                                             <span class="toggle-label">Desactivar</span>
                                                         }
                                                         else
                                                         {
                                                             <i class="bi bi-play-circle me-1"></i>
-                        
+
                                                             <span class="toggle-label">Activar</span>
                                                         }
                                                     </button>

@@ -124,7 +124,7 @@ public class SubastaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(SubastaDTO dto)
+    public async Task<IActionResult> Create(SubastaDTO dto, string? accion = null)
     {
         // Siempre forzar el usuario simulado — nunca tomar del form binding
         dto.UsuarioCreadorId = UsuarioSimulado.UsuarioActualId;
@@ -137,14 +137,6 @@ public class SubastaController : Controller
 
         if (!ModelState.IsValid)
         {
-            var errores = string.Join("<br>",
-                ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-
-            ViewBag.Notificacion = SweetAlertHelper.CrearNotificacion(
-                "Errores de validación",
-                $"Corrija los siguientes errores:<br>{errores}",
-                SweetAlertMessageType.warning
-            );
             await CargarDropdownsAsync();
             dto.NombreCreador = ViewBag.NombreUsuarioActual;
             return View(dto);
@@ -152,15 +144,25 @@ public class SubastaController : Controller
 
         try
         {
-            var (ok, mensaje) = await _service.CreateValidado(dto);
+            var (ok, mensaje, subastaId) = await _service.CreateValidado(dto);
 
             if (ok)
             {
-                TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
-                    "Subasta creada",
-                    "La subasta fue registrada como borrador. Publíquela cuando esté lista.",
-                    SweetAlertMessageType.success
-                );
+                if (accion == "publicar")
+                {
+                    var (pubOk, pubMensaje) = await _service.Publicar(subastaId);
+                    TempData["Notificacion"] = pubOk
+                        ? SweetAlertHelper.CrearNotificacion("Subasta publicada", "La subasta fue creada y publicada como Programada.", SweetAlertMessageType.success)
+                        : SweetAlertHelper.CrearNotificacion("Creada pero no publicada", pubMensaje, SweetAlertMessageType.warning);
+                }
+                else
+                {
+                    TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                        "Subasta creada",
+                        "La subasta fue registrada como borrador. Publíquela cuando esté lista.",
+                        SweetAlertMessageType.success
+                    );
+                }
                 return RedirectToAction(nameof(Index));
             }
 
@@ -199,12 +201,16 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Restricción: no se puede editar si ya inició
-        if (dto.FechaInicio <= DateTime.Now)
+        // Restricción: no editable si tiene pujas o está Finalizada/Cancelada
+        var detalle = await _service.GetDetalle(id);
+        var tienePujas = detalle?.TotalPujas > 0;
+        if (tienePujas || dto.NombreEstadoSubasta == "Finalizada" || dto.NombreEstadoSubasta == "Cancelada")
         {
             TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
                 "No se puede editar",
-                "La subasta ya ha iniciado y no puede ser modificada.",
+                tienePujas
+                    ? "No se puede editar: la subasta ya tiene pujas registradas."
+                    : $"No se puede editar una subasta en estado {dto.NombreEstadoSubasta}.",
                 SweetAlertMessageType.warning
             );
             return RedirectToAction(nameof(Detalle), new { id });
@@ -309,6 +315,24 @@ public class SubastaController : Controller
             TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
                 "No encontrada", $"No existe subasta con ID {id}.", SweetAlertMessageType.error);
             return RedirectToAction(nameof(Index));
+        }
+
+        if (detalle.EstadoSubasta == "Finalizada" || detalle.EstadoSubasta == "Cancelada")
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "No se puede cancelar",
+                $"Una subasta <strong>{detalle.EstadoSubasta}</strong> no puede cancelarse.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Detalle), new { id });
+        }
+
+        if (detalle.TotalPujas > 0)
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "No se puede cancelar",
+                "La subasta ya tiene pujas registradas y no puede cancelarse.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Detalle), new { id });
         }
 
         return View(detalle);

@@ -211,4 +211,43 @@ public class RepositorySubasta : IRepositorySubasta
             .FirstOrDefaultAsync(e => e.Nombre == nombre);
         return estado?.EstadoSubastaId;
     }
+
+    public async Task ActualizarEstadosAsync()
+    {
+        var ahora = DateTime.Now;
+
+        var idProgramada = await GetEstadoIdByNombre("Programada");
+        var idActiva     = await GetEstadoIdByNombre("Activa");
+        var idFinalizada = await GetEstadoIdByNombre("Finalizada");
+
+        if (idProgramada == null || idActiva == null || idFinalizada == null) return;
+
+        // Inactivo en EstadoGanado
+        var idInactivoGanado = await _context.EstadosGanado
+            .Where(e => e.Nombre == "Inactivo")
+            .Select(e => e.EstadoGanadoId)
+            .FirstOrDefaultAsync();
+
+        // Programada → Activa
+        var aActivar = await _context.Subastas
+            .Where(s => s.EstadoSubastaId == idProgramada && s.FechaInicio <= ahora)
+            .ToListAsync();
+        foreach (var s in aActivar)
+            s.EstadoSubastaId = idActiva.Value;
+
+        // Activa → Finalizada + desactivar ganado
+        var aFinalizar = await _context.Subastas
+            .Include(s => s.IdGanadoNavigation)
+            .Where(s => s.EstadoSubastaId == idActiva && s.FechaFin <= ahora)
+            .ToListAsync();
+        foreach (var s in aFinalizar)
+        {
+            s.EstadoSubastaId = idFinalizada.Value;
+            if (s.IdGanadoNavigation != null)
+                s.IdGanadoNavigation.EstadoGanadoId = idInactivoGanado;
+        }
+
+        if (aActivar.Any() || aFinalizar.Any())
+            await _context.SaveChangesAsync();
+    }
 }
