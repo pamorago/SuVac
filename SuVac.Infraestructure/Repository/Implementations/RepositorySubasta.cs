@@ -217,7 +217,7 @@ public class RepositorySubasta : IRepositorySubasta
         var ahora = DateTime.Now;
 
         var idProgramada = await GetEstadoIdByNombre("Programada");
-        var idActiva     = await GetEstadoIdByNombre("Activa");
+        var idActiva = await GetEstadoIdByNombre("Activa");
         var idFinalizada = await GetEstadoIdByNombre("Finalizada");
 
         if (idProgramada == null || idActiva == null || idFinalizada == null) return;
@@ -249,5 +249,17 @@ public class RepositorySubasta : IRepositorySubasta
 
         if (aActivar.Any() || aFinalizar.Any())
             await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<int>> GetIdsActivasParaFinalizarAsync()
+    {
+        var ahora = DateTime.Now;
+        var idActiva = await GetEstadoIdByNombre("Activa");
+        if (idActiva == null) return Enumerable.Empty<int>();
+
+        return await _context.Subastas
+            .Where(s => s.EstadoSubastaId == idActiva && s.FechaFin <= ahora)
+            .Select(s => s.SubastaId)
+            .ToListAsync();
     }
 }

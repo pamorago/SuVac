@@ -7,99 +7,155 @@
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
         <h1 class="h3 mb-1" data-i18n="subasta.activasTitle">Subastas Activas</h1>
-        <p class="text-muted mb-0"><span data-i18n="subasta.activasSubtitulo">Subastas en curso disponibles para pujar. Total:</span> <strong>@total</strong>.</p>
-    </div>
-    <div class="d-flex gap-2">
-        <a asp-action="Finalizadas" class="btn btn-outline-secondary">
-            <i class="bi bi-archive me-1"></i> <span data-i18n="subasta.verFinalizadas">Ver Finalizadas</span>
-        </a>
-        <a asp-action="Create" asp-route-from="activas" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i> <span data-i18n="subasta.nuevaSubasta">Nueva Subasta</span>
-        </a>
-    </div>
-</div>
-
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info d-flex align-items-center" role="alert">
-        <i class="bi bi-info-circle me-2"></i>
-        <div data-i18n="subasta.noHayActivas">No hay subastas activas en este momento.</div>
-    </div>
-}
-else
-{
-    <section aria-label="Listado de subastas activas">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-            @foreach (var subasta in Model)
-            {
-                <div class="col">
-                    <article class="card h-100 shadow-sm border-0">
-                        <div class="rounded-top overflow-hidden bg-body-tertiary" style="height: 200px;">
-                            @if (!string.IsNullOrEmpty(subasta.ImagenGanado))
-                            {
-                                <img class="w-100 h-100 object-fit-cover rounded-top"
-                                     src="@subasta.ImagenGanado"
-                                     alt="Imagen de @subasta.NombreGanado"
-                                     loading="lazy"
-                                     onerror="this.src='/img/sin-imagen.png'" />
-                            }
-                            else
-                            {
-                                <div class="d-flex flex-column justify-content-center align-items-center text-muted h-100">
-                                    <i class="bi bi-image fs-1"></i>
-                                    <span class="small" data-i18n="subasta.sinImagen">Sin imagen</span>
-                                </div>
-                            }
-                        </div>
-
-                        <div class="card-body">
-                            <h2 class="h6 fw-semibold mb-2">@subasta.NombreGanado</h2>
-
-                            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-                                <span class="badge text-bg-primary">
-                                    <i class="bi bi-hammer me-1"></i>@subasta.CantidadPujas <span data-i18n="subasta.pujas">puja(s)</span>
-                                </span>
-                            </div>
-
-                            <dl class="row small mb-0">
-                                <dt class="col-5 text-muted" data-i18n="subasta.cierre">Cierre</dt>
-                                <dd class="col-7">@subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
-                                <dt class="col-5 text-muted" data-i18n="subasta.precioBase">Precio base</dt>
-                                <dd class="col-7 fw-semibold text-success">₡@subasta.PrecioBase.ToString("N2")</dd>
-                            </dl>
-                        </div>
-
-                        <div class="card-footer bg-body border-0 pt-0 pb-3">
-                            <div class="d-grid gap-2 px-2">
-                                <a asp-action="Detalle" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
-                                   class="btn btn-secondary">
-                                    <i class="bi bi-eye me-1"></i> <span data-i18n="subasta.verDetalle">Ver detalle</span>
-                                </a>
-                                <a asp-action="HistorialPujas" asp-route-id="@subasta.SubastaId"
-                                   class="btn btn-outline-primary">
-                                    <i class="bi bi-list-ul me-1"></i> <span data-i18n="subasta.historialPujas">Historial de pujas</span>
-                                </a>
-                                <div class="d-flex gap-2">
-                                    <a asp-action="Edit" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
-                                       class="btn btn-outline-warning flex-fill">
-                                        <i class="bi bi-pencil me-1"></i> <span data-i18n="subasta.editar">Editar</span>
-                                    </a>
-                                    <a asp-action="Cancelar" asp-route-id="@subasta.SubastaId"
-                                       class="btn btn-outline-danger flex-fill">
-                                        <i class="bi bi-x-circle me-1"></i> <span data-i18n="subasta.cancelar">Cancelar</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            }
+        <p class="text-muted mb-0"><span data-i18n="subasta.activasSubtitulo">Subastas en curso disponibles para pujar.
+            Total:</span> <strong>@total</strong>.</p>
         </div>
-    </section>
-}
+        <div class="d-flex gap-2">
+            <a asp-action="Finalizadas" class="btn btn-outline-secondary">
+                <i class="bi bi-archive me-1"></i> <span data-i18n="subasta.verFinalizadas">Ver Finalizadas</span>
+            </a>
+            <a asp-action="Create" asp-route-from="activas" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> <span data-i18n="subasta.nuevaSubasta">Nueva Subasta</span>
+            </a>
+        </div>
+    </div>
 
-@section Scripts {
-    <style>
-        .card:hover { transform: translateY(-3px); transition: transform .18s ease; }
-    </style>
-}
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            <div data-i18n="subasta.noHayActivas">No hay subastas activas en este momento.</div>
+        </div>
+    }
+    else
+    {
+        <section aria-label="Listado de subastas activas">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+                @foreach (var subasta in Model)
+                {
+                    <div class="col">
+                        <article class="card h-100 shadow-sm border-0">
+                            <div class="rounded-top overflow-hidden bg-body-tertiary" style="height: 200px;">
+                                @if (!string.IsNullOrEmpty(subasta.ImagenGanado))
+                                {
+                                    <img class="w-100 h-100 object-fit-cover rounded-top" src="@subasta.ImagenGanado"
+                                         alt="Imagen de @subasta.NombreGanado" loading="lazy" onerror="this.src='/img/sin-imagen.png'" />
+                                }
+                                else
+                                {
+                                    <div class="d-flex flex-column justify-content-center align-items-center text-muted h-100">
+                                        <i class="bi bi-image fs-1"></i>
+                                        <span class="small" data-i18n="subasta.sinImagen">Sin imagen</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="card-body">
+                                <h2 class="h6 fw-semibold mb-2">@subasta.NombreGanado</h2>
+
+                                <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                                    <span class="badge text-bg-primary">
+                                        <i class="bi bi-hammer me-1"></i>@subasta.CantidadPujas <span
+                                        data-i18n="subasta.pujas">puja(s)</span>
+                                    </span>
+                                </div>
+
+                                <dl class="row small mb-0">
+                                    <dt class="col-5 text-muted" data-i18n="subasta.cierre">Cierre</dt>
+                                    <dd class="col-7">@subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
+                                    <dt class="col-5 text-muted" data-i18n="subasta.precioBase">Precio base</dt>
+                                    <dd class="col-7 fw-semibold text-success">₡@subasta.PrecioBase.ToString("N2")</dd>
+                                </dl>
+
+                                <!-- Contador regresivo -->
+                                <div class="mt-2 pt-2 border-top">
+                                    <div class="d-flex align-items-center gap-1 text-danger small">
+                                        <i class="bi bi-alarm-fill"></i>
+                                        <span class="fw-semibold" id="cnt-subasta-@subasta.SubastaId">--</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size:.75rem" id="cnt-label-@subasta.SubastaId">Calculando…
+                                    </div>
+                                </div>
+                                <input type="hidden" id="fechafin-@subasta.SubastaId"
+                                       value="@subasta.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)" />
+                            </div>
+
+                            <div class="card-footer bg-body border-0 pt-0 pb-3">
+                                <div class="d-grid gap-2 px-2">
+                                    <a asp-action="Sala" asp-route-id="@subasta.SubastaId" class="btn btn-success">
+                                        <i class="bi bi-hammer me-1"></i> <span>Entrar a pujar</span>
+                                    </a>
+                                    <a asp-action="Detalle" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
+                                           class="btn btn-outline-secondary">
+                                        <i class="bi bi-eye me-1"></i> <span data-i18n="subasta.verDetalle">Ver detalle</span>
+                                    </a>
+                                    <a asp-action="HistorialPujas" asp-route-id="@subasta.SubastaId"
+                                           class="btn btn-outline-primary">
+                                        <i class="bi bi-list-ul me-1"></i> <span data-i18n="subasta.historialPujas">Historial de
+                                        pujas</span>
+                                    </a>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Edit" asp-route-id="@subasta.SubastaId" asp-route-from="activas"
+                                               class="btn btn-outline-warning flex-fill">
+                                            <i class="bi bi-pencil me-1"></i> <span data-i18n="subasta.editar">Editar</span>
+                                        </a>
+                                        <a asp-action="Cancelar" asp-route-id="@subasta.SubastaId"
+                                               class="btn btn-outline-danger flex-fill">
+                                            <i class="bi bi-x-circle me-1"></i> <span data-i18n="subasta.cancelar">Cancelar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+
+    @section Scripts {
+        <style>
+            .card:hover {
+                transform: translateY(-3px);
+                transition: transform .18s ease;
+            }
+        </style>
+        <script>
+            // Contadores regresivos para cada subasta activa
+            function iniciarContadores() {
+                document.querySelectorAll('[id^="fechafin-"]').forEach(function (el) {
+                    const subastaId = el.id.replace('fechafin-', '');
+                    const cierreMs = new Date(el.value).getTime();
+                    const spanCnt = document.getElementById('cnt-subasta-' + subastaId);
+                    const spanLabel = document.getElementById('cnt-label-' + subastaId);
+
+                    function actualizar() {
+                        const diff = cierreMs - new Date().getTime();
+                        if (diff <= 0) {
+                            if (spanCnt) spanCnt.textContent = 'Cerrada';
+                            if (spanLabel) spanLabel.textContent = 'La subasta ha cerrado';
+                            return;
+                        }
+                        const d = Math.floor(diff / 86400000);
+                        const h = Math.floor((diff % 86400000) / 3600000);
+                        const m = Math.floor((diff % 3600000) / 60000);
+                        const s = Math.floor((diff % 60000) / 1000);
+
+                        const partes = [];
+                        if (d > 0) partes.push(d + 'd');
+                        partes.push(String(h).padStart(2, '0') + 'h');
+                        partes.push(String(m).padStart(2, '0') + 'm');
+                        partes.push(String(s).padStart(2, '0') + 's');
+
+                        if (spanCnt) spanCnt.textContent = partes.join(' ');
+                        if (spanLabel) spanLabel.textContent = diff < 300000 ? '¡Cierre inminente!' : 'para el cierre';
+                        if (diff < 300000 && spanCnt) spanCnt.classList.add('text-danger');
+                    }
+
+                    actualizar();
+                    setInterval(actualizar, 1000);
+                });
+            }
+            iniciarContadores();
+        </script>
+    }

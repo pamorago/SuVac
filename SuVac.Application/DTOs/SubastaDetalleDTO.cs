@@ -13,6 +13,9 @@ public record SubastaDetalleDTO
     [Display(Name = "Nombre del Ganado")]
     public string NombreGanado { get; set; } = string.Empty;
 
+    [Display(Name = "Descripción")]
+    public string DescripcionGanado { get; set; } = string.Empty;
+
     [Display(Name = "Tipo de Ganado")]
     public string TipoGanado { get; set; } = string.Empty;
 
@@ -54,4 +57,11 @@ public record SubastaDetalleDTO
 
     [Display(Name = "Creador")]
     public string NombreCreador { get; set; } = string.Empty;
+
+    [Display(Name = "ID Creador")]
+    public int UsuarioCreadorId { get; set; }
+
+    // ── Resultado (solo para subastas Finalizadas) ────────────────────
+    public string? NombreGanador { get; set; }
+    public decimal? MontoFinal { get; set; }
 }

@@ -332,7 +332,9 @@ IF NOT EXISTS (SELECT 1 FROM Usuario WHERE Correo = 'admin@subasta.com')
     ('comprador2@mail.com',     'hash5', 'Luis Ofertas',             3, 1),
     ('comprador3@mail.com',     'hash7', 'Maria Subastas',           3, 1),
     ('comprador4@mail.com',     'hash8', 'Pedro Inversor',           3, 2),  -- Bloqueado
-    ('vendedor4@mail.com',      'hash9', 'Sofia Rancho',             2, 2);  -- Bloqueado
+    ('vendedor4@mail.com',      'hash9', 'Sofia Rancho',             2, 2),  -- Bloqueado
+    ('comprador5@mail.com',     'hash10','Carlos Lopez',             3, 1),
+    ('comprador6@mail.com',     'hash11','Isabel Compradora',        3, 1);
 
 -- =========================
 -- GANADO - DATOS DE PRUEBA (15 registros)
@@ -463,15 +465,15 @@ BEGIN
     VALUES
     -- ── ACTIVAS ─────────────────────────────────────────────────────────────
     -- Sub 1: Toro Brahman 001
-    (1,  '2026-02-10 08:00', '2026-03-10 18:00', 450000.00, 15000.00, 2, 2),
+    (1,  '2026-03-15 08:00', '2026-05-10 18:00', 450000.00, 15000.00, 2, 2),
     -- Sub 2: Vaca Holstein 001
-    (2,  '2026-02-20 09:00', '2026-03-07 18:00', 380000.00, 10000.00, 2, 2),
+    (2,  '2026-03-20 09:00', '2026-05-07 18:00', 380000.00, 10000.00, 2, 2),
     -- Sub 3: Toro Angus 001
-    (3,  '2026-02-25 08:00', '2026-03-15 18:00', 520000.00, 20000.00, 2, 3),
+    (3,  '2026-03-25 08:00', '2026-05-15 18:00', 520000.00, 20000.00, 2, 3),
     -- Sub 4: CANCELADA - Ternero Brahman 002
     (7,  '2026-01-05 08:00', '2026-01-25 18:00', 250000.00,  8000.00, 4, 2),
     -- Sub 5: REACTIVADA Activa - Ternero Brahman 002
-    (7,  '2026-02-26 08:00', '2026-03-12 18:00', 265000.00,  8000.00, 2, 2),
+    (7,  '2026-03-26 08:00', '2026-05-12 18:00', 265000.00,  8000.00, 2, 2),
     -- Sub 6: CANCELADA - Vaca Brahman 002
     (8,  '2026-01-10 09:00', '2026-01-28 18:00', 400000.00, 12000.00, 4, 3),
     -- Sub 7: REACTIVADA Finalizada - Vaca Brahman 002
@@ -483,13 +485,13 @@ BEGIN
     -- Sub 10: FINALIZADA - Vaca Simmental 001
     (6,  '2026-02-01 09:00', '2026-02-20 18:00', 350000.00, 12000.00, 3, 2),
     -- Sub 11: ACTIVA - Toro Hereford 001
-    (9,  '2026-02-15 10:00', '2026-03-20 18:00', 500000.00, 18000.00, 2, 4),
+    (9,  '2026-03-15 10:00', '2026-05-20 18:00', 500000.00, 18000.00, 2, 4),
     -- Sub 12: ACTIVA - Toro Gyr 001
-    (11, '2026-02-22 08:00', '2026-03-18 18:00', 320000.00, 10000.00, 2, 3),
+    (11, '2026-03-22 08:00', '2026-05-18 18:00', 320000.00, 10000.00, 2, 3),
     -- Sub 13: FINALIZADA - Vaca Brangus 001
     (10, '2026-01-20 09:00', '2026-02-18 18:00', 280000.00,  8000.00, 3, 4),
     -- Sub 14: ACTIVA - Ternero Angus 002
-    (13, '2026-02-27 08:00', '2026-03-25 18:00', 200000.00,  5000.00, 2, 2);
+    (13, '2026-03-27 08:00', '2026-05-25 18:00', 200000.00,  5000.00, 2, 2);
 END
 
 -- =========================
@@ -505,29 +507,32 @@ END
 -- =========================
 IF NOT EXISTS (SELECT 1 FROM Puja WHERE SubastaId = 1)
 BEGIN
-    -- Subasta 1 - Toro Brahman 001 (Activa) — 6 pujas
+    -- Subasta 1 - Toro Brahman 001 (Activa) — 8 pujas (incluye nuevos compradores 10 y 11)
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (1, 5, 450000.00, '2026-02-11 10:15'),
-    (1, 6, 465000.00, '2026-02-13 14:30'),
-    (1, 5, 480000.00, '2026-02-18 09:05'),
-    (1, 7, 495000.00, '2026-02-20 11:00'),
-    (1, 6, 510000.00, '2026-02-24 16:45'),
-    (1, 5, 525000.00, '2026-02-27 08:20');
+    (1, 5,  450000.00, '2026-03-18 10:15'),
+    (1, 6,  465000.00, '2026-03-20 14:30'),
+    (1, 10, 480000.00, '2026-03-25 09:05'),
+    (1, 7,  495000.00, '2026-03-27 11:00'),
+    (1, 11, 510000.00, '2026-04-01 16:45'),
+    (1, 6,  525000.00, '2026-04-03 08:20'),
+    (1, 10, 540000.00, '2026-04-07 10:00'),
+    (1, 5,  555000.00, '2026-04-09 15:30');
 
-    -- Subasta 2 - Vaca Holstein 001 (Activa) — 4 pujas
+    -- Subasta 2 - Vaca Holstein 001 (Activa) — 5 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (2, 6, 380000.00, '2026-02-21 11:00'),
-    (2, 5, 390000.00, '2026-02-23 08:30'),
-    (2, 7, 400000.00, '2026-02-25 14:10'),
-    (2, 6, 410000.00, '2026-02-27 17:10');
+    (2, 6,  380000.00, '2026-03-22 11:00'),
+    (2, 5,  390000.00, '2026-03-25 08:30'),
+    (2, 11, 400000.00, '2026-03-28 14:10'),
+    (2, 7,  410000.00, '2026-04-02 17:10'),
+    (2, 10, 420000.00, '2026-04-08 09:45');
 
     -- Subasta 3 - Toro Angus 001 (Activa) — 5 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (3, 5, 520000.00, '2026-02-25 09:00'),
-    (3, 6, 540000.00, '2026-02-25 11:30'),
-    (3, 7, 560000.00, '2026-02-26 08:15'),
-    (3, 5, 580000.00, '2026-02-26 13:00'),
-    (3, 6, 600000.00, '2026-02-27 09:40');
+    (3, 5,  520000.00, '2026-03-28 09:00'),
+    (3, 6,  540000.00, '2026-03-30 11:30'),
+    (3, 11, 560000.00, '2026-04-02 08:15'),
+    (3, 5,  580000.00, '2026-04-05 13:00'),
+    (3, 10, 600000.00, '2026-04-08 09:40');
 
     -- Subasta 4 - Ternero Brahman 002 (CANCELADA) — 2 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
@@ -536,9 +541,9 @@ BEGIN
 
     -- Subasta 5 - Ternero Brahman 002 (Reactivada-Activa) — 3 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (5, 6, 265000.00, '2026-02-26 10:00'),
-    (5, 5, 273000.00, '2026-02-26 14:30'),
-    (5, 7, 281000.00, '2026-02-27 08:00');
+    (5, 6,  265000.00, '2026-03-28 10:00'),
+    (5, 10, 273000.00, '2026-04-01 14:30'),
+    (5, 7,  281000.00, '2026-04-05 08:00');
 
     -- Subasta 6 - Vaca Brahman 002 (CANCELADA) — 1 puja
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
@@ -580,16 +585,16 @@ BEGIN
 
     -- Subasta 11 - Toro Hereford 001 (Activa) — 4 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (11, 7, 500000.00, '2026-02-16 09:30'),
-    (11, 5, 518000.00, '2026-02-19 14:15'),
-    (11, 6, 536000.00, '2026-02-23 10:00'),
-    (11, 7, 554000.00, '2026-02-27 11:45');
+    (11, 7,  500000.00, '2026-03-18 09:30'),
+    (11, 5,  518000.00, '2026-03-22 14:15'),
+    (11, 11, 536000.00, '2026-03-28 10:00'),
+    (11, 7,  554000.00, '2026-04-04 11:45');
 
     -- Subasta 12 - Toro Gyr 001 (Activa) — 3 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (12, 5, 320000.00, '2026-02-23 09:00'),
-    (12, 7, 330000.00, '2026-02-25 15:00'),
-    (12, 6, 340000.00, '2026-02-27 10:30');
+    (12, 5,  320000.00, '2026-03-25 09:00'),
+    (12, 11, 330000.00, '2026-03-28 15:00'),
+    (12, 6,  340000.00, '2026-04-03 10:30');
 
     -- Subasta 13 - Vaca Brangus 001 (Finalizada) — 5 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
@@ -599,11 +604,12 @@ BEGIN
     (13, 6, 304000.00, '2026-02-08 11:20'),
     (13, 7, 312000.00, '2026-02-15 16:00');
 
-    -- Subasta 14 - Ternero Angus 002 (Activa) — 3 pujas
+    -- Subasta 14 - Ternero Angus 002 (Activa) — 4 pujas
     INSERT INTO Puja (SubastaId, UsuarioId, Monto, FechaHora) VALUES
-    (14, 7, 200000.00, '2026-02-27 09:00'),
-    (14, 5, 205000.00, '2026-02-27 12:30'),
-    (14, 6, 210000.00, '2026-02-28 08:00');
+    (14, 7,  200000.00, '2026-03-29 09:00'),
+    (14, 10, 205000.00, '2026-04-01 12:30'),
+    (14, 5,  210000.00, '2026-04-05 08:00'),
+    (14, 11, 215000.00, '2026-04-08 10:15');
 END
 
 -- =========================
@@ -643,7 +649,7 @@ IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 12 AND EstadoSubastaId = (
 BEGIN
     -- Sub 15: Vaca Nelore 001 — Activa, inicio en pasado, fin futuro, CON pujas
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 12, '2026-03-01 08:00', '2026-04-20 18:00', 310000.00, 9000.00, EstadoSubastaId, 3
+    SELECT 12, '2026-03-01 08:00', '2026-05-30 18:00', 310000.00, 9000.00, EstadoSubastaId, 3
     FROM EstadoSubasta WHERE Nombre = 'Activa';
 
     -- Pujas en Sub 15 (bloquean cancelar y editar)
@@ -656,16 +662,16 @@ BEGIN
 
     -- Sub 16: Ternero Nelore 001 (GanadoId dinámico) — Borrador, fecha futura, SIN pujas → SE puede publicar, editar y cancelar
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT g.GanadoId, '2026-04-05 09:00', '2026-04-25 18:00', 420000.00, 12000.00, e.EstadoSubastaId, 2
+    SELECT g.GanadoId, '2026-04-25 09:00', '2026-06-10 18:00', 420000.00, 12000.00, e.EstadoSubastaId, 2
     FROM Ganado g CROSS JOIN EstadoSubasta e
-    WHERE g.Nombre = 'Ternero Nelore 001' AND e.Nombre = 'Borrador';
+    WHERE g.Nombre = 'Ternero Nelore 001' AND e.Nombre = 'Programada';
 END
 
 -- Sub 17: Toro Brahman 003 — Programada, fecha futura, SIN pujas → SE puede editar y cancelar
 IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = 15)
 BEGIN
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT 15, '2026-04-10 08:00', '2026-04-30 18:00', 380000.00, 11000.00, EstadoSubastaId, 2
+    SELECT 15, '2026-04-25 08:00', '2026-05-30 18:00', 380000.00, 11000.00, EstadoSubastaId, 2
     FROM EstadoSubasta WHERE Nombre = 'Programada';
 END
 
@@ -673,7 +679,7 @@ END
 IF NOT EXISTS (SELECT 1 FROM Subasta WHERE GanadoId = (SELECT GanadoId FROM Ganado WHERE Nombre = 'Vaca Gyr 002'))
 BEGIN
     INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
-    SELECT g.GanadoId, '2026-03-10 08:00', '2026-04-15 18:00', 480000.00, 15000.00, e.EstadoSubastaId, 3
+    SELECT g.GanadoId, '2026-03-10 08:00', '2026-05-15 18:00', 480000.00, 15000.00, e.EstadoSubastaId, 3
     FROM Ganado g CROSS JOIN EstadoSubasta e
     WHERE g.Nombre = 'Vaca Gyr 002' AND e.Nombre = 'Activa';
 END

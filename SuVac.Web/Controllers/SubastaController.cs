@@ -1,8 +1,12 @@
 ﻿using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using SuVac.Infraestructure.Repository.Interfaces;
+using SuVac.Web.Hubs;
+using SuVac.Web.Models;
 using SuVac.Web.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 
 namespace SuVac.Web.Controllers;
 
@@ -11,12 +15,18 @@ public class SubastaController : Controller
     private readonly IServiceSubasta _service;
     private readonly IServicePuja _servicePuja;
     private readonly IServiceUsuario _serviceUsuario;
+    private readonly IHubContext<PujaHub> _hubContext;
+    private readonly IRepositoryResultadoSubasta _repoResultado;
 
-    public SubastaController(IServiceSubasta service, IServicePuja servicePuja, IServiceUsuario serviceUsuario)
+    public SubastaController(IServiceSubasta service, IServicePuja servicePuja,
+        IServiceUsuario serviceUsuario, IHubContext<PujaHub> hubContext,
+        IRepositoryResultadoSubasta repoResultado)
     {
         _service = service;
         _servicePuja = servicePuja;
         _serviceUsuario = serviceUsuario;
+        _hubContext = hubContext;
+        _repoResultado = repoResultado;
     }
 
     // ─── Helper: cargar dropdown de ganados y nombre del usuario simulado ────
@@ -102,6 +112,20 @@ public class SubastaController : Controller
         );
         ViewBag.From = from;
 
+        // Si está finalizada, cargar el ganador
+        if (subasta.EstadoSubasta == "Finalizada")
+        {
+            var resultado = await _repoResultado.GetBySubastaId(subasta.SubastaId);
+            if (resultado != null)
+            {
+                subasta = subasta with
+                {
+                    NombreGanador = resultado.IdUsuarioGanadorNavigation?.NombreCompleto ?? "Sin ganador",
+                    MontoFinal = resultado.MontoFinal
+                };
+            }
+        }
+
         return View(subasta);
     }
 
@@ -115,8 +139,8 @@ public class SubastaController : Controller
         {
             UsuarioCreadorId = UsuarioSimulado.UsuarioActualId,
             NombreCreador = ViewBag.NombreUsuarioActual,
-            FechaInicio = DateTime.Now.AddDays(1),
-            FechaFin = DateTime.Now.AddDays(8)
+            FechaInicio = DateTime.Now,
+            FechaFin = DateTime.Now.AddDays(7)
         };
 
         return View(dto);
@@ -152,7 +176,7 @@ public class SubastaController : Controller
                 {
                     var (pubOk, pubMensaje) = await _service.Publicar(subastaId);
                     TempData["Notificacion"] = pubOk
-                        ? SweetAlertHelper.CrearNotificacion("Subasta publicada", "La subasta fue creada y publicada como Programada.", SweetAlertMessageType.success)
+                        ? SweetAlertHelper.CrearNotificacion("Subasta publicada", pubMensaje, SweetAlertMessageType.success)
                         : SweetAlertHelper.CrearNotificacion("Creada pero no publicada", pubMensaje, SweetAlertMessageType.warning);
                 }
                 else
@@ -356,6 +380,96 @@ public class SubastaController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // ─── SALA DE PUJAS EN TIEMPO REAL ────────────────────────────────────────
+    [HttpGet]
+    public async Task<IActionResult> Sala(int? id)
+    {
+        if (id is null or <= 0) return NotFound();
+
+        var subasta = await _service.GetDetalle(id.Value);
+        if (subasta is null) return NotFound();
+
+        if (subasta.EstadoSubasta != "Activa")
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Subasta no activa",
+                $"La subasta #{id} no está activa. Estado actual: {subasta.EstadoSubasta}.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Activas));
+        }
+
+        var usuarioActual = await _serviceUsuario.GetByIdConDetalle(UsuarioSimulado.UsuarioActualId);
+        var pujaMasAlta = await _servicePuja.GetPujaMasAlta(id.Value);
+        var historial = (await _servicePuja.GetBySubasta(id.Value))
+                              .OrderByDescending(p => p.FechaHora)
+                              .ToList();
+
+        var vm = new SalaSubastaViewModel
+        {
+            Subasta = subasta,
+            PujaLider = pujaMasAlta,
+            Historial = historial,
+            UsuarioActualId = UsuarioSimulado.UsuarioActualId,
+            NombreUsuarioActual = usuarioActual?.NombreCompleto ?? $"Usuario #{UsuarioSimulado.UsuarioActualId}",
+            EsVendedor = subasta.UsuarioCreadorId == UsuarioSimulado.UsuarioActualId
+        };
+
+        return View(vm);
+    }
+
+    /// <summary>
+    /// Registra una nueva puja. Retorna JSON. El broadcast SignalR se realiza aquí.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RegistrarPuja([FromForm] int subastaId, [FromForm] decimal monto)
+    {
+        var usuarioId = UsuarioSimulado.UsuarioActualId;
+
+        var (ok, mensaje, puja) = await _servicePuja.RegistrarPujaValidada(subastaId, usuarioId, monto);
+
+        if (!ok)
+            return Json(new { ok = false, mensaje });
+
+        // Broadcast a todos los clientes en el grupo de la subasta
+        await _hubContext.Clients.Group($"subasta-{subastaId}")
+            .SendAsync("NuevaPuja", new
+            {
+                pujaId = puja!.PujaId,
+                subastaId = puja.SubastaId,
+                usuarioId = puja.UsuarioId,
+                nombreUsuario = puja.NombreUsuario,
+                monto = puja.Monto,
+                fechaHora = puja.FechaHora.ToString("dd/MM/yyyy HH:mm:ss")
+            });
+
+        return Json(new { ok = true, mensaje });
+    }
+
+    /// <summary>
+    /// Retorna el estado actual de la sala: si está activa o finalizada, y el ganador.
+    /// Usado como fallback cuando SignalR no entregó la notificación.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> EstadoSala(int id)
+    {
+        var subasta = await _service.GetDetalle(id);
+        if (subasta is null)
+            return Json(new { ok = false });
+
+        if (subasta.EstadoSubasta != "Finalizada")
+            return Json(new { ok = true, finalizada = false });
+
+        var ganador = await _servicePuja.GetPujaMasAlta(id);
+        return Json(new
+        {
+            ok = true,
+            finalizada = true,
+            ganador = ganador?.NombreUsuario ?? "Sin ganador",
+            monto = ganador?.Monto ?? 0m
+        });
     }
 }
 

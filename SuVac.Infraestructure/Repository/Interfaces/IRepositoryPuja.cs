@@ -11,4 +11,7 @@ public interface IRepositoryPuja
     Task<bool> Delete(int id);
 
     Task<IEnumerable<Puja>> GetBySubasta(int subastaId);
+
+    /// <summary>Retorna la puja con el monto más alto para una subasta. Null si no hay pujas.</summary>
+    Task<Puja?> GetPujaMasAlta(int subastaId);
 }

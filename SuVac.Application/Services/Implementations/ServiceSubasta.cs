@@ -93,6 +93,7 @@ public class ServiceSubasta : IServiceSubasta
             SubastaId = s.SubastaId,
             GanadoId = s.GanadoId,
             NombreGanado = s.IdGanadoNavigation.Nombre,
+            DescripcionGanado = s.IdGanadoNavigation.Descripcion,
             TipoGanado = s.IdGanadoNavigation.IdTipoGanadoNavigation?.Nombre ?? "-",
             EstadoGanado = s.IdGanadoNavigation.IdEstadoGanadoNavigation?.Nombre ?? "-",
             CertificadoSalud = s.IdGanadoNavigation.CertificadoSalud,
@@ -106,7 +107,8 @@ public class ServiceSubasta : IServiceSubasta
             IncrementoMinimo = s.IncrementoMinimo,
             EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre,
             TotalPujas = totalPujas,
-            NombreCreador = s.IdUsuarioCreadorNavigation.NombreCompleto
+            NombreCreador = s.IdUsuarioCreadorNavigation.NombreCompleto,
+            UsuarioCreadorId = s.UsuarioCreadorId
         };
     }
 
@@ -217,18 +219,24 @@ public class ServiceSubasta : IServiceSubasta
         if (subasta.EstadoSubastaId != idBorrador)
             return (false, "Solo se puede publicar una subasta que se encuentre en estado Borrador.");
 
-        if (subasta.FechaInicio <= DateTime.Now)
-            return (false, "No se puede publicar: la fecha de inicio debe ser posterior a la fecha y hora actual.");
-
         if (subasta.FechaFin <= DateTime.Now)
             return (false, "No se puede publicar: la fecha de cierre debe ser posterior a la fecha y hora actual.");
 
-        var idProgramada = await _repository.GetEstadoIdByNombre("Programada");
-        if (idProgramada == null)
-            return (false, "Estado 'Programada' no configurado en el sistema.");
+        // Si FechaInicio ya pasó o es ahora → activar directamente; si es futura → programar
+        bool inicioYaPaso = subasta.FechaInicio <= DateTime.Now;
+        string estadoDestino = inicioYaPaso ? "Activa" : "Programada";
 
-        var ok = await _repository.CambiarEstado(subastaId, idProgramada.Value);
-        return (ok, ok ? "Subasta publicada correctamente. Ahora está Programada." : "Error al publicar la subasta.");
+        var idDestino = await _repository.GetEstadoIdByNombre(estadoDestino);
+        if (idDestino == null)
+            return (false, $"Estado '{estadoDestino}' no configurado en el sistema.");
+
+        var ok = await _repository.CambiarEstado(subastaId, idDestino.Value);
+        string msg = ok
+            ? (inicioYaPaso
+                ? "Subasta activada. Ahora está Activa y disponible para pujas."
+                : "Subasta publicada correctamente. Ahora está Programada.")
+            : "Error al publicar la subasta.";
+        return (ok, msg);
     }
 
     public async Task<(bool ok, string mensaje)> Cancelar(int subastaId)
@@ -278,6 +286,11 @@ public class ServiceSubasta : IServiceSubasta
     public async Task ActualizarEstadosAsync()
     {
         await _repository.ActualizarEstadosAsync();
+    }
+
+    public async Task<IEnumerable<int>> GetIdsActivasParaFinalizarAsync()
+    {
+        return await _repository.GetIdsActivasParaFinalizarAsync();
     }
 }
 

@@ -77,6 +77,7 @@ builder.Host.UseSerilog(Log.Logger);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 //***********
 // =======================
 // Configurar Dependency Injection
@@ -181,5 +182,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapHub<SuVac.Web.Hubs.PujaHub>("/hubs/puja");
 
 app.Run();

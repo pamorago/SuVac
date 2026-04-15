@@ -36,4 +36,7 @@ public interface IServiceSubasta
 
     /// <summary>Actualiza automáticamente estados: Programada→Activa y Activa→Finalizada según fechas.</summary>
     Task ActualizarEstadosAsync();
+
+    /// <summary>Retorna los IDs de subastas Activas cuya FechaFin ya pasó (están por finalizar).</summary>
+    Task<IEnumerable<int>> GetIdsActivasParaFinalizarAsync();
 }

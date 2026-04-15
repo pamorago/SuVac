@@ -42,4 +42,7 @@ public interface IRepositorySubasta
 
     /// <summary>Actualiza estados: Programada→Activa cuando FechaInicio≤now, Activa→Finalizada cuando FechaFin≤now.</summary>
     Task ActualizarEstadosAsync();
+
+    /// <summary>Retorna los IDs de subastas Activas cuya FechaFin ya pasó (están por finalizar).</summary>
+    Task<IEnumerable<int>> GetIdsActivasParaFinalizarAsync();
 }

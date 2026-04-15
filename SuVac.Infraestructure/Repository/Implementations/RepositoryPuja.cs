@@ -84,4 +84,15 @@ public class RepositoryPuja : IRepositoryPuja
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<Puja?> GetPujaMasAlta(int subastaId)
+    {
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
+            .Where(p => p.SubastaId == subastaId)
+            .OrderByDescending(p => p.Monto)
+            .ThenByDescending(p => p.FechaHora)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+    }
 }
