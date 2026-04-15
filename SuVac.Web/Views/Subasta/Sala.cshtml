@@ -375,6 +375,20 @@
             if (montoInput) montoInput.disabled = true;
             const btnPujar = document.getElementById("btn-pujar");
             if (btnPujar) btnPujar.disabled = true;
+
+            // Actualizar badge "En Vivo" → "Cerrada"
+            const badgeEnVivo = document.querySelector("h1 .badge.text-bg-success");
+            if (badgeEnVivo) {
+                badgeEnVivo.className = "badge text-bg-dark ms-1";
+                badgeEnVivo.textContent = "Cerrada";
+            }
+
+            // Actualizar badge de conexión → "Subasta cerrada"
+            if (elEstado) {
+                elEstado.className = "badge text-bg-secondary";
+                elEstado.textContent = "Subasta cerrada";
+            }
+
             try { new bootstrap.Modal(document.getElementById("modal-finalizada")).show(); } catch { }
         }
 

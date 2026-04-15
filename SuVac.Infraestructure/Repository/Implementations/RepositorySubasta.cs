@@ -262,4 +262,39 @@ public class RepositorySubasta : IRepositorySubasta
             .Select(s => s.SubastaId)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Subasta>> GetProgramadasParaActivarAsync()
+    {
+        var idProgramada = await GetEstadoIdByNombre("Programada");
+        if (idProgramada == null) return Enumerable.Empty<Subasta>();
+
+        return await _context.Subastas
+            .Where(s => s.EstadoSubastaId == idProgramada && s.FechaInicio <= DateTime.Now)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<bool> FinalizarSubastaAsync(int subastaId)
+    {
+        var idFinalizada = await GetEstadoIdByNombre("Finalizada");
+        if (idFinalizada == null) return false;
+
+        var idInactivoGanado = await _context.EstadosGanado
+            .Where(e => e.Nombre == "Inactivo")
+            .Select(e => e.EstadoGanadoId)
+            .FirstOrDefaultAsync();
+
+        var subasta = await _context.Subastas
+            .Include(s => s.IdGanadoNavigation)
+            .FirstOrDefaultAsync(s => s.SubastaId == subastaId);
+
+        if (subasta == null) return false;
+
+        subasta.EstadoSubastaId = idFinalizada.Value;
+        if (subasta.IdGanadoNavigation != null)
+            subasta.IdGanadoNavigation.EstadoGanadoId = idInactivoGanado;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

@@ -45,4 +45,10 @@ public interface IRepositorySubasta
 
     /// <summary>Retorna los IDs de subastas Activas cuya FechaFin ya pasó (están por finalizar).</summary>
     Task<IEnumerable<int>> GetIdsActivasParaFinalizarAsync();
+
+    /// <summary>Retorna subastas en estado Programada cuya FechaInicio ya llegó (listas para activar).</summary>
+    Task<IEnumerable<Subasta>> GetProgramadasParaActivarAsync();
+
+    /// <summary>Cambia la subasta a Finalizada y marca su ganado como Inactivo en una sola operación.</summary>
+    Task<bool> FinalizarSubastaAsync(int subastaId);
 }
