@@ -426,9 +426,10 @@ public class SubastaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegistrarPuja([FromForm] int subastaId, [FromForm] decimal monto)
     {
-        var usuarioId = UsuarioSimulado.UsuarioActualId;
+        // El usuario SIEMPRE se obtiene de la lógica del sistema, nunca del formulario.
+        var uid = UsuarioSimulado.UsuarioActualId;
 
-        var (ok, mensaje, puja) = await _servicePuja.RegistrarPujaValidada(subastaId, usuarioId, monto);
+        var (ok, mensaje, puja) = await _servicePuja.RegistrarPujaValidada(subastaId, uid, monto);
 
         if (!ok)
             return Json(new { ok = false, mensaje });
@@ -468,7 +469,8 @@ public class SubastaController : Controller
             ok = true,
             finalizada = true,
             ganador = ganador?.NombreUsuario ?? "Sin ganador",
-            monto = ganador?.Monto ?? 0m
+            monto = ganador?.Monto ?? 0m,
+            ganadorId = ganador?.UsuarioId ?? 0
         });
     }
 }

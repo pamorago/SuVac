@@ -297,4 +297,15 @@ public class RepositorySubasta : IRepositorySubasta
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<IEnumerable<Subasta>> GetActivasVencidasAsync()
+    {
+        var idActiva = await GetEstadoIdByNombre("Activa");
+        if (idActiva == null) return Enumerable.Empty<Subasta>();
+
+        return await _context.Subastas
+            .Where(s => s.EstadoSubastaId == idActiva && s.FechaFin <= DateTime.Now)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }

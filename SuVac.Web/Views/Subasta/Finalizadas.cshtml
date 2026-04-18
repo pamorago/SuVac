@@ -93,6 +93,13 @@ else
                                         <i class="bi bi-x-circle me-1"></i> <span data-i18n="subasta.cancelar">Cancelar</span>
                                     </a>
                                 </div>
+                                @if (subasta.CantidadPujas > 0)
+                                {
+                                    <a asp-controller="Pago" asp-action="Index"
+                                       class="btn btn-outline-success">
+                                        <i class="bi bi-credit-card-2-front me-1"></i> Ver Pago
+                                    </a>
+                                }
                             </div>
                         </div>
                     </article>

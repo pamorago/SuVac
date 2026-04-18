@@ -8,4 +8,9 @@ public class PagoDTO
     public decimal Monto { get; set; }
     public int EstadoPagoId { get; set; }
     public DateTime? FechaPago { get; set; }
+
+    // ── Campos de presentación (poblados por consultas con Include) ──
+    public string? NombreGanado { get; set; }
+    public string? NombreUsuario { get; set; }
+    public string? NombreEstadoPago { get; set; }
 }

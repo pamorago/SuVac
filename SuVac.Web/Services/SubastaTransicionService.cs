@@ -50,16 +50,18 @@ public class SubastaTransicionService : BackgroundService
         // Al arrancar: registrar timers exactos para subastas ya activas en la BD
         await ProgramarTimersActivasAsync(stoppingToken);
 
-        // Loop liviano: solo activa subastas Programadas cuya FechaInicio llegó
+        // Loop liviano: activa Programadas cuya FechaInicio llegó
+        // Y cierra Activas cuya FechaFin ya pasó (red de seguridad ante cambios manuales en BD)
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 await ActivarProgramadasAsync(stoppingToken);
+                await FinalizarVencidasAsync(stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error en ciclo de activación de subastas programadas.");
+                _logger.LogError(ex, "Error en ciclo de gestión de subastas.");
             }
 
             await Task.Delay(IntervaloActivacion, stoppingToken);
@@ -105,6 +107,35 @@ public class SubastaTransicionService : BackgroundService
             await repo.CambiarEstado(s.SubastaId, idActiva.Value);
             ProgramarCierreExacto(s.SubastaId, s.FechaFin, ct);
             _logger.LogInformation("Subasta #{Id} → Activa. Cierre exacto programado: {Fecha}.", s.SubastaId, s.FechaFin);
+        }
+    }
+
+    // ── Red de seguridad: cierra activas cuya FechaFin ya pasó ──────────────
+    // Cubre el caso en que la FechaFin se cambió en BD mientras la app corría
+    // (el timer antiguo apuntaba a la fecha original y nunca fue cancelado).
+
+    private async Task FinalizarVencidasAsync(CancellationToken ct)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var repo = scope.ServiceProvider.GetRequiredService<IRepositorySubasta>();
+
+        var vencidas = (await repo.GetActivasVencidasAsync()).ToList();
+        if (!vencidas.Any()) return;
+
+        foreach (var s in vencidas)
+        {
+            _logger.LogWarning(
+                "Subasta #{Id} vencida detectada por polling (FechaFin: {F}). Cerrando...",
+                s.SubastaId, s.FechaFin);
+
+            // Cancelar el timer obsoleto si existe (evitar doble cierre en carrera)
+            if (_timers.TryRemove(s.SubastaId, out var staleCtx))
+            {
+                staleCtx.Cancel();
+                staleCtx.Dispose();
+            }
+
+            await CerrarSubastaAsync(s.SubastaId, ct);
         }
     }
 
@@ -157,6 +188,7 @@ public class SubastaTransicionService : BackgroundService
         var repo = scope.ServiceProvider.GetRequiredService<IRepositorySubasta>();
         var servicePuja = scope.ServiceProvider.GetRequiredService<IServicePuja>();
         var repoResultado = scope.ServiceProvider.GetRequiredService<IRepositoryResultadoSubasta>();
+        var servicePago = scope.ServiceProvider.GetRequiredService<IServicePago>();
 
         // Verificar que sigue Activa (pudo cancelarse manualmente antes de que expirara el timer)
         var subasta = await repo.GetById(subastaId);
@@ -184,12 +216,20 @@ public class SubastaTransicionService : BackgroundService
                 MontoFinal = ganador.Monto,
                 FechaCierre = DateTime.Now
             });
+
+            // 3. Registrar pago automático en estado Pendiente
+            var (pagoOk, pagoMsg) = await servicePago.RegistrarPagoGanador(
+                subastaId, ganador.UsuarioId, ganador.Monto);
+
+            _logger.LogInformation(
+                "Pago automático subasta #{Id}: {Msg}", subastaId, pagoMsg);
         }
 
-        // 3. Notificar navegadores — inmediato, sin delay adicional
+        // 4. Notificar navegadores — inmediato, sin delay adicional
+        var ganadorId = ganador?.UsuarioId ?? 0;
         await _hubContext.Clients
             .Group($"subasta-{subastaId}")
-            .SendAsync("SubastaFinalizada", subastaId, nombreGanador, montoFinal, cancellationToken: ct);
+            .SendAsync("SubastaFinalizada", subastaId, nombreGanador, montoFinal, ganadorId, cancellationToken: ct);
 
         _logger.LogInformation(
             "Subasta #{Id} cerrada exactamente. Ganador: '{G}', ₡{M:N2}.",

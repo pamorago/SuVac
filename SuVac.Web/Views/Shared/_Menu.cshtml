@@ -52,6 +52,33 @@
 
             <ul class="navbar-nav ms-auto align-items-center gap-2">
 
+                <!-- ── [DEMO] Botón de cambio de usuario simulado ── -->
+                <li class="nav-item dropdown">
+                    <button id="btn-cambiar-usuario"
+                            class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="[DEMO] Cambiar usuario simulado">
+                        <i class="bi bi-person-fill-gear"></i>
+                        <span id="label-usuario-sim" class="fw-semibold small">Cargando…</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" id="dropdown-usuarios-sim" style="min-width:240px;">
+                        <li>
+                            <h6 class="dropdown-header text-uppercase small">
+                                <i class="bi bi-person-gear me-1"></i>Usuario de prueba
+                            </h6>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li id="usuarios-loading">
+                            <span class="dropdown-item text-muted small">
+                                <span class="spinner-border spinner-border-sm me-1"></span>Cargando…
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- ── Botón de cambio de idioma ── -->
                 <li class="nav-item">
                     <button id="btn-lang-switch"
@@ -86,4 +113,92 @@
     </div>
 </nav>
 
+<script>
+(function () {
+    function escHtml(str) {
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(str ?? ''));
+        return d.innerHTML;
+    }
+
+    let usuariosCargados = false;
+
+    const dropdownEl = document.getElementById('btn-cambiar-usuario')?.closest('.dropdown');
+    if (!dropdownEl) return;
+
+    // Cargar lista al abrir el dropdown (solo la primera vez)
+    dropdownEl.addEventListener('show.bs.dropdown', async () => {
+        if (usuariosCargados) return;
+        try {
+            const resp = await fetch('/Usuario/ListaSimulada');
+            const usuarios = await resp.json();
+
+            const loading = document.getElementById('usuarios-loading');
+            if (loading) loading.remove();
+
+            const ul = document.getElementById('dropdown-usuarios-sim');
+
+            usuarios.forEach(u => {
+                const li = document.createElement('li');
+                li.innerHTML =
+                    `<a class="dropdown-item d-flex align-items-center gap-2${u.activo ? ' active fw-semibold' : ''}"
+                        href="#" data-userid="${u.usuarioId}">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="flex-grow-1">${escHtml(u.nombreCompleto)}</span>
+                        <span class="badge text-bg-secondary small">${escHtml(u.nombreRol ?? '')}</span>
+                        ${u.activo ? '<i class="bi bi-check-circle-fill text-success ms-1"></i>' : ''}
+                     </a>`;
+                li.querySelector('a').addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await cambiarUsuario(u.usuarioId, u.nombreCompleto);
+                });
+                ul.appendChild(li);
+            });
+
+            // Set initial label
+            const actual = usuarios.find(u => u.activo);
+            if (actual)
+                document.getElementById('label-usuario-sim').textContent = actual.nombreCompleto;
+
+            usuariosCargados = true;
+        } catch (err) {
+            console.error('[Demo] Error cargando usuarios:', err);
+        }
+    });
+
+    // Set label on page load via a separate quick fetch
+    fetch('/Usuario/ListaSimulada')
+        .then(r => r.json())
+        .then(usuarios => {
+            const actual = usuarios.find(u => u.activo);
+            if (actual) document.getElementById('label-usuario-sim').textContent = actual.nombreCompleto;
+        })
+        .catch(() => {});
+
+    async function cambiarUsuario(userId, nombre) {
+        try {
+            await fetch('/Usuario/CambiarSimulado', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `userId=${userId}`
+            });
+
+            // Update button label
+            document.getElementById('label-usuario-sim').textContent = nombre;
+
+            // Update active state on dropdown items
+            document.querySelectorAll('#dropdown-usuarios-sim [data-userid]').forEach(a => {
+                const isActive = parseInt(a.dataset.userid) === userId;
+                a.classList.toggle('active', isActive);
+                a.classList.toggle('fw-semibold', isActive);
+            });
+
+            // Open a new tab with the current page so it loads under the new user
+            window.open(window.location.href, '_blank');
+        } catch (err) {
+            console.error('[Demo] Error cambiando usuario:', err);
+        }
+    }
+})();
+</script>
 

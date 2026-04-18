@@ -1,5 +1,6 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using SuVac.Web.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
@@ -164,5 +165,39 @@ public class UsuarioController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // ─── DEMO: Cambio de usuario simulado ────────────────────────────────────
+
+    /// <summary>
+    /// Retorna la lista de todos los usuarios con indicador del usuario actual simulado.
+    /// Usado por el botón de prueba en la barra de navegación.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> ListaSimulada()
+    {
+        var usuarios = await _service.GetAllConDetalle();
+        var lista = usuarios.Select(u => new
+        {
+            usuarioId = u.UsuarioId,
+            nombreCompleto = u.NombreCompleto,
+            nombreRol = u.NombreRol,
+            activo = u.UsuarioId == UsuarioSimulado.UsuarioActualId
+        });
+        return Json(lista);
+    }
+
+    /// <summary>
+    /// Cambia el usuario simulado global. Solo para entorno de pruebas (no hay auth).
+    /// </summary>
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public IActionResult CambiarSimulado(int userId)
+    {
+        if (userId <= 0)
+            return Json(new { ok = false, mensaje = "ID inválido." });
+
+        UsuarioSimulado.UsuarioActualId = userId;
+        return Json(new { ok = true });
     }
 }

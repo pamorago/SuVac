@@ -1,5 +1,6 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using SuVac.Web.Util;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SuVac.Web.Controllers;
@@ -13,124 +14,91 @@ public class PagoController : Controller
         _service = service;
     }
 
-    // GET: PagoController
+    // GET: /Pago
     public async Task<IActionResult> Index()
     {
-        var pagos = await _service.GetAll();
+        var pagos = await _service.GetAllConDetalle();
         return View(pagos);
     }
 
-    // GET: PagoController/Details/5
-    public async Task<IActionResult> Details(int id)
+    // GET: /Pago/Detalle/5
+    public async Task<IActionResult> Detalle(int id)
     {
-        if (id <= 0)
-            return NotFound();
-
-        var pago = await _service.GetById(id);
-        if (pago == null)
-            return NotFound();
-
+        if (id <= 0) return NotFound();
+        var pago = await _service.GetByIdConDetalle(id);
+        if (pago is null) return NotFound();
+        ViewBag.EsComprador = pago.UsuarioId == UsuarioSimulado.UsuarioActualId;
         return View(pago);
     }
 
-    // GET: PagoController/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: PagoController/Create
+    // POST: /Pago/Confirmar/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(PagoDTO dto)
+    public async Task<IActionResult> Confirmar(int id)
     {
-        try
+        if (id <= 0) return NotFound();
+
+        // Solo el comprador ganador puede confirmar su propio pago
+        var pago = await _service.GetByIdConDetalle(id);
+        if (pago is null) return NotFound();
+
+        if (pago.UsuarioId != UsuarioSimulado.UsuarioActualId)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _service.Create(dto);
-                if (result)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            return View(dto);
+            TempData["Notificacion_Tipo"] = "danger";
+            TempData["Notificacion_Mensaje"] = "Solo el comprador ganador puede confirmar este pago.";
+            return RedirectToAction(nameof(Detalle), new { id });
         }
-        catch
-        {
-            return View(dto);
-        }
+
+        var (ok, mensaje) = await _service.ConfirmarPago(id);
+
+        TempData["Notificacion_Tipo"] = ok ? "success" : "warning";
+        TempData["Notificacion_Mensaje"] = mensaje;
+
+        return RedirectToAction(nameof(Detalle), new { id });
     }
 
-    // GET: PagoController/Edit/5
-    public async Task<IActionResult> Edit(int id)
+    // GET: /Pago/PorSubasta?subastaId=5  — redirige al detalle del pago de la subasta dada
+    [HttpGet]
+    public async Task<IActionResult> PorSubasta(int subastaId)
     {
-        if (id <= 0)
-            return NotFound();
+        if (subastaId <= 0) return NotFound();
 
-        var pago = await _service.GetById(id);
-        if (pago == null)
-            return NotFound();
+        var pago = await _service.GetBySubastaId(subastaId);
+        if (pago is null)
+        {
+            TempData["Notificacion_Tipo"] = "warning";
+            TempData["Notificacion_Mensaje"] = "No se encontró el pago para esta subasta. Puede que aún esté procesándose.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        return View(pago);
+        return RedirectToAction(nameof(Detalle), new { id = pago.PagoId });
     }
 
-    // POST: PagoController/Edit/5
+    // POST: /Pago/RegistrarManual   (fallback: desde la vista de subastas finalizadas)
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, PagoDTO dto)
+    public async Task<IActionResult> RegistrarManual(int subastaId, int usuarioGanadorId, decimal montoFinal)
     {
-        if (id != dto.PagoId)
-            return NotFound();
-
-        try
+        if (subastaId <= 0 || usuarioGanadorId <= 0 || montoFinal <= 0)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _service.Update(dto);
-                if (result)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            return View(dto);
+            TempData["Notificacion_Tipo"] = "danger";
+            TempData["Notificacion_Mensaje"] = "Datos inválidos para registrar el pago.";
+            return RedirectToAction(nameof(Index));
         }
-        catch
+
+        var (ok, mensaje) = await _service.RegistrarPagoGanador(subastaId, usuarioGanadorId, montoFinal);
+
+        TempData["Notificacion_Tipo"] = ok ? "success" : "warning";
+        TempData["Notificacion_Mensaje"] = mensaje;
+
+        // Si se creó, redirigir directo al detalle del pago recién creado
+        if (ok)
         {
-            return View(dto);
+            var pago = await _service.GetBySubastaId(subastaId);
+            if (pago is not null)
+                return RedirectToAction(nameof(Detalle), new { id = pago.PagoId });
         }
-    }
 
-    // GET: PagoController/Delete/5
-    public async Task<IActionResult> Delete(int id)
-    {
-        if (id <= 0)
-            return NotFound();
-
-        var pago = await _service.GetById(id);
-        if (pago == null)
-            return NotFound();
-
-        return View(pago);
-    }
-
-    // POST: PagoController/Delete/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        try
-        {
-            var result = await _service.Delete(id);
-            if (result)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            return NotFound();
-        }
-        catch
-        {
-            return BadRequest();
-        }
+        return RedirectToAction(nameof(Index));
     }
 }

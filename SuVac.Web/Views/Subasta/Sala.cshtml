@@ -37,6 +37,10 @@
                 <p class="fs-5 text-dark" id="ganador-monto">₡—</p>
             </div>
             <div class="modal-footer justify-content-center">
+                <a id="btn-ir-pagar" href="/Pago/PorSubasta?subastaId=@Model.Subasta.SubastaId"
+                   class="btn btn-success d-none">
+                    <i class="bi bi-credit-card me-1"></i> Ir a Pagar
+                </a>
                 <a asp-action="Finalizadas" class="btn btn-secondary">
                     <i class="bi bi-archive me-1"></i> Ver subastas finalizadas
                 </a>
@@ -367,7 +371,7 @@
         let yaFinalizada = false;
         let pollingInterval = null;
 
-        function mostrarFinalizacion(ganador, monto) {
+        function mostrarFinalizacion(ganador, monto, ganadorId) {
             if (yaFinalizada) return;
             yaFinalizada = true;
             document.getElementById("ganador-nombre").textContent = ganador;
@@ -375,6 +379,12 @@
             if (montoInput) montoInput.disabled = true;
             const btnPujar = document.getElementById("btn-pujar");
             if (btnPujar) btnPujar.disabled = true;
+
+            // Mostrar botón de pago solo si el usuario actual es el ganador
+            if (ganadorId && ganadorId === usuarioActualId) {
+                const btnPagar = document.getElementById("btn-ir-pagar");
+                if (btnPagar) btnPagar.classList.remove("d-none");
+            }
 
             // Actualizar badge "En Vivo" → "Cerrada"
             const badgeEnVivo = document.querySelector("h1 .badge.text-bg-success");
@@ -398,7 +408,7 @@
                 if (!resp.ok) return false;
                 const data = await resp.json();
                 if (data.finalizada) {
-                    mostrarFinalizacion(data.ganador, data.monto);
+                    mostrarFinalizacion(data.ganador, data.monto, data.ganadorId);
                     return true;
                 }
             } catch { }
@@ -553,10 +563,10 @@
             });
 
             // Subasta finalizada
-            connection.on("SubastaFinalizada", (sid, ganador, monto) => {
+            connection.on("SubastaFinalizada", (sid, ganador, monto, ganadorId) => {
                 if (sid !== subastaId) return;
                 if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
-                mostrarFinalizacion(ganador, monto);
+                mostrarFinalizacion(ganador, monto, ganadorId);
             });
 
             connection.onreconnecting(() => {

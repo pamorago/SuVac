@@ -51,4 +51,7 @@ public interface IRepositorySubasta
 
     /// <summary>Cambia la subasta a Finalizada y marca su ganado como Inactivo en una sola operación.</summary>
     Task<bool> FinalizarSubastaAsync(int subastaId);
+
+    /// <summary>Retorna subastas Activas cuya FechaFin ya pasó (usada como red de seguridad ante cambios manuales en BD).</summary>
+    Task<IEnumerable<Subasta>> GetActivasVencidasAsync();
 }

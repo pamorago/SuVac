@@ -1,63 +1,87 @@
 @model IEnumerable<SuVac.Application.DTOs.PagoDTO>
 
 @{
-    ViewData["Title"] = "Gestión de Pagos";
-    var total = Model?.Count() ?? 0;
+    ViewData["Title"] = "Pagos";
+    var total      = Model?.Count() ?? 0;
+    var pendientes = Model?.Count(p => p.NombreEstadoPago == "Pendiente") ?? 0;
+    var confirmados= Model?.Count(p => p.NombreEstadoPago == "Confirmado") ?? 0;
 }
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+@if (TempData["Notificacion_Mensaje"] is string msg)
+{
+    var tipo = TempData["Notificacion_Tipo"]?.ToString() ?? "info";
+    <div class="alert alert-@tipo alert-dismissible fade show" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Encabezado -->
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div>
-        <h1 class="h3 mb-1" data-i18n="pago.historialTitle">Gestión de Pagos</h1>
-        <p class="text-muted mb-0"><span data-i18n="pago.totalPagos">Total de pagos:</span> <strong>@total</strong>.</p>
+        <h1 class="h3 mb-1"><i class="bi bi-credit-card-2-front me-2 text-success"></i>Gestión de Pagos</h1>
+        <p class="text-muted mb-0">Total: <strong>@total</strong> &mdash;
+            <span class="text-warning fw-semibold">@pendientes pendientes</span> /
+            <span class="text-success fw-semibold">@confirmados confirmados</span>
+        </p>
     </div>
 </div>
 
-@if (Model == null || !Model.Any())
+@if (!Model?.Any() ?? true)
 {
     <div class="alert alert-info d-flex align-items-center" role="alert">
         <i class="bi bi-info-circle me-2"></i>
-        <div data-i18n="pago.noHay">No hay pagos registrados en este momento.</div>
+        No hay pagos registrados. Se generan automáticamente al cerrar una subasta con ganador.
     </div>
 }
 else
 {
     <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover align-middle shadow-sm">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
-                    <th data-i18n="pago.colSubasta">Subasta</th>
-                    <th data-i18n="pago.colUsuario">Usuario</th>
-                    <th data-i18n="pago.colMonto">Monto</th>
-                    <th data-i18n="pago.colEstado">Estado</th>
-                    <th data-i18n="pago.colFecha">Fecha Pago</th>
-                    <th data-i18n="pago.colAcciones">Acciones</th>
+                    <th>#</th>
+                    <th>Subasta / Ganado</th>
+                    <th>Comprador</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var p in Model!)
                 {
                     <tr>
-                        <td>@item.PagoId</td>
-                        <td>@item.SubastaId</td>
-                        <td>@item.UsuarioId</td>
-                        <td>$@item.Monto.ToString("F2")</td>
+                        <td class="fw-semibold text-muted small">@p.PagoId</td>
                         <td>
-                            @if (item.EstadoPagoId == 1)
+                            <div class="fw-semibold">@(p.NombreGanado ?? "—")</div>
+                            <div class="text-muted small">Subasta #@p.SubastaId</div>
+                        </td>
+                        <td>
+                            <i class="bi bi-person-circle me-1 text-muted"></i>@(p.NombreUsuario ?? "—")
+                        </td>
+                        <td class="fw-semibold text-success">₡@p.Monto.ToString("N2")</td>
+                        <td>
+                            @if (p.NombreEstadoPago == "Pendiente")
                             {
-                                <span class="badge bg-warning" data-i18n="pago.estadoPendiente">Pendiente</span>
+                                <span class="badge text-bg-warning">
+                                    <i class="bi bi-hourglass-split me-1"></i>Pendiente
+                                </span>
                             }
                             else
                             {
-                                <span class="badge bg-success" data-i18n="pago.estadoConfirmado">Confirmado</span>
+                                <span class="badge text-bg-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Confirmado
+                                </span>
                             }
                         </td>
-                        <td>@(item.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                        <td class="text-muted small">@(p.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
                         <td>
-                            <a asp-controller="Pago" asp-action="Details" asp-route-id="@item.PagoId"
-                               class="btn btn-sm btn-info" data-i18n="subasta.verDetalle">Ver</a>
-                            <a asp-controller="Pago" asp-action="Edit" asp-route-id="@item.PagoId"
-                               class="btn btn-sm btn-warning" data-i18n="comun.editar">Editar</a>
+                            <a asp-action="Detalle" asp-route-id="@p.PagoId"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Ver
+                            </a>
                         </td>
                     </tr>
                 }

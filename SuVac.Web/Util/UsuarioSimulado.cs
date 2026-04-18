@@ -6,9 +6,15 @@ namespace SuVac.Web.Util;
 /// </summary>
 public static class UsuarioSimulado
 {
+    private static int _usuarioActualId = 2;
+
     /// <summary>
     /// Id del usuario que actúa como "usuario actual" del sistema.
-    /// Cambiar este valor para simular distintos usuarios (vendedores / compradores).
+    /// Se puede cambiar en tiempo de ejecución desde el botón de prueba de la barra de navegación.
     /// </summary>
-    public const int UsuarioActualId = 2; // Carlos Vendedor — usuarioId=2 en la BD
+    public static int UsuarioActualId
+    {
+        get => _usuarioActualId;
+        set => _usuarioActualId = value;
+    }
 }

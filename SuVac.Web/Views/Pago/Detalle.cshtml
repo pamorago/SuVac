@@ -1,0 +1,127 @@
+@model SuVac.Application.DTOs.PagoDTO
+
+@{
+    ViewData["Title"] = $"Pago #{Model.PagoId}";
+    var esPendiente  = Model.NombreEstadoPago == "Pendiente";
+    var esComprador  = (bool)(ViewBag.EsComprador ?? false);
+}
+
+@if (TempData["Notificacion_Mensaje"] is string msg)
+{
+    var tipo = TempData["Notificacion_Tipo"]?.ToString() ?? "info";
+    <div class="alert alert-@tipo alert-dismissible fade show" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Breadcrumb -->
+<nav class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Pago" asp-action="Index">Pagos</a></li>
+        <li class="breadcrumb-item active">Pago #@Model.PagoId</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+
+        <div class="card border-0 shadow">
+            <!-- Header con estado -->
+            <div class="card-header d-flex align-items-center justify-content-between
+                        @(esPendiente ? "bg-warning text-dark" : "bg-success text-white")">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi @(esPendiente ? "bi-hourglass-split" : "bi-check-circle-fill") fs-5"></i>
+                    <span class="fw-semibold fs-5">Pago #@Model.PagoId</span>
+                </div>
+                <span class="badge @(esPendiente ? "text-bg-dark" : "text-bg-light text-success") fw-semibold">
+                    @Model.NombreEstadoPago
+                </span>
+            </div>
+
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5 text-muted">Subasta</dt>
+                    <dd class="col-7">
+                        <a asp-controller="Subasta" asp-action="Detalle" asp-route-id="@Model.SubastaId">
+                            Subasta #@Model.SubastaId
+                        </a>
+                        @if (!string.IsNullOrEmpty(Model.NombreGanado))
+                        {
+                            <div class="text-muted small">@Model.NombreGanado</div>
+                        }
+                    </dd>
+
+                    <dt class="col-5 text-muted">Comprador (ganador)</dt>
+                    <dd class="col-7 fw-semibold">
+                        <i class="bi bi-trophy-fill text-warning me-1"></i>@(Model.NombreUsuario ?? "—")
+                    </dd>
+
+                    <dt class="col-5 text-muted">Monto a pagar</dt>
+                    <dd class="col-7 fw-bold fs-5 text-success">₡@Model.Monto.ToString("N2")</dd>
+
+                    <dt class="col-5 text-muted">Fecha de pago</dt>
+                    <dd class="col-7">@(Model.FechaPago?.ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+
+                    <dt class="col-5 text-muted">Estado</dt>
+                    <dd class="col-7">
+                        @if (esPendiente)
+                        {
+                            <span class="badge text-bg-warning fs-6">
+                                <i class="bi bi-hourglass-split me-1"></i>Pendiente
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-success fs-6">
+                                <i class="bi bi-check-circle-fill me-1"></i>Confirmado
+                            </span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+
+            @if (esPendiente && esComprador)
+            {
+                <div class="card-footer bg-body-tertiary d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Pago simulado — no se integra con pasarela real.
+                    </span>
+                    <form asp-action="Confirmar" asp-route-id="@Model.PagoId" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check2-circle me-1"></i>Confirmar Pago
+                        </button>
+                    </form>
+                </div>
+            }
+            else if (esPendiente)
+            {
+                <div class="card-footer bg-body-tertiary">
+                    <span class="text-warning small">
+                        <i class="bi bi-lock me-1"></i>
+                        Solo el comprador ganador puede confirmar este pago.
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div class="card-footer bg-body-tertiary">
+                    <span class="text-success small">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Pago confirmado. No se requiere ninguna acción adicional.
+                    </span>
+                </div>
+            }
+        </div>
+
+        <div class="mt-3">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Volver a Pagos
+            </a>
+        </div>
+
+    </div>
+</div>
