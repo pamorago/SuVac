@@ -329,7 +329,10 @@
         const subastaId = @Model.Subasta.SubastaId;
         // Leer el usuario desde sessionStorage (aislado por pestaña) para evitar
         // que una carrera de cookies entre pestañas produzca un ID incorrecto.
-        const usuarioActualId = parseInt(sessionStorage.getItem('suvac_uid')) || @Model.UsuarioActualId;
+        // Función en lugar de const: lee sessionStorage en cada llamada para evitar
+        // que un valor congelado al cargar la página cause errores si la pestaña fue
+        // abierta con un usuario diferente al que está activo ahora.
+        function miId() { return parseInt(sessionStorage.getItem('suvac_uid')) || @Model.UsuarioActualId; }
         const esVendedor = @Model.EsVendedor.ToString().ToLower();
         const incremento = @Model.Subasta.IncrementoMinimo.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
 
@@ -391,7 +394,7 @@
             if (btnPujar) btnPujar.disabled = true;
 
             // Mostrar botón de pago solo si el usuario actual es el ganador
-            if (ganadorId && ganadorId === usuarioActualId) {
+            if (ganadorId && ganadorId === miId()) {
                 const btnPagar = document.getElementById("btn-ir-pagar");
                 if (btnPagar) btnPagar.classList.remove("d-none");
             }
@@ -542,7 +545,7 @@
             // Recibir nueva puja
             connection.on("NuevaPuja", (puja) => {
                 // Notificar si el usuario actual fue superado
-                if (liderId === usuarioActualId && puja.usuarioId !== usuarioActualId) {
+                if (liderId === miId() && puja.usuarioId !== miId()) {
                     try { new bootstrap.Toast(toastSuperada).show(); } catch { }
                 }
 
