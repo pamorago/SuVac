@@ -448,7 +448,9 @@ IF NOT EXISTS (SELECT 1 FROM GanadoCategoria WHERE GanadoId = 1)
     (17, 4), (17, 5),        -- Hereford 002: Engorde, Criollo
     (18, 3), (18, 6),        -- Ternero Gyr 001: Reproductor, Joven
     (19, 1), (19, 4),        -- Charolais 002: Premium, Engorde
-    (20, 3);                  -- Simmental 002: Reproductor
+    (20, 3),                 -- Simmental 002: Reproductor
+    (21, 3), (21, 6),        -- Ternero Nelore 001: Reproductor, Joven
+    (22, 2), (22, 3);        -- Vaca Gyr 002: Lechero, Reproductor
 
 -- =========================
 -- SUBASTAS (14 subastas)
