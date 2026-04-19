@@ -38,7 +38,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <a id="btn-ir-pagar" href="/Pago/PorSubasta?subastaId=@Model.Subasta.SubastaId"
-                   class="btn btn-success d-none">
+                       class="btn btn-success d-none">
                     <i class="bi bi-credit-card me-1"></i> Ir a Pagar
                 </a>
                 <a asp-action="Finalizadas" class="btn btn-secondary">
@@ -194,6 +194,8 @@
                     <dd class="col-6">₡@Model.Subasta.IncrementoMinimo.ToString("N2")</dd>
                     <dt class="col-6 text-muted">Cierre</dt>
                     <dd class="col-6">@Model.Subasta.FechaFin.ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dt class="col-6 text-muted">Vendedor</dt>
+                    <dd class="col-6">@Model.Subasta.NombreCreador</dd>
                     <dt class="col-6 text-muted">Tu usuario</dt>
                     <dd class="col-6">@Model.NombreUsuarioActual</dd>
                 </dl>
@@ -325,7 +327,9 @@
     <script>
         // ── Datos del servidor ─────────────────────────────────────────────────
         const subastaId = @Model.Subasta.SubastaId;
-        const usuarioActualId = @Model.UsuarioActualId;
+        // Leer el usuario desde sessionStorage (aislado por pestaña) para evitar
+        // que una carrera de cookies entre pestañas produzca un ID incorrecto.
+        const usuarioActualId = parseInt(sessionStorage.getItem('suvac_uid')) || @Model.UsuarioActualId;
         const esVendedor = @Model.EsVendedor.ToString().ToLower();
         const incremento = @Model.Subasta.IncrementoMinimo.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
 
@@ -374,8 +378,14 @@
         function mostrarFinalizacion(ganador, monto, ganadorId) {
             if (yaFinalizada) return;
             yaFinalizada = true;
-            document.getElementById("ganador-nombre").textContent = ganador;
-            document.getElementById("ganador-monto").textContent = "₡" + formatMonto(monto);
+
+            const sinGanador = !ganadorId || ganadorId === 0;
+            document.getElementById("ganador-nombre").textContent = sinGanador
+                ? "Sin ganador — no se recibieron pujas"
+                : ganador;
+            document.getElementById("ganador-monto").textContent = sinGanador
+                ? "La subasta cerró sin ofertas"
+                : "₡" + formatMonto(monto);
             if (montoInput) montoInput.disabled = true;
             const btnPujar = document.getElementById("btn-pujar");
             if (btnPujar) btnPujar.disabled = true;
@@ -455,6 +465,20 @@
             if (diferencia < 5 * 60 * 1000) {
                 document.querySelectorAll("#cnt-dias,#cnt-horas,#cnt-min,#cnt-seg")
                     .forEach(el => el.classList.add("text-danger"));
+            }
+
+            // Bloquear el botón de pujar en los últimos 10 segundos
+            const btnPujar = document.getElementById("btn-pujar");
+            if (diferencia <= 10000 && btnPujar && !btnPujar.disabled) {
+                btnPujar.disabled = true;
+                if (montoInput) montoInput.disabled = true;
+                const feedback = document.getElementById("feedback-puja");
+                if (feedback) {
+                    feedback.innerHTML =
+                        '<div class="alert alert-warning py-1 mb-0 small">' +
+                        '<i class="bi bi-lock-fill me-1"></i>Las pujas están cerradas — últimos 10 segundos.' +
+                        '</div>';
+                }
             }
         }
 

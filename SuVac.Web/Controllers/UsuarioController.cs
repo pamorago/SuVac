@@ -188,16 +188,45 @@ public class UsuarioController : Controller
     }
 
     /// <summary>
-    /// Cambia el usuario simulado global. Solo para entorno de pruebas (no hay auth).
+    /// [DEMO] Abre una nueva pestaña ya autenticada como el usuario indicado.
+    /// Devuelve HTML mínimo que almacena el userId en sessionStorage (por pestaña),
+    /// sincroniza la cookie y redirige al inicio — sin alterar otras pestañas abiertas.
+    /// </summary>
+    [HttpGet]
+    [IgnoreAntiforgeryToken]
+    public IActionResult IniciarComoUsuario(int userId, string? returnUrl)
+    {
+        if (userId <= 0) userId = 2;
+
+        // Validar que returnUrl sea relativa (evitar open redirect)
+        var destino = Url.IsLocalUrl(returnUrl) ? returnUrl : "/";
+
+        // El userId es un int validado → no hay riesgo de inyección
+        var html = $"""
+            <!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+            <script>
+                sessionStorage.setItem('suvac_uid', '{userId}');
+                document.cookie = 'suvac-uid={userId}; path=/; SameSite=Strict';
+                location.href = '{destino}';
+            </script>
+            </body></html>
+            """;
+
+        return Content(html, "text/html");
+    }
+
+    /// <summary>
+    /// [DEMO] Mantenido por compatibilidad. La gestión del usuario simulado
+    /// ahora ocurre en el cliente (sessionStorage) y en el middleware.
     /// </summary>
     [HttpPost]
     [IgnoreAntiforgeryToken]
     public IActionResult CambiarSimulado(int userId)
     {
+        // El cambio real se realiza desde el cliente vía IniciarComoUsuario.
+        // Este endpoint ya no modifica estado global.
         if (userId <= 0)
             return Json(new { ok = false, mensaje = "ID inválido." });
-
-        UsuarioSimulado.UsuarioActualId = userId;
         return Json(new { ok = true });
     }
 }

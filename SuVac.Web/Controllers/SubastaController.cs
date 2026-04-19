@@ -225,18 +225,24 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Restricción: no editable si tiene pujas o está Finalizada/Cancelada
-        var detalle = await _service.GetDetalle(id);
-        var tienePujas = detalle?.TotalPujas > 0;
-        if (tienePujas || dto.NombreEstadoSubasta == "Finalizada" || dto.NombreEstadoSubasta == "Cancelada")
+        // Restricción: no editable si está Finalizada/Cancelada, o si tiene pujas
+        var estado = dto.NombreEstadoSubasta;
+        if (estado == "Finalizada" || estado == "Cancelada")
         {
             TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
                 "No se puede editar",
-                tienePujas
-                    ? "No se puede editar: la subasta ya tiene pujas registradas."
-                    : $"No se puede editar una subasta en estado {dto.NombreEstadoSubasta}.",
-                SweetAlertMessageType.warning
-            );
+                $"No se puede editar una subasta {estado.ToLower()}.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Detalle), new { id });
+        }
+
+        var detalle = await _service.GetDetalle(id);
+        if (detalle?.TotalPujas > 0)
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "No se puede editar",
+                "No se puede editar: la subasta ya tiene pujas registradas.",
+                SweetAlertMessageType.warning);
             return RedirectToAction(nameof(Detalle), new { id });
         }
 

@@ -169,6 +169,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+// Middleware de demo: asigna el usuario simulado por pestaña desde header/cookie
+app.UseMiddleware<UsuarioSimuladoMiddleware>();
+
 app.UseSerilogRequestLogging();
 
 app.UseAuthorization();

@@ -176,28 +176,11 @@
         .catch(() => {});
 
     async function cambiarUsuario(userId, nombre) {
-        try {
-            await fetch('/Usuario/CambiarSimulado', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `userId=${userId}`
-            });
-
-            // Update button label
-            document.getElementById('label-usuario-sim').textContent = nombre;
-
-            // Update active state on dropdown items
-            document.querySelectorAll('#dropdown-usuarios-sim [data-userid]').forEach(a => {
-                const isActive = parseInt(a.dataset.userid) === userId;
-                a.classList.toggle('active', isActive);
-                a.classList.toggle('fw-semibold', isActive);
-            });
-
-            // Open a new tab with the current page so it loads under the new user
-            window.open(window.location.href, '_blank');
-        } catch (err) {
-            console.error('[Demo] Error cambiando usuario:', err);
-        }
+        // Abre una nueva pestaña como el usuario seleccionado en la misma página.
+        // La pestaña actual NO cambia de usuario — cada pestaña mantiene su propio usuario
+        // gracias a sessionStorage (aislado por pestaña en el navegador).
+        const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+        window.open('/Usuario/IniciarComoUsuario?userId=' + userId + '&returnUrl=' + returnUrl, '_blank');
     }
 })();
 </script>
