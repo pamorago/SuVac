@@ -1,12 +1,14 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using SuVac.Web.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 
 namespace SuVac.Web.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class UsuarioController : Controller
 {
     private readonly IServiceUsuario _service;
@@ -167,66 +169,10 @@ public class UsuarioController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // ─── DEMO: Cambio de usuario simulado ────────────────────────────────────
+    // ─── Perfil del usuario autenticado ─────────────────────────────────────
 
     /// <summary>
-    /// Retorna la lista de todos los usuarios con indicador del usuario actual simulado.
-    /// Usado por el botón de prueba en la barra de navegación.
+    /// Muestra el perfil del usuario que inició sesión.
     /// </summary>
-    [HttpGet]
-    public async Task<IActionResult> ListaSimulada()
-    {
-        var usuarios = await _service.GetAllConDetalle();
-        var lista = usuarios.Select(u => new
-        {
-            usuarioId = u.UsuarioId,
-            nombreCompleto = u.NombreCompleto,
-            nombreRol = u.NombreRol,
-            activo = u.UsuarioId == UsuarioSimulado.UsuarioActualId
-        });
-        return Json(lista);
-    }
-
-    /// <summary>
-    /// [DEMO] Abre una nueva pestaña ya autenticada como el usuario indicado.
-    /// Devuelve HTML mínimo que almacena el userId en sessionStorage (por pestaña),
-    /// sincroniza la cookie y redirige al inicio — sin alterar otras pestañas abiertas.
-    /// </summary>
-    [HttpGet]
-    [IgnoreAntiforgeryToken]
-    public IActionResult IniciarComoUsuario(int userId, string? returnUrl)
-    {
-        if (userId <= 0) userId = 2;
-
-        // Validar que returnUrl sea relativa (evitar open redirect)
-        var destino = Url.IsLocalUrl(returnUrl) ? returnUrl : "/";
-
-        // El userId es un int validado → no hay riesgo de inyección
-        var html = $"""
-            <!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
-            <script>
-                sessionStorage.setItem('suvac_uid', '{userId}');
-                document.cookie = 'suvac-uid={userId}; path=/; SameSite=Strict';
-                location.href = '{destino}';
-            </script>
-            </body></html>
-            """;
-
-        return Content(html, "text/html");
-    }
-
-    /// <summary>
-    /// [DEMO] Mantenido por compatibilidad. La gestión del usuario simulado
-    /// ahora ocurre en el cliente (sessionStorage) y en el middleware.
-    /// </summary>
-    [HttpPost]
-    [IgnoreAntiforgeryToken]
-    public IActionResult CambiarSimulado(int userId)
-    {
-        // El cambio real se realiza desde el cliente vía IniciarComoUsuario.
-        // Este endpoint ya no modifica estado global.
-        if (userId <= 0)
-            return Json(new { ok = false, mensaje = "ID inválido." });
-        return Json(new { ok = true });
-    }
+    // MiPerfil está en LoginController para evitar restricción de rol Admin
 }

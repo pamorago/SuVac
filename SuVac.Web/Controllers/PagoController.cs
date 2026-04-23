@@ -1,10 +1,12 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
 using SuVac.Web.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SuVac.Web.Controllers;
 
+[Authorize]
 public class PagoController : Controller
 {
     private readonly IServicePago _service;
@@ -27,7 +29,7 @@ public class PagoController : Controller
         if (id <= 0) return NotFound();
         var pago = await _service.GetByIdConDetalle(id);
         if (pago is null) return NotFound();
-        ViewBag.EsComprador = pago.UsuarioId == UsuarioSimulado.UsuarioActualId;
+        ViewBag.EsComprador = pago.UsuarioId == UsuarioHelper.GetUsuarioId(User);
         return View(pago);
     }
 
@@ -42,7 +44,7 @@ public class PagoController : Controller
         var pago = await _service.GetByIdConDetalle(id);
         if (pago is null) return NotFound();
 
-        if (pago.UsuarioId != UsuarioSimulado.UsuarioActualId)
+        if (pago.UsuarioId != UsuarioHelper.GetUsuarioId(User))
         {
             TempData["Notificacion_Tipo"] = "danger";
             TempData["Notificacion_Mensaje"] = "Solo el comprador ganador puede confirmar este pago.";

@@ -22,4 +22,10 @@ public interface IRepositoryUsuario
     /// <summary>Alterna estado Activo(1) ↔ Bloqueado(2).</summary>
     Task<bool> ToggleEstado(int id);
     Task<bool> Delete(int id);
+
+    /// <summary>Busca usuario por correo y contraseña ya cifrada. Solo retorna usuarios Activos.</summary>
+    Task<Usuario?> GetByCorreoYPassword(string correo, string passwordEncriptado);
+
+    /// <summary>Retorna las subastas creadas por el usuario y aquellas en las que pujó.</summary>
+    Task<IEnumerable<(Subasta subasta, string rolEnSubasta, decimal? mejorPuja, bool esGanador)>> GetHistorialAsync(int usuarioId);
 }

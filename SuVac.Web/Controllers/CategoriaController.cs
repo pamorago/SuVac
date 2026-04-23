@@ -1,9 +1,11 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SuVac.Web.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class CategoriaController : Controller
 {
     private readonly IServiceCategoria _service;

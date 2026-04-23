@@ -1,0 +1,125 @@
+@model SuVac.Application.DTOs.UsuarioDTO
+@{
+    Layout = null;
+    ViewData["Title"] = "Crear cuenta";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SuVac</title>
+    <link rel="icon" type="image/png" href="~/img/Icono%20Subasta.png" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5/dist/brite/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-body">
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-success text-white text-center py-4 border-0">
+                        <i class="bi bi-person-plus-fill display-5 mb-2 d-block"></i>
+                        <h2 class="h4 mb-1 fw-bold">Crear cuenta</h2>
+                        <p class="small mb-0 opacity-75">Registrate en SuVac — acceso gratuito para compradores</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <form asp-controller="Login" asp-action="Registro" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger small d-none" id="valSummary"></div>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label asp-for="NombreCompleto" class="form-label fw-semibold"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        <input asp-for="NombreCompleto" class="form-control"
+                                               placeholder="Nombre y apellido" />
+                                    </div>
+                                    <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Correo" class="form-label fw-semibold"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                        <input asp-for="Correo" class="form-control" type="email"
+                                               placeholder="correo@ejemplo.com" autocomplete="username" />
+                                    </div>
+                                    <span asp-validation-for="Correo" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-12">
+                                    <label asp-for="Contrasena" class="form-label fw-semibold"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                        <input asp-for="Contrasena" id="regPassword" class="form-control"
+                                               type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleRegPwd"
+                                                title="Mostrar u ocultar contraseña">
+                                            <i class="bi bi-eye" id="eyeReg"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button class="btn btn-success btn-lg" type="submit">
+                                    <i class="bi bi-check-circle me-2"></i>Crear cuenta
+                                </button>
+                            </div>
+                        </form>
+
+                        <hr class="my-4" />
+
+                        <p class="text-center small mb-0">
+                            ¿Ya tenés cuenta?
+                            <a asp-controller="Login" asp-action="Index" class="fw-semibold">Iniciá sesión</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/sweetalert2/dist/sweetalert2.min.js"></script>
+
+    @if (TempData["Notificacion"] != null)
+    {
+        <script>
+            const n = @Html.Raw(TempData["Notificacion"]);
+            Swal.fire({ title: n.title, text: n.text, icon: n.icon, timer: 3000, showConfirmButton: false });
+        </script>
+    }
+
+    <script>
+        document.getElementById('toggleRegPwd').addEventListener('click', function () {
+            const inp = document.getElementById('regPassword');
+            const icon = document.getElementById('eyeReg');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                inp.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+
+        // Mostrar validation summary si tiene errores
+        const vs = document.getElementById('valSummary');
+        if (vs && vs.querySelector('li')) vs.classList.remove('d-none');
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+</body>
+</html>

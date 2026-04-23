@@ -75,9 +75,31 @@ var builder = WebApplication.CreateBuilder(args);
 // Integrar Serilog al host
 builder.Host.UseSerilog(Log.Logger);
 
+// Mapear AppConfig (clave AES para cifrado de contraseñas)
+builder.Services.Configure<SuVac.Application.Config.AppConfig>(builder.Configuration);
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    // Impedir que el browser vuelva atrás a páginas protegidas después de logout
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.ResponseCacheAttribute
+    {
+        NoStore = true,
+        Location = Microsoft.AspNetCore.Mvc.ResponseCacheLocation.None,
+    });
+});
 builder.Services.AddSignalR();
+
+// =======================
+// Cookie Authentication
+// =======================
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Index";
+        options.AccessDeniedPath = "/Login/Forbidden";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    });
 //***********
 // =======================
 // Configurar Dependency Injection
@@ -169,11 +191,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// Middleware de demo: asigna el usuario simulado por pestaña desde header/cookie
-app.UseMiddleware<UsuarioSimuladoMiddleware>();
-
 app.UseSerilogRequestLogging();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

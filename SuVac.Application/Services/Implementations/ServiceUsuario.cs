@@ -1,6 +1,9 @@
 using AutoMapper;
+using Microsoft.Extensions.Options;
+using SuVac.Application.Config;
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using SuVac.Application.Utils;
 using SuVac.Infraestructure.Models;
 using SuVac.Infraestructure.Repository.Interfaces;
 
@@ -10,11 +13,13 @@ public class ServiceUsuario : IServiceUsuario
 {
     private readonly IRepositoryUsuario _repository;
     private readonly IMapper _mapper;
+    private readonly IOptions<AppConfig> _options;
 
-    public ServiceUsuario(IRepositoryUsuario repository, IMapper mapper)
+    public ServiceUsuario(IRepositoryUsuario repository, IMapper mapper, IOptions<AppConfig> options)
     {
         _repository = repository;
         _mapper = mapper;
+        _options = options;
     }
 
     public async Task<IEnumerable<UsuarioDTO>> GetAll()
@@ -59,6 +64,10 @@ public class ServiceUsuario : IServiceUsuario
 
     public async Task<bool> Create(UsuarioDTO dto)
     {
+        // Cifrar contraseña con AES antes de persistir
+        if (!string.IsNullOrWhiteSpace(dto.Contrasena))
+            dto.Contrasena = Cryptography.Encrypt(dto.Contrasena, _options.Value.Crypto.Secret);
+
         var usuario = _mapper.Map<Usuario>(dto);
         return await _repository.Create(usuario);
     }
@@ -87,6 +96,29 @@ public class ServiceUsuario : IServiceUsuario
     public async Task<bool> Delete(int id)
     {
         return await _repository.Delete(id);
+    }
+
+    public async Task<Usuario?> LoginAsync(string correo, string password)
+    {
+        var encrypted = Cryptography.Encrypt(password, _options.Value.Crypto.Secret);
+        return await _repository.GetByCorreoYPassword(correo, encrypted);
+    }
+
+    public async Task<IEnumerable<HistorialUsuarioDTO>> GetHistorialAsync(int usuarioId)
+    {
+        var items = await _repository.GetHistorialAsync(usuarioId);
+        return items.Select(x => new HistorialUsuarioDTO
+        {
+            SubastaId = x.subasta.SubastaId,
+            NombreGanado = x.subasta.IdGanadoNavigation?.Nombre ?? $"Ganado #{x.subasta.GanadoId}",
+            FechaInicio = x.subasta.FechaInicio,
+            FechaFin = x.subasta.FechaFin,
+            EstadoSubasta = x.subasta.IdEstadoSubastaNavigation?.Nombre ?? "—",
+            PrecioBase = x.subasta.PrecioBase,
+            RolEnSubasta = x.rolEnSubasta,
+            MejorPuja = x.mejorPuja,
+            EsGanador = x.esGanador
+        });
     }
 
     /// <summary>

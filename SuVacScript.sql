@@ -324,17 +324,17 @@ IF NOT EXISTS (SELECT 1 FROM Sexo WHERE Nombre = 'Macho')
 IF NOT EXISTS (SELECT 1 FROM Usuario WHERE Correo = 'admin@subasta.com')
     INSERT INTO Usuario (Correo, PasswordHash, NombreCompleto, RolId, EstadoUsuarioId)
     VALUES
-    ('admin@subasta.com',       'hash1', 'Administrador General',    1, 1),
-    ('vendedor1@mail.com',      'hash2', 'Carlos Vendedor',          2, 1),
-    ('vendedor2@mail.com',      'hash3', 'Laura Tech',               2, 1),
-    ('vendedor3@mail.com',      'hash6', 'Roberto Ganadero',         2, 1),
-    ('comprador1@mail.com',     'hash4', 'Ana Compradora',           3, 1),
-    ('comprador2@mail.com',     'hash5', 'Luis Ofertas',             3, 1),
-    ('comprador3@mail.com',     'hash7', 'Maria Subastas',           3, 1),
-    ('comprador4@mail.com',     'hash8', 'Pedro Inversor',           3, 2),  -- Bloqueado
-    ('vendedor4@mail.com',      'hash9', 'Sofia Rancho',             2, 2),  -- Bloqueado
-    ('comprador5@mail.com',     'hash10','Carlos Lopez',             3, 1),
-    ('comprador6@mail.com',     'hash11','Isabel Compradora',        3, 1);
+    ('admin@subasta.com',       'JTFaYKVNHJti1XYGfnI/2w==', 'Administrador General',    1, 1),
+    ('vendedor1@mail.com',      'JTFaYKVNHJti1XYGfnI/2w==', 'Carlos Vendedor',          2, 1),
+    ('vendedor2@mail.com',      'JTFaYKVNHJti1XYGfnI/2w==', 'Laura Tech',               2, 1),
+    ('vendedor3@mail.com',      'JTFaYKVNHJti1XYGfnI/2w==', 'Roberto Ganadero',         2, 1),
+    ('comprador1@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Ana Compradora',           3, 1),
+    ('comprador2@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Luis Ofertas',             3, 1),
+    ('comprador3@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Maria Subastas',           3, 1),
+    ('comprador4@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Pedro Inversor',           3, 2),  -- Bloqueado
+    ('vendedor4@mail.com',      'JTFaYKVNHJti1XYGfnI/2w==', 'Sofia Rancho',             2, 2),  -- Bloqueado
+    ('comprador5@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Carlos Lopez',             3, 1),
+    ('comprador6@mail.com',     'JTFaYKVNHJti1XYGfnI/2w==', 'Isabel Compradora',        3, 1);
 
 -- =========================
 -- GANADO - DATOS DE PRUEBA (15 registros)
@@ -467,7 +467,7 @@ BEGIN
     VALUES
     -- ── ACTIVAS ─────────────────────────────────────────────────────────────
     -- Sub 1: Toro Brahman 001
-    (1,  '2026-03-15 08:00', '2026-04-17 22:04', 450000.00, 15000.00, 2, 2),
+    (1,  '2026-03-15 08:00', '2026-04-20 18:38', 450000.00, 15000.00, 2, 2),
     -- Sub 2: Vaca Holstein 001
     (2,  '2026-03-20 09:00', '2026-05-07 18:00', 380000.00, 10000.00, 2, 2),
     -- Sub 3: Toro Angus 001
@@ -685,3 +685,23 @@ BEGIN
     FROM Ganado g CROSS JOIN EstadoSubasta e
     WHERE g.Nombre = 'Vaca Gyr 002' AND e.Nombre = 'Activa';
 END
+
+-- =========================
+-- ESCENARIO: SUBASTA SIN PUJAS
+-- Toro Brahman 003 (GanadoId=15) — Activa, SIN pujas, cierra en 3 minutos desde la ejecucion.
+-- Sirve para demostrar que al cierre automatico: no hay ganador, queda Finalizada sin ofertas.
+-- IMPORTANTE: ejecutar justo antes de la demostracion para que el cierre ocurra en vivo.
+-- =========================
+IF NOT EXISTS (
+    SELECT 1 FROM Subasta
+    WHERE GanadoId = 15
+      AND EstadoSubastaId = (SELECT EstadoSubastaId FROM EstadoSubasta WHERE Nombre = 'Activa')
+      AND FechaFin > GETDATE()
+)
+BEGIN
+    INSERT INTO Subasta (GanadoId, FechaInicio, FechaFin, PrecioBase, IncrementoMinimo, EstadoSubastaId, UsuarioCreadorId)
+    SELECT 15, DATEADD(MINUTE, -10, GETDATE()), DATEADD(MINUTE, 6, GETDATE()),
+           350000.00, 10000.00, e.EstadoSubastaId, 2
+    FROM EstadoSubasta e WHERE e.Nombre = 'Activa';
+END
+

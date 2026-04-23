@@ -4,6 +4,7 @@ using SuVac.Infraestructure.Repository.Interfaces;
 using SuVac.Web.Hubs;
 using SuVac.Web.Models;
 using SuVac.Web.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
@@ -14,32 +15,28 @@ public class SubastaController : Controller
 {
     private readonly IServiceSubasta _service;
     private readonly IServicePuja _servicePuja;
-    private readonly IServiceUsuario _serviceUsuario;
     private readonly IHubContext<PujaHub> _hubContext;
     private readonly IRepositoryResultadoSubasta _repoResultado;
 
     public SubastaController(IServiceSubasta service, IServicePuja servicePuja,
-        IServiceUsuario serviceUsuario, IHubContext<PujaHub> hubContext,
+        IHubContext<PujaHub> hubContext,
         IRepositoryResultadoSubasta repoResultado)
     {
         _service = service;
         _servicePuja = servicePuja;
-        _serviceUsuario = serviceUsuario;
         _hubContext = hubContext;
         _repoResultado = repoResultado;
     }
 
-    // ─── Helper: cargar dropdown de ganados y nombre del usuario simulado ────
+    // --- Helper: cargar dropdown de ganados ------------------------------------
     private async Task CargarDropdownsAsync()
     {
         var ganados = await _service.GetGanadosActivos();
         ViewBag.ListGanado = new SelectList(ganados, "GanadoId", "Nombre");
-
-        var usuario = await _serviceUsuario.GetByIdConDetalle(UsuarioSimulado.UsuarioActualId);
-        ViewBag.NombreUsuarioActual = usuario?.NombreCompleto ?? $"Usuario #{UsuarioSimulado.UsuarioActualId}";
+        ViewBag.NombreUsuarioActual = UsuarioHelper.GetNombreCompleto(User);
     }
 
-    // ─── LISTADO PÚBLICO ─────────────────────────────────────────────────────
+    // --- LISTADO PÚBLICO -----------------------------------------------------
     public async Task<IActionResult> Activas()
     {
         var subastas = await _service.GetActivas();
@@ -69,7 +66,8 @@ public class SubastaController : Controller
         return View(pujas.ToList());
     }
 
-    // ─── ADMIN: LISTADO COMPLETO ─────────────────────────────────────────────
+    // --- ADMIN: LISTADO COMPLETO -----------------------------------------
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         var subastas = await _service.GetAllAdmin();
@@ -87,7 +85,7 @@ public class SubastaController : Controller
         return View(subastas);
     }
 
-    // ─── DETALLE ─────────────────────────────────────────────────────────────
+    // --- DETALLE -------------------------------------------------------------
     public async Task<IActionResult> Detalle(int? id, string? from = null)
     {
         if (id is null or <= 0)
@@ -129,7 +127,8 @@ public class SubastaController : Controller
         return View(subasta);
     }
 
-    // ─── CREAR ───────────────────────────────────────────────────────────────
+    // --- CREAR ---------------------------------------------------------------
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Create()
     {
@@ -137,7 +136,7 @@ public class SubastaController : Controller
 
         var dto = new SubastaDTO
         {
-            UsuarioCreadorId = UsuarioSimulado.UsuarioActualId,
+            UsuarioCreadorId = UsuarioHelper.GetUsuarioId(User),
             NombreCreador = ViewBag.NombreUsuarioActual,
             FechaInicio = DateTime.Now,
             FechaFin = DateTime.Now.AddDays(7)
@@ -146,12 +145,13 @@ public class SubastaController : Controller
         return View(dto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(SubastaDTO dto, string? accion = null)
     {
-        // Siempre forzar el usuario simulado — nunca tomar del form binding
-        dto.UsuarioCreadorId = UsuarioSimulado.UsuarioActualId;
+        // Siempre forzar el usuario autenticado — nunca tomar del form binding
+        dto.UsuarioCreadorId = UsuarioHelper.GetUsuarioId(User);
 
         // Los campos no editables no deben generar errores de validación
         ModelState.Remove(nameof(SubastaDTO.EstadoSubastaId));
@@ -206,7 +206,8 @@ public class SubastaController : Controller
         }
     }
 
-    // ─── EDITAR ──────────────────────────────────────────────────────────────
+    // --- EDITAR --------------------------------------------------------------
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -249,6 +250,7 @@ public class SubastaController : Controller
         return View(dto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, SubastaDTO dto)
@@ -307,7 +309,8 @@ public class SubastaController : Controller
         }
     }
 
-    // ─── PUBLICAR ────────────────────────────────────────────────────────────
+    // --- PUBLICAR ------------------------------------------------------------
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Publicar(int id)
@@ -328,7 +331,8 @@ public class SubastaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // ─── CANCELAR ────────────────────────────────────────────────────────────
+    // --- CANCELAR ------------------------------------------------------
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> Cancelar(int id)
     {
@@ -388,7 +392,8 @@ public class SubastaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // ─── SALA DE PUJAS EN TIEMPO REAL ────────────────────────────────────────
+    // --- SALA DE PUJAS EN TIEMPO REAL ------------------------------------
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Sala(int? id)
     {
@@ -406,20 +411,21 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Activas));
         }
 
-        var usuarioActual = await _serviceUsuario.GetByIdConDetalle(UsuarioSimulado.UsuarioActualId);
+        var usuarioActual = UsuarioHelper.GetNombreCompleto(User);
         var pujaMasAlta = await _servicePuja.GetPujaMasAlta(id.Value);
         var historial = (await _servicePuja.GetBySubasta(id.Value))
                               .OrderByDescending(p => p.FechaHora)
                               .ToList();
 
+        var uid = UsuarioHelper.GetUsuarioId(User);
         var vm = new SalaSubastaViewModel
         {
             Subasta = subasta,
             PujaLider = pujaMasAlta,
             Historial = historial,
-            UsuarioActualId = UsuarioSimulado.UsuarioActualId,
-            NombreUsuarioActual = usuarioActual?.NombreCompleto ?? $"Usuario #{UsuarioSimulado.UsuarioActualId}",
-            EsVendedor = subasta.UsuarioCreadorId == UsuarioSimulado.UsuarioActualId
+            UsuarioActualId = uid,
+            NombreUsuarioActual = usuarioActual,
+            EsVendedor = subasta.UsuarioCreadorId == uid
         };
 
         return View(vm);
@@ -428,12 +434,13 @@ public class SubastaController : Controller
     /// <summary>
     /// Registra una nueva puja. Retorna JSON. El broadcast SignalR se realiza aquí.
     /// </summary>
+    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegistrarPuja([FromForm] int subastaId, [FromForm] decimal monto)
     {
-        // El usuario SIEMPRE se obtiene de la lógica del sistema, nunca del formulario.
-        var uid = UsuarioSimulado.UsuarioActualId;
+        // El usuario SIEMPRE se obtiene del claim de la sesión, nunca del formulario.
+        var uid = UsuarioHelper.GetUsuarioId(User);
 
         var (ok, mensaje, puja) = await _servicePuja.RegistrarPujaValidada(subastaId, uid, monto);
 
@@ -480,4 +487,5 @@ public class SubastaController : Controller
         });
     }
 }
+
 

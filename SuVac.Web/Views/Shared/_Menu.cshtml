@@ -1,187 +1,146 @@
+﻿@using System.Security.Claims
+@{
+    var isAuth = User.Identity?.IsAuthenticated == true;
+    var nombre = User.FindFirstValue(ClaimTypes.Name) ?? "Invitado";
+    var rol = User.FindFirstValue(ClaimTypes.Role) ?? "";
+    var esAdmin = rol == "Admin";
+}
+
 <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="light">
     <div class="container">
         <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">
-            <i class="bi bi-cow me-2"></i><span data-i18n="nav.brand">SuVac</span>
+            <i class="bi bi-cow me-2"></i>SuVac
         </a>
 
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                aria-controls="navbarMain" aria-expanded="false"
-                data-i18n="[aria-label]nav.abrirMenu">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Ganado" asp-action="Index"
-                       data-i18n="nav.ganado">Ganado</a>
-                </li>
+                @if (isAuth)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Ganado" asp-action="Index">Ganado</a>
+                    </li>
+                }
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false"
-                       data-i18n="nav.subastas">Subastas</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">Subastas</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Activas"
-                               data-i18n="nav.activas">Activas</a></li>
-                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Finalizadas"
-                               data-i18n="nav.finalizadas">Finalizadas</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Index">
-                            </i>Mantenimiento</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Puja" asp-action="Index"
-                       data-i18n="nav.pujas">Pujas</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Pago" asp-action="Index"
-                       data-i18n="nav.pagos">Pagos</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Usuario" asp-action="Index"
-                       data-i18n="nav.usuarios">Usuarios</a>
-                </li>
-            </ul>
-
-            <ul class="navbar-nav ms-auto align-items-center gap-2">
-
-                <!-- ── [DEMO] Botón de cambio de usuario simulado ── -->
-                <li class="nav-item dropdown">
-                    <button id="btn-cambiar-usuario"
-                            class="btn btn-sm btn-warning d-flex align-items-center gap-1"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            title="[DEMO] Cambiar usuario simulado">
-                        <i class="bi bi-person-fill-gear"></i>
-                        <span id="label-usuario-sim" class="fw-semibold small">Cargando…</span>
-                        <i class="bi bi-chevron-down small"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" id="dropdown-usuarios-sim" style="min-width:240px;">
-                        <li>
-                            <h6 class="dropdown-header text-uppercase small">
-                                <i class="bi bi-person-gear me-1"></i>Usuario de prueba
-                            </h6>
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Activas">Activas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Finalizadas">Finalizadas</a>
                         </li>
-                        <li><hr class="dropdown-divider my-1"></li>
-                        <li id="usuarios-loading">
-                            <span class="dropdown-item text-muted small">
-                                <span class="spinner-border spinner-border-sm me-1"></span>Cargando…
-                            </span>
+                        @if (esAdmin)
+                        {
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" asp-controller="Subasta" asp-action="Index">
+                                <i class="bi bi-gear me-1"></i>Mantenimiento</a></li>
+                            }
+                        </ul>
+                    </li>
+
+                    @if (isAuth)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Pago" asp-action="Index">Pagos</a>
                         </li>
-                    </ul>
-                </li>
+                    }
 
-                <!-- ── Botón de cambio de idioma ── -->
-                <li class="nav-item">
-                    <button id="btn-lang-switch"
-                            type="button"
-                            class="btn btn-sm btn-outline-light d-flex align-items-center gap-1"
-                            data-lang-target="en"
-                            title="Cambiar idioma / Switch language">
-                        <i class="bi bi-translate"></i>
-                        <span id="lang-current-badge" class="fw-semibold" style="min-width:1.6rem;">ES</span>
-                        <span class="vr opacity-50"></span>
-                        <span class="lang-btn-text" data-i18n="lang.switchBtn">English</span>
-                    </button>
-                </li>
+                    @if (esAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                <i class="bi bi-shield-fill-check me-1"></i>Administracion
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Usuario" asp-action="Index">
+                                    <i class="bi bi-people me-1"></i>Usuarios</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Categoria" asp-action="Index">
+                                        <i class="bi bi-tags me-1"></i>Categorias</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Raza" asp-action="Index">
+                                            <i class="bi bi-diagram-2 me-1"></i>Razas</a></li>
+                                            <li><a class="dropdown-item" asp-controller="TipoGanado" asp-action="Index">
+                                                <i class="bi bi-list-ul me-1"></i>Tipos de Ganado</a></li>
+                                                <li><a class="dropdown-item" asp-controller="Rol" asp-action="Index">
+                                                    <i class="bi bi-person-badge me-1"></i>Roles</a></li>
+                                                </ul>
+                                            </li>
+                                        }
+                                    </ul>
 
-                <!-- ── Menú de usuario ── -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <img class="rounded-circle me-2"
-                             src="~/images/profile.png"
-                             alt="Perfil"
-                             width="32" height="32" />
-                        <span class="d-none d-sm-inline" data-i18n="nav.invitado">Invitado</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" data-i18n="nav.salir">Salir</a></li>
-                        <li><a class="dropdown-item" data-i18n="nav.ingresar">Ingresar</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+                                    <ul class="navbar-nav ms-auto align-items-center gap-2">
 
-<script>
-(function () {
-    function escHtml(str) {
-        const d = document.createElement('div');
-        d.appendChild(document.createTextNode(str ?? ''));
-        return d.innerHTML;
-    }
+                                        <li class="nav-item">
+                                            <button id="btn-lang-switch" type="button"
+                                                    class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-lang-target="en"
+                                                    title="Cambiar idioma / Switch language">
+                                                <i class="bi bi-translate"></i>
+                                                <span id="lang-current-badge" class="fw-semibold" style="min-width:1.6rem;">ES</span>
+                                                <span class="vr opacity-50"></span>
+                                                <span class="lang-btn-text" data-i18n="lang.switchBtn">English</span>
+                                            </button>
+                                        </li>
 
-    let usuariosCargados = false;
-
-    const dropdownEl = document.getElementById('btn-cambiar-usuario')?.closest('.dropdown');
-    if (!dropdownEl) return;
-
-    // Cargar lista al abrir el dropdown (solo la primera vez)
-    dropdownEl.addEventListener('show.bs.dropdown', async () => {
-        if (usuariosCargados) return;
-        try {
-            const resp = await fetch('/Usuario/ListaSimulada');
-            const usuarios = await resp.json();
-
-            const loading = document.getElementById('usuarios-loading');
-            if (loading) loading.remove();
-
-            const ul = document.getElementById('dropdown-usuarios-sim');
-
-            usuarios.forEach(u => {
-                const li = document.createElement('li');
-                li.innerHTML =
-                    `<a class="dropdown-item d-flex align-items-center gap-2${u.activo ? ' active fw-semibold' : ''}"
-                        href="#" data-userid="${u.usuarioId}">
-                        <i class="bi bi-person-circle"></i>
-                        <span class="flex-grow-1">${escHtml(u.nombreCompleto)}</span>
-                        <span class="badge text-bg-secondary small">${escHtml(u.nombreRol ?? '')}</span>
-                        ${u.activo ? '<i class="bi bi-check-circle-fill text-success ms-1"></i>' : ''}
-                     </a>`;
-                li.querySelector('a').addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    await cambiarUsuario(u.usuarioId, u.nombreCompleto);
-                });
-                ul.appendChild(li);
-            });
-
-            // Set initial label
-            const actual = usuarios.find(u => u.activo);
-            if (actual)
-                document.getElementById('label-usuario-sim').textContent = actual.nombreCompleto;
-
-            usuariosCargados = true;
-        } catch (err) {
-            console.error('[Demo] Error cargando usuarios:', err);
-        }
-    });
-
-    // Set label on page load via a separate quick fetch
-    fetch('/Usuario/ListaSimulada')
-        .then(r => r.json())
-        .then(usuarios => {
-            const actual = usuarios.find(u => u.activo);
-            if (actual) document.getElementById('label-usuario-sim').textContent = actual.nombreCompleto;
-        })
-        .catch(() => {});
-
-    async function cambiarUsuario(userId, nombre) {
-        // Abre una nueva pestaña como el usuario seleccionado en la misma página.
-        // La pestaña actual NO cambia de usuario — cada pestaña mantiene su propio usuario
-        // gracias a sessionStorage (aislado por pestaña en el navegador).
-        const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        window.open('/Usuario/IniciarComoUsuario?userId=' + userId + '&returnUrl=' + returnUrl, '_blank');
-    }
-})();
-</script>
-
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-person-circle me-1 fs-5"></i>
+                                                <span class="d-none d-sm-inline">@nombre</span>
+                                                @if (isAuth)
+                                                {
+                                                    <span class="badge text-bg-warning ms-2 small">@rol</span>
+                                                }
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                @if (isAuth)
+                                                {
+                                                    <li>
+                                                        <span class="dropdown-item-text text-muted small">
+                                                            <i class="bi bi-person me-1"></i>@nombre
+                                                        </span>
+                                                    </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" asp-controller="Login" asp-action="MiPerfil">
+                                                            <i class="bi bi-person-lines-fill me-1"></i>Mi perfil
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" asp-controller="Login" asp-action="Historial">
+                                                            <i class="bi bi-clock-history me-1"></i>Mi historial
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item text-danger" asp-controller="Login" asp-action="LogOff">
+                                                            <i class="bi bi-box-arrow-left me-1"></i>Cerrar sesion
+                                                        </a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a class="dropdown-item" asp-controller="Login" asp-action="Index">
+                                                            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar sesion
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" asp-controller="Login" asp-action="Registro">
+                                                            <i class="bi bi-person-plus me-1"></i>Registrarse
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>

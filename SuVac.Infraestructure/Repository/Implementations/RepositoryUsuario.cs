@@ -141,4 +141,66 @@ public class RepositoryUsuario : IRepositoryUsuario
             return false;
         }
     }
+
+    public async Task<Usuario?> GetByCorreoYPassword(string correo, string passwordEncriptado)
+    {
+        return await _context.Usuarios
+            .Include(u => u.IdRolNavigation)
+            .Include(u => u.IdEstadoNavigation)
+            .Where(u => u.Correo == correo
+                     && u.PasswordHash == passwordEncriptado
+                     && u.IdEstadoNavigation.Nombre == "Activo")
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<(Subasta subasta, string rolEnSubasta, decimal? mejorPuja, bool esGanador)>> GetHistorialAsync(int usuarioId)
+    {
+        var resultado = new List<(Subasta, string, decimal?, bool)>();
+
+        // Subastas creadas por el usuario (rol vendedor)
+        var creadas = await _context.Subastas
+            .AsNoTracking()
+            .Include(s => s.IdGanadoNavigation)
+            .Include(s => s.IdEstadoSubastaNavigation)
+            .Where(s => s.UsuarioCreadorId == usuarioId)
+            .ToListAsync();
+
+        foreach (var s in creadas)
+            resultado.Add((s, "Vendedor", null, false));
+
+        // Subastas donde pujó el usuario (rol comprador)
+        var subastasPujadas = await _context.Pujas
+            .AsNoTracking()
+            .Where(p => p.UsuarioId == usuarioId)
+            .Select(p => p.SubastaId)
+            .Distinct()
+            .ToListAsync();
+
+        foreach (var sid in subastasPujadas)
+        {
+            // Evitar duplicar si también es creador
+            if (creadas.Any(s => s.SubastaId == sid)) continue;
+
+            var subasta = await _context.Subastas
+                .AsNoTracking()
+                .Include(s => s.IdGanadoNavigation)
+                .Include(s => s.IdEstadoSubastaNavigation)
+                .Include(s => s.ResultadoSubasta)
+                .FirstOrDefaultAsync(s => s.SubastaId == sid);
+
+            if (subasta is null) continue;
+
+            var mejorPuja = await _context.Pujas
+                .AsNoTracking()
+                .Where(p => p.SubastaId == sid && p.UsuarioId == usuarioId)
+                .MaxAsync(p => (decimal?)p.Monto);
+
+            var esGanador = subasta.ResultadoSubasta
+                .Any(r => r.UsuarioGanadorId == usuarioId);
+
+            resultado.Add((subasta, "Comprador", mejorPuja, esGanador));
+        }
+
+        return resultado.OrderByDescending(x => x.Item1.FechaInicio);
+    }
 }

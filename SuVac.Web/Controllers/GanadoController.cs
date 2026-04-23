@@ -1,5 +1,6 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Hosting;
@@ -8,23 +9,22 @@ using SuVac.Web.Util;
 
 namespace SuVac.Web.Controllers;
 
+[Authorize]
 public class GanadoController : Controller
 {
     private readonly IServiceGanado _service;
     private readonly IServiceTipoGanado _serviceTipoGanado;
     private readonly IServiceRaza _serviceRaza;
-    private readonly IServiceUsuario _serviceUsuario;
     private readonly IServiceCategoria _serviceCategoria;
     private readonly IWebHostEnvironment _env;
 
     public GanadoController(IServiceGanado service, IServiceTipoGanado serviceTipoGanado,
-        IServiceRaza serviceRaza, IServiceUsuario serviceUsuario, IServiceCategoria serviceCategoria,
+        IServiceRaza serviceRaza, IServiceCategoria serviceCategoria,
         IWebHostEnvironment env)
     {
         _service = service;
         _serviceTipoGanado = serviceTipoGanado;
         _serviceRaza = serviceRaza;
-        _serviceUsuario = serviceUsuario;
         _serviceCategoria = serviceCategoria;
         _env = env;
     }
@@ -50,22 +50,24 @@ public class GanadoController : Controller
     }
 
     // GET: Ganado/Create
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> Create()
     {
         await CargarListas();
         return View(new GanadoDTO
         {
-            UsuarioVendedorId = UsuarioSimulado.UsuarioActualId
+            UsuarioVendedorId = UsuarioHelper.GetUsuarioId(User)
         });
     }
 
     // POST: Ganado/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> Create(GanadoDTO dto, List<IFormFile>? imagenesArchivos)
     {
         dto.EstadoGanadoId = 1; // Activo al crear
-        dto.UsuarioVendedorId = UsuarioSimulado.UsuarioActualId;
+        dto.UsuarioVendedorId = UsuarioHelper.GetUsuarioId(User);
 
         if (dto.CategoriasIds == null || dto.CategoriasIds.Count == 0)
             ModelState.AddModelError("CategoriasIds", "Debe seleccionar al menos una categoría.");
@@ -103,6 +105,7 @@ public class GanadoController : Controller
     }
 
     // GET: Ganado/Edit/5
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> Edit(int id)
     {
         if (id <= 0) return NotFound();
@@ -128,6 +131,7 @@ public class GanadoController : Controller
     // POST: Ganado/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> Edit(int id, GanadoDTO dto,
         List<string>? imagenesExistentes, List<IFormFile>? imagenesNuevas)
     {
@@ -181,6 +185,7 @@ public class GanadoController : Controller
     }
 
     // GET: Ganado/Delete/5  —  Confirmación de eliminación lógica
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> Delete(int id)
     {
         if (id <= 0) return NotFound();
@@ -203,6 +208,7 @@ public class GanadoController : Controller
     // POST: Ganado/Delete/5  —  Eliminación lógica (pone en Inactivo)
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Vendedor")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var ganado = await _service.GetById(id);
@@ -233,6 +239,7 @@ public class GanadoController : Controller
     // POST: Ganado/ToggleEstado/5  —  Activar / Desactivar
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Vendedor,Admin")]
     public async Task<IActionResult> ToggleEstado(int id)
     {
         var ganado = await _service.GetById(id);
@@ -294,12 +301,11 @@ public class GanadoController : Controller
         var tiposGanado = await _serviceTipoGanado.GetAll();
         var razas = await _serviceRaza.GetAll();
         var categorias = await _serviceCategoria.ListAsync();
-        var usuarioActual = await _serviceUsuario.GetByIdConDetalle(UsuarioSimulado.UsuarioActualId);
 
         ViewBag.TiposGanado = new SelectList(tiposGanado, "TipoGanadoId", "Nombre");
         ViewBag.Razas = new SelectList(razas, "RazaId", "Nombre");
         ViewBag.Categorias = categorias; // ICollection<CategoriaDTO> para checkboxes
-        ViewBag.UsuarioActualNombre = usuarioActual?.NombreCompleto ?? $"Usuario #{UsuarioSimulado.UsuarioActualId}";
+        ViewBag.UsuarioActualNombre = UsuarioHelper.GetNombreCompleto(User);
 
         ViewBag.Sexos = new SelectList(new[]
         {

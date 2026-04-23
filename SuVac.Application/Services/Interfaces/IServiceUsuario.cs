@@ -1,4 +1,5 @@
 using SuVac.Application.DTOs;
+using SuVac.Infraestructure.Models;
 
 namespace SuVac.Application.Services.Interfaces;
 
@@ -15,4 +16,8 @@ public interface IServiceUsuario
     /// <summary>Alterna el estado lógico: Activo (1) ↔ Bloqueado (2).</summary>
     Task<bool> ToggleEstado(int id);
     Task<bool> Delete(int id);
+    /// <summary>Valida credenciales y retorna la entidad Usuario con su rol. Null si inválido o bloqueado.</summary>
+    Task<Usuario?> LoginAsync(string correo, string password);
+    /// <summary>Retorna el historial de actividad del usuario (subastas creadas y en las que pujó).</summary>
+    Task<IEnumerable<HistorialUsuarioDTO>> GetHistorialAsync(int usuarioId);
 }
