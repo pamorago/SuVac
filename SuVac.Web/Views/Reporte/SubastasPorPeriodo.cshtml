@@ -1,0 +1,219 @@
+@using SuVac.Infraestructure.Models
+@model IEnumerable<Subasta>
+@{
+    ViewData["Title"] = "Reporte: Subastas por Período";
+    var lista = Model.ToList();
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+        <li class="breadcrumb-item active">Reportes</li>
+        <li class="breadcrumb-item active">Subastas por Período</li>
+    </ol>
+</nav>
+
+<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Subastas por Período</h2>
+    <a asp-action="TopCompradores" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-trophy me-1"></i>Ver Top Compradores
+    </a>
+</div>
+
+<!-- Filtros -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Desde</label>
+                <input type="date" name="desde" value="@ViewBag.Desde" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Hasta</label>
+                <input type="date" name="hasta" value="@ViewBag.Hasta" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Estado</label>
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    @foreach (var e in (List<string>?)ViewBag.EstadosDisponibles ?? new())
+                    {
+                        if ((string)ViewBag.EstadoFiltro == e)
+                        {
+                            <option value="@e" selected>@e</option>
+                        }
+                        else
+                        {
+                            <option value="@e">@e</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i>Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tarjetas resumen -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 bg-primary text-white shadow-sm text-center">
+            <div class="card-body py-3">
+                <h2 class="fw-bold mb-0">@ViewBag.Total</h2>
+                <p class="small mb-0 opacity-75">Subastas en el período</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-success text-white shadow-sm text-center">
+            <div class="card-body py-3">
+                <h2 class="fw-bold mb-0">@lista.Count(s => s.IdEstadoSubastaNavigation?.Nombre == "Finalizada")</h2>
+                <p class="small mb-0 opacity-75">Finalizadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 bg-warning text-dark shadow-sm text-center">
+            <div class="card-body py-3">
+                <h2 class="fw-bold mb-0">₡@((ViewBag.MontoTotal as decimal? ?? 0).ToString("N0"))</h2>
+                <p class="small mb-0 opacity-50">Monto total recaudado</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Gráfico: Subastas por estado -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-pie-chart me-1"></i>Distribución por Estado
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="chartEstados" style="max-height: 280px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico: Subastas por mes -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-light fw-semibold">
+                <i class="bi bi-bar-chart me-1"></i>Subastas por Mes
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="chartMeses" style="max-height: 280px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla detalle -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light fw-semibold">
+        <i class="bi bi-table me-1"></i>Detalle de Subastas (@lista.Count registros)
+    </div>
+    <div class="card-body p-0">
+        @if (!lista.Any())
+        {
+            <div class="alert alert-info m-3">No hay subastas en el período seleccionado.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Ganado</th>
+                            <th>Creador</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Precio Base</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in lista.OrderByDescending(x => x.FechaInicio))
+                        {
+                            <tr>
+                                <td>@s.SubastaId</td>
+                                <td>@(s.IdGanadoNavigation?.Nombre ?? $"Ganado #{s.GanadoId}")</td>
+                                <td>@(s.IdUsuarioCreadorNavigation?.NombreCompleto ?? "—")</td>
+                                <td>@s.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@s.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>₡@s.PrecioBase.ToString("N0")</td>
+                                <td>
+                                    @{
+                                        var estado = s.IdEstadoSubastaNavigation?.Nombre ?? "—";
+                                        var badge = estado switch
+                                        {
+                                            "Activa" => "text-bg-success",
+                                            "Finalizada" => "text-bg-secondary",
+                                            "Programada" => "text-bg-info",
+                                            "Cancelada" => "text-bg-danger",
+                                            _ => "text-bg-light"
+                                        };
+                                    }
+                                    <span class="badge @badge">@estado</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script>
+        // Gráfico 1: Torta por estado
+        const labelsEstados = @Html.Raw(ViewBag.PorEstadoLabels);
+        const dataEstados = @Html.Raw(ViewBag.PorEstadoData);
+
+        new Chart(document.getElementById('chartEstados'), {
+        type: 'doughnut',
+        data: {
+        labels: labelsEstados,
+        datasets: [{
+        data: dataEstados,
+        backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d', '#0dcaf0']
+        }]
+        },
+        options: {
+        responsive: true,
+        plugins: {
+        legend: { position: 'bottom' }
+        }
+        }
+        });
+
+        // Gráfico 2: Barras por mes (datos pre-calculados cronológicamente)
+        const porMes = @Html.Raw(ViewBag.PorMesJson);
+
+        new Chart(document.getElementById('chartMeses'), {
+        type: 'bar',
+        data: {
+        labels: porMes.map(x => x.mes),
+        datasets: [{
+        label: 'Subastas',
+        data: porMes.map(x => x.total),
+        backgroundColor: '#0d6efd88',
+        borderColor: '#0d6efd',
+        borderWidth: 1
+        }]
+        },
+        options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+        plugins: { legend: { display: false } }
+        }
+        });
+    </script>
+}

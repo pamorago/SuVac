@@ -1,6 +1,8 @@
 using SuVac.Application.DTOs;
 using SuVac.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace SuVac.Web.Controllers;
 

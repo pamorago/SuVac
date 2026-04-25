@@ -15,28 +15,33 @@ public class SubastaController : Controller
 {
     private readonly IServiceSubasta _service;
     private readonly IServicePuja _servicePuja;
+    private readonly IServiceUsuario _serviceUsuario;
     private readonly IHubContext<PujaHub> _hubContext;
     private readonly IRepositoryResultadoSubasta _repoResultado;
 
     public SubastaController(IServiceSubasta service, IServicePuja servicePuja,
-        IHubContext<PujaHub> hubContext,
+        IServiceUsuario serviceUsuario, IHubContext<PujaHub> hubContext,
         IRepositoryResultadoSubasta repoResultado)
     {
         _service = service;
         _servicePuja = servicePuja;
+        _serviceUsuario = serviceUsuario;
         _hubContext = hubContext;
         _repoResultado = repoResultado;
     }
 
-    // --- Helper: cargar dropdown de ganados ------------------------------------
+    // ─── Helper: cargar dropdown de ganados y nombre del usuario actual ────
     private async Task CargarDropdownsAsync()
     {
         var ganados = await _service.GetGanadosActivos();
         ViewBag.ListGanado = new SelectList(ganados, "GanadoId", "Nombre");
-        ViewBag.NombreUsuarioActual = UsuarioHelper.GetNombreCompleto(User);
+
+        var uid = UsuarioHelper.GetUsuarioId(User);
+        var usuario = await _serviceUsuario.GetByIdConDetalle(uid);
+        ViewBag.NombreUsuarioActual = usuario?.NombreCompleto ?? $"Usuario #{uid}";
     }
 
-    // --- LISTADO PÚBLICO -----------------------------------------------------
+    // ─── LISTADO PÚBLICO ─────────────────────────────────────────────────────
     public async Task<IActionResult> Activas()
     {
         var subastas = await _service.GetActivas();
@@ -66,8 +71,8 @@ public class SubastaController : Controller
         return View(pujas.ToList());
     }
 
-    // --- ADMIN: LISTADO COMPLETO -----------------------------------------
-    [Authorize(Roles = "Admin")]
+    // ─── ADMIN: LISTADO COMPLETO ─────────────────────────────────────────────
+    [Authorize(Roles = "Admin,Vendedor")]
     public async Task<IActionResult> Index()
     {
         var subastas = await _service.GetAllAdmin();
@@ -85,7 +90,7 @@ public class SubastaController : Controller
         return View(subastas);
     }
 
-    // --- DETALLE -------------------------------------------------------------
+    // ─── DETALLE ─────────────────────────────────────────────────────────────
     public async Task<IActionResult> Detalle(int? id, string? from = null)
     {
         if (id is null or <= 0)
@@ -127,8 +132,8 @@ public class SubastaController : Controller
         return View(subasta);
     }
 
-    // --- CREAR ---------------------------------------------------------------
-    [Authorize(Roles = "Admin")]
+    // ─── CREAR ───────────────────────────────────────────────────────────────
+    [Authorize(Roles = "Vendedor")]
     [HttpGet]
     public async Task<IActionResult> Create()
     {
@@ -145,7 +150,7 @@ public class SubastaController : Controller
         return View(dto);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Vendedor")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(SubastaDTO dto, string? accion = null)
@@ -206,8 +211,7 @@ public class SubastaController : Controller
         }
     }
 
-    // --- EDITAR --------------------------------------------------------------
-    [Authorize(Roles = "Admin")]
+    // ─── EDITAR ──────────────────────────────────────────────────────────────
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -250,7 +254,6 @@ public class SubastaController : Controller
         return View(dto);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, SubastaDTO dto)
@@ -309,8 +312,7 @@ public class SubastaController : Controller
         }
     }
 
-    // --- PUBLICAR ------------------------------------------------------------
-    [Authorize(Roles = "Admin")]
+    // ─── PUBLICAR ────────────────────────────────────────────────────────────
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Publicar(int id)
@@ -331,8 +333,7 @@ public class SubastaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // --- CANCELAR ------------------------------------------------------
-    [Authorize(Roles = "Admin")]
+    // ─── CANCELAR ────────────────────────────────────────────────────────────
     [HttpGet]
     public async Task<IActionResult> Cancelar(int id)
     {
@@ -392,9 +393,7 @@ public class SubastaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // --- SALA DE PUJAS EN TIEMPO REAL ------------------------------------
-    [Authorize]
-    [HttpGet]
+    // ─── SALA DE PUJAS EN TIEMPO REAL ────────────────────────────────────────    [Authorize]    [HttpGet]
     public async Task<IActionResult> Sala(int? id)
     {
         if (id is null or <= 0) return NotFound();
@@ -411,20 +410,20 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Activas));
         }
 
-        var usuarioActual = UsuarioHelper.GetNombreCompleto(User);
+        var uid = UsuarioHelper.GetUsuarioId(User);
+        var usuarioActual = await _serviceUsuario.GetByIdConDetalle(uid);
         var pujaMasAlta = await _servicePuja.GetPujaMasAlta(id.Value);
         var historial = (await _servicePuja.GetBySubasta(id.Value))
                               .OrderByDescending(p => p.FechaHora)
                               .ToList();
 
-        var uid = UsuarioHelper.GetUsuarioId(User);
         var vm = new SalaSubastaViewModel
         {
             Subasta = subasta,
             PujaLider = pujaMasAlta,
             Historial = historial,
             UsuarioActualId = uid,
-            NombreUsuarioActual = usuarioActual,
+            NombreUsuarioActual = usuarioActual?.NombreCompleto ?? $"Usuario #{uid}",
             EsVendedor = subasta.UsuarioCreadorId == uid
         };
 
@@ -439,7 +438,7 @@ public class SubastaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegistrarPuja([FromForm] int subastaId, [FromForm] decimal monto)
     {
-        // El usuario SIEMPRE se obtiene del claim de la sesión, nunca del formulario.
+        // El usuario SIEMPRE se obtiene de los claims de autenticación, nunca del formulario.
         var uid = UsuarioHelper.GetUsuarioId(User);
 
         var (ok, mensaje, puja) = await _servicePuja.RegistrarPujaValidada(subastaId, uid, monto);
@@ -447,7 +446,6 @@ public class SubastaController : Controller
         if (!ok)
             return Json(new { ok = false, mensaje });
 
-        // Broadcast a todos los clientes en el grupo de la subasta
         await _hubContext.Clients.Group($"subasta-{subastaId}")
             .SendAsync("NuevaPuja", new
             {
@@ -487,5 +485,4 @@ public class SubastaController : Controller
         });
     }
 }
-
 

@@ -1,0 +1,190 @@
+@{
+    ViewData["Title"] = "Reporte: Top Compradores";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+        <li class="breadcrumb-item active">Reportes</li>
+        <li class="breadcrumb-item active">Top Compradores</li>
+    </ol>
+</nav>
+
+<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="bi bi-trophy me-2 text-warning"></i>Top Compradores</h2>
+    <a asp-action="SubastasPorPeriodo" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-bar-chart-line me-1"></i>Ver Subastas por Período
+    </a>
+</div>
+
+<!-- Filtros -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Desde</label>
+                <input type="date" name="desde" value="@ViewBag.Desde" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Hasta</label>
+                <input type="date" name="hasta" value="@ViewBag.Hasta" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Top N</label>
+                <select name="top" class="form-select">
+                    @foreach (var n in new[] { 5, 10, 15, 20 })
+                    {
+                        if ((int)ViewBag.Top == n)
+                        {
+                            <option value="@n" selected>Top @n</option>
+                        }
+                        else
+                        {
+                            <option value="@n">Top @n</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i>Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Gráfico de barras horizontales -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light fw-semibold">
+        <i class="bi bi-bar-chart-steps me-1"></i>Pujas realizadas por comprador
+    </div>
+    <div class="card-body">
+        <canvas id="chartCompradores" style="max-height: 350px;"></canvas>
+    </div>
+</div>
+
+<!-- Tabla detalle -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light fw-semibold">
+        <i class="bi bi-table me-1"></i>Detalle de Compradores
+    </div>
+    <div class="card-body p-0">
+        @{
+            var tablaJson = (string?)ViewBag.TablaJson ?? "[]";
+            var items = System.Text.Json.JsonDocument.Parse(tablaJson).RootElement.EnumerateArray().ToList();
+        }
+        @if (!items.Any())
+        {
+            <div class="alert alert-info m-3">No hay datos de compradores en el período seleccionado.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Comprador</th>
+                            <th class="text-center">Total Pujas</th>
+                            <th class="text-center">Subastas Ganadas</th>
+                            <th class="text-end">Monto Máximo Puja</th>
+                            <th class="text-end">Monto Promedio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int pos = 1;
+                        }
+                        @foreach (var item in items)
+                        {
+                            var nombre = item.GetProperty("Nombre").GetString() ?? "—";
+                            var totalPujas = item.GetProperty("TotalPujas").GetInt32();
+                            var ganadas = item.GetProperty("SubastasGanadas").GetInt32();
+                            var montoMax = item.GetProperty("MontoMaximo").GetDecimal();
+                            var montoAvg = item.GetProperty("MontoPromedio").GetDecimal();
+                            <tr>
+                                <td>
+                                    @if (pos == 1)
+                                    {
+                                        <i class="bi bi-trophy-fill text-warning"></i>
+                                    }
+                                    else if (pos == 2)
+                                    {
+                                        <i class="bi bi-trophy-fill" style="color:#9e9e9e;"></i>
+                                    }
+                                    else if (pos == 3)
+                                    {
+                                        <i class="bi bi-trophy-fill" style="color:#cd7f32;"></i>
+                                    }
+                                    else
+                                    {
+                                        @pos
+                                    }
+                                </td>
+                                <td class="fw-semibold">@nombre</td>
+                                <td class="text-center">
+                                    <span class="badge text-bg-primary rounded-pill">@totalPujas</span>
+                                </td>
+                                <td class="text-center">
+                                    @if (ganadas > 0)
+                                    {
+                                        <span class="badge text-bg-success rounded-pill">@ganadas</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">0</span>
+                                    }
+                                </td>
+                                <td class="text-end">₡@montoMax.ToString("N0")</td>
+                                <td class="text-end">₡@montoAvg.ToString("N0")</td>
+                            </tr>
+                            pos++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script>
+        const nombresLabels = @Html.Raw(ViewBag.NombresLabels);
+        const pujasData = @Html.Raw(ViewBag.PujasData);
+        const ganadasData = @Html.Raw(ViewBag.GanadasData);
+
+        new Chart(document.getElementById('chartCompradores'), {
+        type: 'bar',
+        data: {
+        labels: nombresLabels,
+        datasets: [
+        {
+        label: 'Total Pujas',
+        data: pujasData,
+        backgroundColor: '#0d6efd99',
+        borderColor: '#0d6efd',
+        borderWidth: 1
+        },
+        {
+        label: 'Subastas Ganadas',
+        data: ganadasData,
+        backgroundColor: '#19875499',
+        borderColor: '#198754',
+        borderWidth: 1
+        }
+        ]
+        },
+        options: {
+        responsive: true,
+        plugins: {
+        legend: { position: 'top' }
+        },
+        scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        }
+        }
+        });
+    </script>
+}
