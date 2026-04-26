@@ -212,6 +212,7 @@ public class SubastaController : Controller
     }
 
     // ─── EDITAR ──────────────────────────────────────────────────────────────
+    [Authorize(Roles = "Vendedor")]
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -254,6 +255,7 @@ public class SubastaController : Controller
         return View(dto);
     }
 
+    [Authorize(Roles = "Vendedor")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, SubastaDTO dto)
@@ -313,6 +315,7 @@ public class SubastaController : Controller
     }
 
     // ─── PUBLICAR ────────────────────────────────────────────────────────────
+    [Authorize(Roles = "Vendedor")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Publicar(int id)
@@ -334,6 +337,7 @@ public class SubastaController : Controller
     }
 
     // ─── CANCELAR ────────────────────────────────────────────────────────────
+    [Authorize(Roles = "Vendedor")]
     [HttpGet]
     public async Task<IActionResult> Cancelar(int id)
     {
@@ -373,6 +377,7 @@ public class SubastaController : Controller
         return View(detalle);
     }
 
+    [Authorize(Roles = "Vendedor")]
     [HttpPost, ActionName("CancelarConfirmado")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CancelarConfirmado(int id)
@@ -393,7 +398,9 @@ public class SubastaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // ─── SALA DE PUJAS EN TIEMPO REAL ────────────────────────────────────────    [Authorize]    [HttpGet]
+    // ─── SALA DE PUJAS EN TIEMPO REAL ─────────────────────────────────────────
+    [Authorize]
+    [HttpGet]
     public async Task<IActionResult> Sala(int? id)
     {
         if (id is null or <= 0) return NotFound();
@@ -433,7 +440,7 @@ public class SubastaController : Controller
     /// <summary>
     /// Registra una nueva puja. Retorna JSON. El broadcast SignalR se realiza aquí.
     /// </summary>
-    [Authorize]
+    [Authorize(Roles = "Comprador")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RegistrarPuja([FromForm] int subastaId, [FromForm] decimal monto)

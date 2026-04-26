@@ -115,6 +115,7 @@ builder.Services.AddTransient<IRepositoryRaza, RepositoryRaza>();
 builder.Services.AddTransient<IRepositoryTipoGanado, RepositoryTipoGanado>();
 builder.Services.AddTransient<IRepositoryRol, RepositoryRol>();
 builder.Services.AddTransient<IRepositoryResultadoSubasta, RepositoryResultadoSubasta>();
+builder.Services.AddTransient<IRepositoryReporte, RepositoryReporte>();
 
 //*** Services SuVac
 builder.Services.AddTransient<IServiceGanado, ServiceGanado>();
@@ -127,6 +128,7 @@ builder.Services.AddTransient<IServiceRaza, ServiceRaza>();
 builder.Services.AddTransient<IServiceTipoGanado, ServiceTipoGanado>();
 builder.Services.AddTransient<IServiceRol, ServiceRol>();
 builder.Services.AddTransient<IServiceResultadoSubasta, ServiceResultadoSubasta>();
+builder.Services.AddTransient<IServiceReporte, ServiceReporte>();
 builder.Services.AddHostedService<SubastaTransicionService>();
 
 // =======================

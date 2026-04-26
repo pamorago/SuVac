@@ -1,5 +1,5 @@
-@using SuVac.Infraestructure.Models
-@model IEnumerable<Subasta>
+@using SuVac.Application.DTOs
+@model IEnumerable<ReporteSubastaDTO>
 @{
     ViewData["Title"] = "Reporte: Subastas por Período";
     var lista = Model.ToList();
@@ -71,7 +71,7 @@
     <div class="col-md-4">
         <div class="card border-0 bg-success text-white shadow-sm text-center">
             <div class="card-body py-3">
-                <h2 class="fw-bold mb-0">@lista.Count(s => s.IdEstadoSubastaNavigation?.Nombre == "Finalizada")</h2>
+                <h2 class="fw-bold mb-0">@lista.Count(s => s.EstadoSubasta == "Finalizada")</h2>
                 <p class="small mb-0 opacity-75">Finalizadas</p>
             </div>
         </div>
@@ -142,14 +142,14 @@
                         {
                             <tr>
                                 <td>@s.SubastaId</td>
-                                <td>@(s.IdGanadoNavigation?.Nombre ?? $"Ganado #{s.GanadoId}")</td>
-                                <td>@(s.IdUsuarioCreadorNavigation?.NombreCompleto ?? "—")</td>
+                                <td>@s.NombreGanado</td>
+                                <td>@s.NombreCreador</td>
                                 <td>@s.FechaInicio.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>@s.FechaFin.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>₡@s.PrecioBase.ToString("N0")</td>
                                 <td>
                                     @{
-                                        var estado = s.IdEstadoSubastaNavigation?.Nombre ?? "—";
+                                        var estado = s.EstadoSubasta;
                                         var badge = estado switch
                                         {
                                             "Activa" => "text-bg-success",
