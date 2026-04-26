@@ -231,6 +231,17 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        // Restricción: solo el creador puede editar su subasta
+        var uid = UsuarioHelper.GetUsuarioId(User);
+        if (dto.UsuarioCreadorId != uid)
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Acceso denegado",
+                "Solo puedes editar tus propias subastas.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Index));
+        }
+
         // Restricción: no editable si está Finalizada/Cancelada, o si tiene pujas
         var estado = dto.NombreEstadoSubasta;
         if (estado == "Finalizada" || estado == "Cancelada")
@@ -264,6 +275,17 @@ public class SubastaController : Controller
         {
             TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
                 "Error", "El identificador de la subasta no coincide.", SweetAlertMessageType.error);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Verificar propiedad antes de persistir
+        var existing = await _service.GetById(id);
+        if (existing == null || existing.UsuarioCreadorId != UsuarioHelper.GetUsuarioId(User))
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Acceso denegado",
+                "Solo puedes editar tus propias subastas.",
+                SweetAlertMessageType.warning);
             return RedirectToAction(nameof(Index));
         }
 
@@ -320,6 +342,15 @@ public class SubastaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Publicar(int id)
     {
+        var subasta = await _service.GetById(id);
+        if (subasta == null || subasta.UsuarioCreadorId != UsuarioHelper.GetUsuarioId(User))
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Acceso denegado",
+                "Solo puedes publicar tus propias subastas.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Index));
+        }
         try
         {
             var (ok, mensaje) = await _service.Publicar(id);
@@ -356,6 +387,16 @@ public class SubastaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        // Solo el creador puede cancelar
+        if (detalle.UsuarioCreadorId != UsuarioHelper.GetUsuarioId(User))
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Acceso denegado",
+                "Solo puedes cancelar tus propias subastas.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Index));
+        }
+
         if (detalle.EstadoSubasta == "Finalizada" || detalle.EstadoSubasta == "Cancelada")
         {
             TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
@@ -382,6 +423,16 @@ public class SubastaController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CancelarConfirmado(int id)
     {
+        var subasta = await _service.GetById(id);
+        if (subasta == null || subasta.UsuarioCreadorId != UsuarioHelper.GetUsuarioId(User))
+        {
+            TempData["Notificacion"] = SweetAlertHelper.CrearNotificacion(
+                "Acceso denegado",
+                "Solo puedes cancelar tus propias subastas.",
+                SweetAlertMessageType.warning);
+            return RedirectToAction(nameof(Index));
+        }
+
         try
         {
             var (ok, mensaje) = await _service.Cancelar(id);
