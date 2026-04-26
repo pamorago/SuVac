@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace SuVac.Web.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class PujaController : Controller
 {
     private readonly IServicePuja _service;

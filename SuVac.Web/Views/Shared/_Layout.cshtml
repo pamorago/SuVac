@@ -38,35 +38,6 @@
         })();
     </script>
 
-    <!-- [DEMO] Usuario simulado por pestaña: sincroniza sessionStorage → cookie en cada carga
-         La cookie es leída por UsuarioSimuladoMiddleware al inicio de cada request.
-         Los fetch() también llevan la cabecera X-Suvac-Uid para peticiones AJAX. -->
-    <script>
-        (function () {
-            var KEY = 'suvac_uid';
-            var COOKIE = 'suvac-uid';
-            function uid() { return parseInt(sessionStorage.getItem(KEY) || '2') || 2; }
-            function syncCookie() {
-                document.cookie = COOKIE + '=' + uid() + '; path=/; SameSite=Strict';
-            }
-            // Sincronizar en cada carga de página (cubre navegación y form POSTs)
-            syncCookie();
-            // Inyectar cabecera en todos los fetch() (cubre AJAX/SignalR negotiate)
-            var _fetch = window.fetch;
-            window.fetch = function (input, init) {
-                init = init || {};
-                init.headers = Object.assign({ 'X-Suvac-Uid': String(uid()) }, init.headers);
-                return _fetch.call(this, input, init);
-            };
-            // Sincronizar antes de cualquier clic en enlace (navegación GET)
-            document.addEventListener('click', function (e) {
-                var a = e.target && e.target.closest('a[href]');
-                if (a) syncCookie();
-            }, true);
-            // Sincronizar antes de cualquier envío de formulario (form POST)
-            document.addEventListener('submit', syncCookie, true);
-        })();
-    </script>
 
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body">
