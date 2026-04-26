@@ -1,5 +1,5 @@
-using SuVac.Application.DTOs;
-using SuVac.Infraestructure.Data;
+﻿using SuVac.Infraestructure.Data;
+using SuVac.Infraestructure.Models;
 using SuVac.Infraestructure.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +14,7 @@ public class RepositoryReporte : IRepositoryReporte
         _context = context;
     }
 
-    public async Task<IEnumerable<ReporteSubastaDTO>> GetSubastasPorPeriodoAsync(
+    public async Task<IEnumerable<Subasta>> GetSubastasPorPeriodoAsync(
         DateTime desde, DateTime hasta, string? estado)
     {
         var query = _context.Subastas
@@ -26,19 +26,7 @@ public class RepositoryReporte : IRepositoryReporte
         if (!string.IsNullOrEmpty(estado))
             query = query.Where(s => s.IdEstadoSubastaNavigation.Nombre == estado);
 
-        return await query
-            .AsNoTracking()
-            .Select(s => new ReporteSubastaDTO
-            {
-                SubastaId = s.SubastaId,
-                NombreGanado = s.IdGanadoNavigation.Nombre,
-                NombreCreador = s.IdUsuarioCreadorNavigation.NombreCompleto,
-                FechaInicio = s.FechaInicio,
-                FechaFin = s.FechaFin,
-                PrecioBase = s.PrecioBase,
-                EstadoSubasta = s.IdEstadoSubastaNavigation.Nombre
-            })
-            .ToListAsync();
+        return await query.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<string>> GetEstadosSubastaAsync()
@@ -57,46 +45,22 @@ public class RepositoryReporte : IRepositoryReporte
             .SumAsync(r => (decimal?)r.MontoFinal) ?? 0;
     }
 
-    public async Task<IEnumerable<ReporteTopCompradorDTO>> GetTopCompradoresAsync(
-        DateTime desde, DateTime hasta, int top)
+    public async Task<IEnumerable<Puja>> GetPujasPorPeriodoConUsuarioAsync(
+        DateTime desde, DateTime hasta)
     {
-        // Agrupar pujas por UsuarioId (scalar) para compatibilidad con EF Core
-        var pujasPorUsuario = await _context.Pujas
+        return await _context.Pujas
+            .Include(p => p.IdUsuarioNavigation)
             .Where(p => p.FechaHora >= desde && p.FechaHora <= hasta.AddDays(1))
-            .GroupBy(p => p.UsuarioId)
-            .Select(g => new
-            {
-                UsuarioId = g.Key,
-                TotalPujas = g.Count(),
-                MontoMaximo = g.Max(p => p.Monto),
-                MontoPromedio = g.Average(p => p.Monto)
-            })
-            .OrderByDescending(x => x.TotalPujas)
-            .Take(top)
+            .AsNoTracking()
             .ToListAsync();
+    }
 
-        var usuarioIds = pujasPorUsuario.Select(x => x.UsuarioId).ToList();
-
-        var nombres = await _context.Usuarios
-            .Where(u => usuarioIds.Contains(u.UsuarioId))
-            .Select(u => new { u.UsuarioId, u.NombreCompleto })
-            .ToListAsync();
-
-        var ganadores = await _context.ResultadosSubasta
+    public async Task<IEnumerable<ResultadoSubasta>> GetResultadosPorPeriodoAsync(
+        DateTime desde, DateTime hasta)
+    {
+        return await _context.ResultadosSubasta
             .Where(r => r.FechaCierre >= desde && r.FechaCierre <= hasta.AddDays(1))
-            .GroupBy(r => r.UsuarioGanadorId)
-            .Select(g => new { UsuarioId = g.Key, SubastasGanadas = g.Count() })
+            .AsNoTracking()
             .ToListAsync();
-
-        return pujasPorUsuario.Select(c => new ReporteTopCompradorDTO
-        {
-            UsuarioId = c.UsuarioId,
-            Nombre = nombres.FirstOrDefault(u => u.UsuarioId == c.UsuarioId)?.NombreCompleto
-                             ?? $"Usuario #{c.UsuarioId}",
-            TotalPujas = c.TotalPujas,
-            MontoMaximo = c.MontoMaximo,
-            MontoPromedio = c.MontoPromedio,
-            SubastasGanadas = ganadores.FirstOrDefault(g => g.UsuarioId == c.UsuarioId)?.SubastasGanadas ?? 0
-        }).ToList();
     }
 }

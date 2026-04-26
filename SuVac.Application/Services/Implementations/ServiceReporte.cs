@@ -13,8 +13,21 @@ public class ServiceReporte : IServiceReporte
         _repo = repo;
     }
 
-    public Task<IEnumerable<ReporteSubastaDTO>> GetSubastasPorPeriodoAsync(DateTime desde, DateTime hasta, string? estado)
-        => _repo.GetSubastasPorPeriodoAsync(desde, hasta, estado);
+    public async Task<IEnumerable<ReporteSubastaDTO>> GetSubastasPorPeriodoAsync(
+        DateTime desde, DateTime hasta, string? estado)
+    {
+        var subastas = await _repo.GetSubastasPorPeriodoAsync(desde, hasta, estado);
+        return subastas.Select(s => new ReporteSubastaDTO
+        {
+            SubastaId = s.SubastaId,
+            NombreGanado = s.IdGanadoNavigation?.Nombre ?? $"Ganado #{s.GanadoId}",
+            NombreCreador = s.IdUsuarioCreadorNavigation?.NombreCompleto ?? "—",
+            FechaInicio = s.FechaInicio,
+            FechaFin = s.FechaFin,
+            PrecioBase = s.PrecioBase,
+            EstadoSubasta = s.IdEstadoSubastaNavigation?.Nombre ?? "—"
+        });
+    }
 
     public Task<IEnumerable<string>> GetEstadosSubastaAsync()
         => _repo.GetEstadosSubastaAsync();
@@ -22,6 +35,28 @@ public class ServiceReporte : IServiceReporte
     public Task<decimal> GetMontoRecaudadoAsync(DateTime desde, DateTime hasta)
         => _repo.GetMontoRecaudadoAsync(desde, hasta);
 
-    public Task<IEnumerable<ReporteTopCompradorDTO>> GetTopCompradoresAsync(DateTime desde, DateTime hasta, int top)
-        => _repo.GetTopCompradoresAsync(desde, hasta, top);
+    public async Task<IEnumerable<ReporteTopCompradorDTO>> GetTopCompradoresAsync(
+        DateTime desde, DateTime hasta, int top)
+    {
+        var pujas = await _repo.GetPujasPorPeriodoConUsuarioAsync(desde, hasta);
+        var resultados = await _repo.GetResultadosPorPeriodoAsync(desde, hasta);
+
+        var ganadores = resultados
+            .GroupBy(r => r.UsuarioGanadorId)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        return pujas
+            .GroupBy(p => new { p.UsuarioId, Nombre = p.IdUsuarioNavigation?.NombreCompleto ?? $"Usuario #{p.UsuarioId}" })
+            .Select(g => new ReporteTopCompradorDTO
+            {
+                UsuarioId = g.Key.UsuarioId,
+                Nombre = g.Key.Nombre,
+                TotalPujas = g.Count(),
+                MontoMaximo = g.Max(p => p.Monto),
+                MontoPromedio = g.Average(p => p.Monto),
+                SubastasGanadas = ganadores.GetValueOrDefault(g.Key.UsuarioId, 0)
+            })
+            .OrderByDescending(x => x.TotalPujas)
+            .Take(top);
+    }
 }

@@ -7,7 +7,8 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1"><i class="bi bi-people me-2"></i><span data-i18n="usuario.title">Usuarios del Sistema</span></h1>
+        <h1 class="h3 mb-1"><i class="bi bi-people me-2"></i><span data-i18n="usuario.title">Usuarios del Sistema</span>
+        </h1>
         <p class="text-muted mb-0">Total de usuarios registrados: <strong>@total</strong></p>
     </div>
     <a asp-action="Create" class="btn btn-success">
@@ -15,7 +16,7 @@
     </a>
 </div>
 
-@if (!Model.Any())
+@if (!(Model?.Any() ?? false))
 {
     <div class="alert alert-info d-flex align-items-center" role="alert">
         <i class="bi bi-info-circle me-2"></i>
@@ -72,37 +73,31 @@ else
                             <td class="small">@usuario.FechaRegistro.ToString("dd/MM/yyyy")</td>
                             <td class="text-center">
                                 <a asp-action="Details" asp-route-id="@usuario.UsuarioId"
-                                   class="btn btn-sm btn-outline-primary me-1" title="Ver detalles">
+                                       class="btn btn-sm btn-outline-primary me-1" title="Ver detalles">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a asp-action="Edit" asp-route-id="@usuario.UsuarioId"
-                                   class="btn btn-sm btn-outline-warning me-1" title="Editar perfil">
+                                       class="btn btn-sm btn-outline-warning me-1" title="Editar perfil">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 @if (usuario.NombreEstado == "Activo")
                                 {
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary btn-toggle-estado"
-                                            data-id="@usuario.UsuarioId"
-                                            data-nombre="@usuario.NombreCompleto"
-                                            data-accion="bloquear"
+                                    <button type="button" class="btn btn-sm btn-outline-secondary btn-toggle-estado"
+                                            data-id="@usuario.UsuarioId" data-nombre="@usuario.NombreCompleto" data-accion="bloquear"
                                             title="Bloquear usuario">
                                         <i class="bi bi-lock"></i>
                                     </button>
                                 }
                                 else
                                 {
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-success btn-toggle-estado"
-                                            data-id="@usuario.UsuarioId"
-                                            data-nombre="@usuario.NombreCompleto"
-                                            data-accion="activar"
+                                    <button type="button" class="btn btn-sm btn-outline-success btn-toggle-estado"
+                                            data-id="@usuario.UsuarioId" data-nombre="@usuario.NombreCompleto" data-accion="activar"
                                             title="Activar usuario">
                                         <i class="bi bi-unlock"></i>
                                     </button>
                                 }
-                                <form asp-action="ToggleEstado" asp-route-id="@usuario.UsuarioId"
-                                      method="post" id="form-toggle-@usuario.UsuarioId" class="d-none">
+                                <form asp-action="ToggleEstado" asp-route-id="@usuario.UsuarioId" method="post"
+                                      id="form-toggle-@usuario.UsuarioId" class="d-none">
                                     @Html.AntiForgeryToken()
                                 </form>
                             </td>
